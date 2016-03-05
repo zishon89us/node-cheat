@@ -4,12 +4,12 @@
 
 var tr = require('transliteration');
 var slugify = require('transliteration').slugify;
-------------------------------------
+//------------------------------------
 // replacement attempt
 tr("0xAE, 0xFEFF"); // ®
 tr("0xA9, 0xFEFF"); // ©
 tr("0x2122, 0xFEFF"); // ™
-------------------------------------
+//------------------------------------
 //very beginning
 console.log(tr("ABC ©"));
 //Output: ABC (c)
@@ -26,7 +26,7 @@ console.log(test1);
 //now sluggify
 console.log(slugify(test1, { lowercase: true, separator: '-' }));
 //Output: abc-123
-------------------------------------
+//------------------------------------
 var test2 = "®ABC: 123©";
 var test3 = "A®BC: 12©3";
 //console.log(slugify(test2, { lowercase: true, separator: '-' }));
