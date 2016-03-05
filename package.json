@@ -1,0 +1,31 @@
+{
+  "name": "node-cheat",
+  "version": "1.0.0",
+  "description": "Amazing node.js cheat snippets, learning everyday become top class node.js developer.",
+  "main": "index.js",
+  "dependencies": {
+    "aws-sdk": "^2.2.41",
+    "transliteration": "^0.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zishon89us/node-cheat.git"
+  },
+  "keywords": [
+    "node",
+    "node.js",
+    "npm",
+    "learn-node",
+    "cheat-node"
+  ],
+  "author": "Zeeshan Hassan Memon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zishon89us/node-cheat/issues"
+  },
+  "homepage": "https://github.com/zishon89us/node-cheat#readme"
+}
