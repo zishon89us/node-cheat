@@ -5,11 +5,23 @@
 // Load the AWS SDK for Node.js
 var AWS = require('aws-sdk');
 
-//Load the S3 information from the environment variables.
-/*var AWS_ACCESS_KEY = "xxxAJ76xxxxxxxxx";//process.env.AWS_ACCESS_KEY;
- var AWS_SECRET_KEY = "xxxxxxZrkJbTxxxxxxxxxxxxxxxxxxxxxx";//process.env.AWS_SECRET_KEY;*/
+//------------------------------------------------------
+//Configure the SDK (Only hard code when in testing phase)
+//Web Link=> http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html#Hard-Coding_Credentials
+//------------------------------------------------------
 
-AWS.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
+/*
+ var AWS_ACCESS_KEY = "xxxAJ76xxxxxxxxx";//process.env.AWS_ACCESS_KEY;
+ var AWS_SECRET_KEY = "xxxxxxZrkJbTxxxxxxxxxxxxxxxxxxxxxx";//process.env.AWS_SECRET_KEY;
+ AWS.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY});
+ */
+
+//------------------------------------------------------
+//Configure the SDK
+//Web Link=> http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html#Credentials_from_Disk
+//------------------------------------------------------
+
+AWS.config.loadFromPath('../config.json');
 
 // Set your region for future requests.
 //AWS.config.region = 'us-west-2';
@@ -18,8 +30,9 @@ AWS.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY}
 //Create a bucket
 //Web Link=> http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#createBucket-property
 //------------------------------------------------------
+/*
 
-/*var s3bucket = new AWS.S3({params: {Bucket: 'random_bucket_name'}});
+ var s3bucket = new AWS.S3({params: {Bucket: 'random_bucket_name'}});
  s3bucket.createBucket(function (e, d) {
  if (!e) {
  var params = {Key: 'this_is_key', Body: 'This is data.'};
@@ -33,7 +46,8 @@ AWS.config.update({accessKeyId: AWS_ACCESS_KEY, secretAccessKey: AWS_SECRET_KEY}
  } else {
  console.log('Error Creating Bucket: ' + e);
  }
- });*/
+ });
+ */
 
 //------------------------------------------------------
 //Delete bucket Note: All objects in bucket should be DELETED before bucket is deleted
