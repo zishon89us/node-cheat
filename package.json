@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "aws-sdk": "^2.2.41",
+    "builtin-modules": "^1.1.1",
     "transliteration": "^0.1.1"
   },
   "devDependencies": {},
