@@ -7,6 +7,7 @@
     "alfredo": "^0.2.0",
     "aws-sdk": "^2.2.41",
     "builtin-modules": "^1.1.1",
+    "express": "^4.13.4",
     "fuzzy": "^0.1.1",
     "linebyline": "^1.3.0",
     "tail": "^0.4.0",
