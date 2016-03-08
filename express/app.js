@@ -10,6 +10,11 @@
 var express = require('express')
 var app = express()
 
+//automated args received here
+console.log(process.argv[2]);
+console.log(process.argv[3]);
+console.log(process.argv[4]);
+
 var routes = require('./routes');
 
 //you can check if server is not down
@@ -29,4 +34,5 @@ app.post('/comment/unlike', function(req, res, next) {
     routes.unlikeComment(req, res);
 });
 
-app.listen(3000)
+app.listen(3000);
+console.log('Listening');
