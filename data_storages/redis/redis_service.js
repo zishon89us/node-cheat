@@ -4,6 +4,7 @@
  * /
  /*
  Redis Node Service which provides some CRUD functionalities
+ getList getDocument
  saveDocument saveList saveListOfDocuments removeDocument removeList
  removeListItem removeDocumentFromList findAllDocByKeyPrefix(Use redis pipeline functionality for multiple hits)
  */
@@ -17,6 +18,30 @@ var redisStore = (function(){
 
     RedisStore.prototype.init = function(redisClient){
         this.client = redisClient;//Initializing redis client
+    };
+
+    /*
+    * Fetch and return list from redis
+    * */
+    RedisStore.prototype.getList = function(label, callBack){
+        this.client.lrange(label, [0, -1], function(err, value){
+            if(err){
+                return callBack(err);
+            }
+            callBack(null, value);
+        });
+    };
+    /*
+    *Fetch and return Document/Dictionary/Object from redis
+    * */
+    RedisStore.prototype.getDocument = function(label, callBack){
+        this.client.hgetall(label, function(err, dictionary){
+            if(err){
+                console.log('Error occured while saving to redis: ' + err);
+                return  callBack(err);
+            }
+            callBack(null, dictionary);
+        });
     };
     /*
     * A way of storing a Document/Dictionary/Object in redis
