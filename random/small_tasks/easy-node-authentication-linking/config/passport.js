@@ -58,13 +58,16 @@ module.exports = function (passport) {
                                     console.log(body);
                                     newUser.s_id = profile.id;
                                     newUser.token = token;
+                                    newUser.age = profile._json.birthday; // store birth_date calc age each time
+                                    newUser.age_range = profile._json.age_range.min;
                                     newUser.firstName = profile._json.first_name;
                                     newUser.lastName = profile._json.last_name;
                                     newUser.gender = profile.gender || "Not Provided";
                                     newUser.locale = profile._json.locale;
                                     newUser.email = profile._json.email || "Not Provided";
-                                    newUser.location.city = "Not Provided";
-                                    newUser.location.state = "Not Provided";
+                                    var loc = profile._json.location.name.split(',');
+                                    newUser.location.city = loc.length > 1 ? loc[0] : "";
+                                    newUser.location.state = loc.length > 1 ? loc[1] : loc[0];
                                     newUser.social.id = profile.id;
                                     newUser.social.socialType = profile.provider;
 
@@ -143,6 +146,8 @@ module.exports = function (passport) {
                             newUser.s_id = profile.id;
                             newUser.token = token;
                             var name = profile._json.name.split(' ');
+                            newUser.age = 'Not Provide by Twitter'; // store birth_date calc age each time
+                            newUser.age_range = 'Not Provide by Twitter';
                             newUser.firstName = name[0];
                             newUser.lastName = name.length > 2 ? name[2] : name[1];
                             newUser.locale = profile._json.lang;

@@ -54,7 +54,7 @@ module.exports = function(app, passport) {
 	// facebook -------------------------------
 
 		// send to facebook to do the authentication
-		app.get('/auth/facebook', passport.authenticate('facebook', { scope : 'email' }));
+		app.get('/auth/facebook', passport.authenticate('facebook', { authType: 'rerequest', scope : ["email", "user_location", "user_hometown", "user_birthday"] }));
 
 		// handle the callback after facebook has authenticated the user
 		app.get('/auth/facebook/callback',
@@ -159,7 +159,7 @@ module.exports = function(app, passport) {
 	// facebook -------------------------------
 	app.get('/unlink/facebook', function(req, res) {
 		var user            = req.user;
-		user.facebook.token = undefined;
+		user.token = undefined;
 		user.save(function(err) {
 			res.redirect('/profile');
 		});
@@ -168,7 +168,7 @@ module.exports = function(app, passport) {
 	// twitter --------------------------------
 	app.get('/unlink/twitter', function(req, res) {
 		var user           = req.user;
-		user.twitter.token = undefined;
+		user.token = undefined;
 		user.save(function(err) {
 			res.redirect('/profile');
 		});
@@ -177,7 +177,7 @@ module.exports = function(app, passport) {
 	// google ---------------------------------
 	app.get('/unlink/google', function(req, res) {
 		var user          = req.user;
-		user.google.token = undefined;
+		user.token = undefined;
 		user.save(function(err) {
 			res.redirect('/profile');
 		});
