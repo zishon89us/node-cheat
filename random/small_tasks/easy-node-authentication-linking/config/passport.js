@@ -2,6 +2,7 @@ var FacebookStrategy = require('passport-facebook').Strategy,
     TwitterStrategy = require('passport-twitter').Strategy,
     User = require('../app/models/user'),
     configAuth = require('./auth');
+var request = require('request');
 
 module.exports = function (passport) {
 
@@ -22,7 +23,7 @@ module.exports = function (passport) {
             clientSecret: configAuth.facebookAuth.clientSecret,
             callbackURL: configAuth.facebookAuth.callbackURL,
             passReqToCallback: true, // allows us to pass in the req from our route (lets us check if a user is logged in or not)
-            profileFields: ['id', 'emails', 'name']
+            profileFields: ['id', 'emails', 'name', 'birthday', 'gender', 'location', 'hometown', 'locale', 'age_range']
         },
         function (req, token, refreshToken, profile, done) {
             process.nextTick(function () {
@@ -35,10 +36,10 @@ module.exports = function (passport) {
 
                         if (user) {
 
-                            if (!user.facebook.token) {
-                                user.facebook.token = token;
-                                user.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-                                user.facebook.email = profile.emails[0].value;
+                            if (!user.token) {
+                                user.token = token;
+                                user.firstName = profile._json.first_name;
+                                user.lastName = profile._json.last_name;
 
                                 user.save(function (err) {
                                     if (err)
@@ -52,16 +53,30 @@ module.exports = function (passport) {
                             // if there is no user, create them
                             var newUser = new User();
 
-                            newUser.facebook.id = profile.id;
-                            newUser.facebook.token = token;
-                            newUser.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-                            newUser.facebook.email = profile.emails[0].value;
+                            request("https://graph.facebook.com/v2.5/me?fields=id,name,location,age_range,email,birthday,hometown,gender&access_token=" + token, function (err, resp, body) {
+                                if (!err && resp.statusCode == 200) {
+                                    console.log(body);
+                                    newUser.s_id = profile.id;
+                                    newUser.token = token;
+                                    newUser.firstName = profile._json.first_name;
+                                    newUser.lastName = profile._json.last_name;
+                                    newUser.gender = profile.gender || "Not Provided";
+                                    newUser.locale = profile._json.locale;
+                                    newUser.email = profile._json.email || "Not Provided";
+                                    newUser.location.city = "Not Provided";
+                                    newUser.location.state = "Not Provided";
+                                    newUser.social.id = profile.id;
+                                    newUser.social.socialType = profile.provider;
 
-                            newUser.save(function (err) {
-                                if (err)
-                                    throw err;
-                                return done(null, newUser);
+
+                                    newUser.save(function (err) {
+                                        if (err)
+                                            throw err;
+                                        return done(null, newUser);
+                                    });
+                                }
                             });
+
                         }
                     });
 
@@ -69,10 +84,10 @@ module.exports = function (passport) {
                     // user already exists and is logged in, we have to link accounts
                     var user = req.user; // pull the user out of the session
 
-                    user.facebook.id = profile.id;
-                    user.facebook.token = token;
-                    user.facebook.name = profile.name.givenName + ' ' + profile.name.familyName;
-                    user.facebook.email = profile.emails[0].value;
+                    user.s_id = profile.id;
+                    user.token = token;
+                    user.firstName = profile._json.first_name;
+                    user.lastName = profile._json.last_name;
 
                     user.save(function (err) {
                         if (err)
@@ -111,7 +126,7 @@ module.exports = function (passport) {
                                 user.token = token;
                                 var name = profile._json.name.split(' ');
                                 user.firstName = name[0];
-                                user.lastName = name.length > 2 ? name[2] : name[1] ;
+                                user.lastName = name.length > 2 ? name[2] : name[1];
 
                                 user.save(function (err) {
                                     if (err)
@@ -129,33 +144,40 @@ module.exports = function (passport) {
                             newUser.token = token;
                             var name = profile._json.name.split(' ');
                             newUser.firstName = name[0];
-                            newUser.lastName = name.length > 2 ? name[2] : name[1] ;
-                            newUser.gender = profile.gender || "Not Provided";
+                            newUser.lastName = name.length > 2 ? name[2] : name[1];
                             newUser.locale = profile._json.lang;
                             newUser.email = profile.email || "Not Provided";
                             var loc = profile._json.location.split(',');
-                            newUser.location.city = loc.length >1 ? loc[0] : "";
+                            newUser.location.city = loc.length > 1 ? loc[0] : "";
                             newUser.location.state = loc.length > 1 ? loc[1] : loc[0];
                             newUser.social.id = profile.id;
                             newUser.social.socialType = profile.provider;
 
+                            request("http://api.namsor.com/onomastics/api/json/gender/" + newUser.firstName + "/" + newUser.lastName, function (err, resp, body) {
+                                if (!err && resp.statusCode == 200) {
+                                    console.log(body);
 
-                            newUser.save(function (err) {
-                                if (err)
-                                    throw err;
-                                return done(null, newUser);
+                                    newUser.gender = JSON.parse(body).gender || "Not Provided";
+
+                                    newUser.save(function (err) {
+                                        if (err)
+                                            throw err;
+                                        return done(null, newUser);
+                                    });
+                                }
                             });
+
                         }
                     });
 
                 } else {
                     // user already exists and is logged in, we have to link accounts
                     var user = req.user; // pull the user out of the session
-                     user.s_id = profile.id;
+                    user.s_id = profile.id;
                     user.s_token = token;
                     var name = profile._json.name.split(' ');
                     user.firstName = name[0];
-                    user.lastName = name.length > 2 ? name[2] : name[1] ;
+                    user.lastName = name.length > 2 ? name[2] : name[1];
 
                     user.save(function (err) {
                         if (err)
