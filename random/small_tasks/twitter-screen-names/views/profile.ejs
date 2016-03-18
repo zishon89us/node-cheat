@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+	<title>Home</title>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+	<style>
+		body 		{ padding-top:80px; word-wrap:break-word; }
+	</style>
+</head>
+<body>
+<div class="container">
+
+	<div class="page-header text-center">
+		<h1><span class="fa fa-anchor"></span> Profile Page</h1>
+		<a href="/logout" class="btn btn-default btn-sm">Logout</a>
+	</div>
+
+	<div class="row">
+
+		<!-- TWITTER INFORMATION -->
+		<div class="col-sm-6">
+			<div class="well">
+				<h3 class="text-info"><span class="fa fa-twitter"></span> Twitter</h3>
+
+				<% if (user.token) { %>
+					<p>
+
+						<strong>Hello </strong>: <%= user.firstName %>!<br>
+						<strong>Local-id</strong>: <%= user._id %><br>
+						<strong>Social-id</strong>: <%= user.s_id %><br>
+						<strong>Token</strong>: <%= user.token %><br>
+					</p>
+
+					<a href="/unlink/twitter" class="btn btn-info">Unlink</a>
+				<% } else { %>
+					<a href="/connect/twitter" class="btn btn-info">Connect Twitter</a>
+				<% } %>
+
+			</div>
+		</div>
+
+	</div>
+
+</div>
+</body>
+</html>
