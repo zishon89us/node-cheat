@@ -1,3 +1,8 @@
+//------------------------------------------------------
+//Read README.md
+//Web Link=>
+//------------------------------------------------------
+
 var FacebookStrategy = require('passport-facebook').Strategy,
     TwitterStrategy = require('passport-twitter').Strategy,
     User = require('../app/models/user'),
