@@ -35,9 +35,15 @@
     "node.js",
     "npm",
     "learn-node",
-    "cheat-node"
+    "cheat-node",
+    "node code",
+    "cheat node",
+    "node snippets"
   ],
-  "author": "Zeeshan Hassan Memon",
+  "author": {
+    "name": "Zeeshan Hassan Memon",
+    "email": "zishon89us@hotmail.com"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/zishon89us/node-cheat/issues"
