@@ -4,14 +4,14 @@
 module.exports = {
 
 	'facebookAuth' : {
-		'clientID' 		: 'XXXXXXXXXXX', // your App ID
-		'clientSecret' 	: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXX', // your App Secret
+		'clientID' 		: 'xxxxxxxxxxxxx', // your App ID
+		'clientSecret' 	: 'xxxxxxxxxxxxxxxxxxxxxxxxx', // your App Secret
 		'callbackURL' 	: 'http://localhost:3000/auth/facebook/callback'
 	},
 
 	'twitterAuth' : {
-		'consumerKey' 		: 'XXXXXXXXXXX',
-		'consumerSecret' 	: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+		'consumerKey' 		: 'xxxxxxxxxxxxxxxxxx',
+		'consumerSecret' 	: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
 		'callbackURL' 		: 'http://localhost:3000/auth/twitter/callback'
 	}
 

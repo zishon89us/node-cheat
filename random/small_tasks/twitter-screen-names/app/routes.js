@@ -1,4 +1,4 @@
-module.exports = function (app, passport) {
+module.exports = function (app, passport, twitter) {
 
     app.get('/', function (req, res) {
         res.render('index.ejs');
@@ -15,6 +15,7 @@ module.exports = function (app, passport) {
         res.redirect('/');
     });
 
+    app.get('/twitter/usernames/:sheet', twitter.usernames);
 
     app.get('/auth/twitter', passport.authenticate('twitter', {scope: 'email'}));
 

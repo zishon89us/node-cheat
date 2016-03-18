@@ -9,6 +9,7 @@ var app      = express();
 var port     = process.env.PORT || 3000;
 var mongoose = require('mongoose');
 var passport = require('passport');
+var twitter = require('./app/twitter/twitter');
 var flash    = require('connect-flash');
 
 var configDB = require('./config/database.js');
@@ -36,7 +37,7 @@ app.configure(function() {
 });
 
 // routes ======================================================================
-require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+require('./app/routes.js')(app, passport, twitter); // load our routes and pass in our app and fully configured passport
 
 // launch ======================================================================
 app.listen(port);
