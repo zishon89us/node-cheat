@@ -22,6 +22,7 @@ module.exports = function (passport) {
     });
 
     //fb
+    //https://developers.facebook.com/tools/explorer/1017328211677854?method=GET&path=me%3Ffields%3Dlocation&version=v2.5
     passport.use(new FacebookStrategy({
 
             clientID: configAuth.facebookAuth.clientID,

@@ -19,5 +19,11 @@ Using passport to authenticate twitter and facebook, trying to retrieve followin
 
 id, first_name, last_name, age, age_range, gender, location
 
-Note: gender and age are not available in twitter api
+**Note**: gender and age are not available in twitter api
+
+**Useful Links**:
+[Graph Api Explorer](https://developers.facebook.com/tools/explorer/1017328211677854?method=GET&path=me%3Ffields%3Dlocation&version=v2.5)
+[Create Facebook App](https://developers.facebook.com/apps/)
+[Gender by Name](http://api.namsor.com/onomastics/api/json/gender/Zeeshan/Hassan)
+[Stackoverflow: Get facebook account details](http://stackoverflow.com/questions/20584056/node-js-get-my-account-details-from-facebook-graph-api)
 
