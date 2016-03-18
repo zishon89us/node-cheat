@@ -1,6 +1,10 @@
 {
   "name": "node-social",
   "main": "server.js",
+  "author": {
+    "name": "Zeeshan Hassan Memon",
+    "email": "zishon89us@hotmail.com"
+  },
   "dependencies": {
     "bcrypt-nodejs": "latest",
     "connect-flash": "~0.1.1",
