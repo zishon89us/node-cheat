@@ -22,9 +22,15 @@ request( url, function (err, resp, body) {
 
 
 //------------------------------------------------------
-//Find gender using first_name or first_name and last_name
+//Find gender using first_name
 //Web Link=> https://genderize.io/#overview
 //------------------------------------------------------
 
+var url2= "https://api.genderize.io/?name=" + firstName;
+request( url2, function (err, resp, body) {
+    if (!err && resp.statusCode == 200) {
+        console.log("genderize response:", JSON.parse(body));
+    }
+});
 
 
