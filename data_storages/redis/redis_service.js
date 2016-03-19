@@ -74,7 +74,7 @@ var redisStore = (function(){
         var context = this;
         //assume document has a unique key 'id'
         this.client.hmset(documentLabel, document, function(){
-            context.client.rpush(listLabel, document.id, function(err, values){
+            context.client.rpush(listLabel, documentLabel, function(err, values){
                 if(err){
                     console.log('Error occured while saving to redis : '+ err);
                 }
