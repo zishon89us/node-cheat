@@ -1,4 +1,4 @@
-# Node-Social
+# Twitter-Handles
 
 ## How to run app
 
@@ -13,17 +13,6 @@ If you would like to download the code and try it for yourself:
 
 ## What is inside app
 
-### Simple user login Node.js/Express Facebook/Twitter connect using PassportJS
+### Simple user login Twitter connect using PassportJS
 
-Using passport to authenticate twitter and facebook, trying to retrieve following data for both:
-
-id, first_name, last_name, age, age_range, gender, location
-
-**Note**: gender and age are not available in twitter api
-
-**Useful Links**:
-[Graph Api Explorer](https://developers.facebook.com/tools/explorer/1017328211677854?method=GET&path=me%3Ffields%3Dlocation&version=v2.5)
-[Create Facebook App](https://developers.facebook.com/apps/)
-[Gender by Name](http://api.namsor.com/onomastics/api/json/gender/Zeeshan/Hassan)
-[Stackoverflow: Get facebook account details](http://stackoverflow.com/questions/20584056/node-js-get-my-account-details-from-facebook-graph-api)
-
+### Reads publicly published google doc spreadsheet and returns twitter usernames/handles as json.
