@@ -1,0 +1,12 @@
+{
+  "name": "node-ejs-variable",
+  "main": "server.js",
+  "author": {
+    "name": "Zeeshan Hassan Memon",
+    "email": "zishon89us@hotmail.com"
+  },
+  "dependencies": {
+    "ejs": "~0.8.5",
+    "express": "~3.4.4"
+  }
+}
