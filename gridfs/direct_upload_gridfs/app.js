@@ -18,11 +18,19 @@ var express = require('express'),
     gfs = Grid(db, mongo),
     app = express();
 
-app.post('/picture', function(req, res) {
+//store
+app.post('/video', function (req, res) {
     req.pipe(gfs.createWriteStream({
-        filename: 'test'
+        filename: 'file_name_here'
     }));
     res.send("Success!");
 });
 
-app.listen(process.env.PORT || 3413);
+//get
+app.get('/video/:vid', function (req, res) {
+    gfs.createReadStream({
+        _id: req.params.vid // or provide filename: 'file_name_here'
+    }).pipe(res);
+});
+
+app.listen(process.env.PORT || 3000);
