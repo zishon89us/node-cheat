@@ -31,8 +31,16 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
 ###Random But Really Useful
 <ul>
     <li>Reads publicly published google doc spreadsheet and returns twitter usernames/handles as json </li>
-    <li><a href='https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/gender_by_name.js' target='_blank'>Find gender using first_name and last_name </a></li> 
-    <li>Find gender using first_name </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/gender_by_name.js#L6' target='_blank'>
+            Find gender using first_name and last_name 
+        </a>
+    </li> 
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/gender_by_name.js#L25' target='_blank'>
+            Find gender using first_name 
+        </a>
+    </li>
     <li>Find exchange rates i.e. USD to GBP etc... </li> 
     <li>Search tweets </li>
     <li>Simple express server</li> 
