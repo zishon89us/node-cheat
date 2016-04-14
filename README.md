@@ -49,8 +49,17 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
     
     
     <li>Search tweets </li>
-    <li>Simple express server</li> 
-    <li>Xero Payruns </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/random/small_tasks/express_server' target='_blank'>
+            Simple express server
+        </a>
+    </li>
+    
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/random/small_tasks/xero_api' target='_blank'>
+             Xero Payruns 
+        </a>
+    </li>
     <li>Using passport to authenticate twitter and facebook, trying to retrieve following data for both: id, first_name, last_name, age, age_range, gender, location </li>
     <li>Generate hmac signature </li>
     <li>List node.js core modules </li>
