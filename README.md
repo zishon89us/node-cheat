@@ -41,7 +41,13 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
             Find gender using first_name 
         </a>
     </li>
-    <li>Find exchange rates i.e. USD to GBP etc... </li> 
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/exchange_api.js#L6' target='_blank'>
+            Find exchange rates i.e. USD to GBP etc... 
+        </a>    
+    </li> 
+    
+    
     <li>Search tweets </li>
     <li>Simple express server</li> 
     <li>Xero Payruns </li>
