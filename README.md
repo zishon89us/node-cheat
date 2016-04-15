@@ -48,7 +48,11 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
     </li> 
     
     
-    <li>Search tweets </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/search_tweets.js#L6' target='_blank'>
+            Search tweets
+        </a>
+    </li>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/random/small_tasks/express_server' target='_blank'>
             Simple express server
@@ -60,10 +64,31 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
              Xero Payruns 
         </a>
     </li>
-    <li>Using passport to authenticate twitter and facebook, trying to retrieve following data for both: id, first_name, last_name, age, age_range, gender, location </li>
-    <li>Generate hmac signature </li>
-    <li>List node.js core modules </li>
-    <li>Read google_spreadsheet and parse it </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/random/small_tasks/twitter-facebook-auth-data' target='_blank'>
+            Using passport to authenticate twitter and facebook, trying to retrieve following data for both: id, first_name, last_name, age, age_range, gender, location
+        </a>
+    </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/hmac_signature.js#L5' target='_blank'>
+            Generate hmac signature 
+        </a>
+    </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/builtin-modules.js#L3' target='_blank'>
+            List node.js core modules
+        </a>
+    </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/google_spreadsheets.js#L6'  target='_blank'>
+            Read google_spreadsheet and parse it 
+        </a>
+    </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/long_url.js#L7'  target='_blank'>
+            Get long url of shortend 
+        </a>
+    </li>
 </ul> 
 ###String
 <ul>
