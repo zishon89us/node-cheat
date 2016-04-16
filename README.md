@@ -5,8 +5,8 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
 
 ###AWS
 <ul>
-    <li><
-        a href='https://github.com/zishon89us/node-cheat/blob/master/aws/s3/create_bucket.js' target='_blank'>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/aws/s3/create_bucket.js' target='_blank'>
             CRUD s3 buckets
         </a>
     </li>
