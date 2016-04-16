@@ -5,8 +5,16 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
 
 ###AWS
 <ul>
-    <li><a href='https://github.com/zishon89us/node-cheat/blob/master/aws/s3/create_bucket.js' target='_blank'>CRUD s3 buckets</a></li>
-    <li>Direct upload to s3 without saving on local disk </li>
+    <li><
+        a href='https://github.com/zishon89us/node-cheat/blob/master/aws/s3/create_bucket.js' target='_blank'>
+            CRUD s3 buckets
+        </a>
+    </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/aws/express_multer_s3' target='_blank'>
+            Direct upload to s3 without saving on local disk
+        </a> 
+    </li>
 </ul> 
 ###Express
 <ul>
