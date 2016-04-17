@@ -36,7 +36,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
 <ul>
     <li>PDF file in browser </li>
 </ul> 
-###Random But Really Useful
+### :heart: Random But Really Useful
 <ul>
     <li>Reads publicly published google doc spreadsheet and returns twitter usernames/handles as json </li>
     <li>
