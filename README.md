@@ -27,6 +27,16 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
     <li>Read file line by line using module fs and async</li>
     <li>fs module to read multiple files using async </li>
     <li>read-multiple-files module </li>
+    <li> 
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/files/express_server_download_file' target='_blank'>
+            Download File to browser using Express and fs 
+        </a>
+    </li>
+    <li> 
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/files/download_file_http_server' target='_blank'>
+            Download File to browser using http
+        </a>
+    </li>
 </ul>
 ###GridFS
 <ul>
