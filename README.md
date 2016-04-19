@@ -26,7 +26,11 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
     <li>Read file line by line using module tail</li>
     <li>Read file line by line using module fs and async</li>
     <li>fs module to read multiple files using async </li>
-    <li>read-multiple-files module </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/files/read_dir_files.js#L1' target='_blank'>
+            read-multiple-files module 
+        </a>
+    </li>
     <li> 
         <a href='https://github.com/zishon89us/node-cheat/tree/master/files/express_server_download_file' target='_blank'>
             Download File to browser using Express and fs 
