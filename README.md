@@ -22,9 +22,17 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
     <li>Restart node.js app with args forever</li>
 </ul> 
 ###Files
-<ul>
-    <li>Read file line by line using module tail</li>
-    <li>Read file line by line using module fs and async</li>
+<ul> 
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/files/line_by_line.js#L8' target='_blank'>
+            Read file line by line using module tail
+        </a>
+    </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/files/line_by_line.js#L27' target='_blank'>
+            Read file line by line using module fs and async
+        </a>
+    </li>
     <li>fs module to read multiple files using async </li>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/files/read_dir_files.js#L1' target='_blank'>
