@@ -33,7 +33,11 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
             Read file line by line using module fs and async
         </a>
     </li>
-    <li>fs module to read multiple files using async </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/files/read_dir_files.js#L8' target='_blank'>
+            fs module to read multiple files using async 
+        </a>    
+    </li>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/files/read_dir_files.js#L1' target='_blank'>
             read-multiple-files module 
@@ -52,15 +56,26 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
 </ul>
 ###GridFS
 <ul>
-    <li>direct upload to GridFS without saving on local disk</li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/gridfs/direct_upload_gridfs/app.js#L6' target='_blank'>
+            direct upload to GridFS without saving on local disk
+        </a>
+    </li>
 </ul>
 ###PDF
 <ul>
-    <li>PDF file in browser </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/pdf/pdf_browser' target='_blank'>
+            PDF file in browser 
+        </a>
+    </li>
 </ul> 
 ### :heart: Random But Really Useful
 <ul>
-    <li>Reads publicly published google doc spreadsheet and returns twitter usernames/handles as json </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/google_spreadsheets.js#L6'  target='_blank'>
+            Reads publicly published google doc spreadsheet and returns twitter usernames/handles as json </li>
+        </a>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/gender_by_name.js#L6' target='_blank'>
             Find gender using first_name and last_name 
