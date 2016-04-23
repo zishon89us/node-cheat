@@ -3,9 +3,9 @@
 Find awesome up-to-date node.js code snippets at one place. (Do you have node.js snippet solving case? share here)
 
 
-###AWS
+###:cloud: AWS
 <ul>
-    <li>
+    <li>  
         <a href='https://github.com/zishon89us/node-cheat/blob/master/aws/s3/create_bucket.js' target='_blank'>
             CRUD s3 buckets
         </a>
@@ -14,6 +14,20 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
         <a href='https://github.com/zishon89us/node-cheat/tree/master/aws/express_multer_s3' target='_blank'>
             Direct upload to s3 without saving on local disk
         </a> 
+    </li>
+</ul>
+###Chat
+<ul>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/chat/one_one_chat' target='_blank'>
+            Socket.io one to one chat app
+        </a> 
+    </li>
+    
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/chat/simple_chat/index.js#L1' target='_blank'>
+            Socket.io simple chat server only
+        </a>
     </li>
 </ul> 
 ###Express
@@ -93,7 +107,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
     </li> 
     
     
-    <li>
+    <li> :bird: 
         <a href='https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/search_tweets.js#L6' target='_blank'>
             Search tweets
         </a>
