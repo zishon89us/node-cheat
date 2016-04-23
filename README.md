@@ -35,7 +35,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
     <li>API methods in node.js using express </li>
     <li>Restart node.js app with args forever</li>
 </ul> 
-###Files
+### :page_facing_up: Files
 <ul> 
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/files/line_by_line.js#L8' target='_blank'>
@@ -95,7 +95,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
             Find gender using first_name and last_name 
         </a>
     </li> 
-    <li>
+    <li> :couple:
         <a href='https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/gender_by_name.js#L25' target='_blank'>
             Find gender using first_name 
         </a>
