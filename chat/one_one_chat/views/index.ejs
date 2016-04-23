@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+    <title>Socket.IO chat</title>
+    <script src='/socket.io/socket.io.js'></script>
+    <script src='/javascripts/chat.js'></script>
+    <link href='/stylesheets/chat.css' rel='stylesheet' />
+    <style>
+        h1{
+            position:relative;
+            left: 500px;
+        }
+        div#inputs{
+            position:relative;
+            left: 550px;
+            border: solid;
+            height:150px;
+            width:200px;
+        }
+
+    </style>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+<H1> <i>Welcome To Chat room</i></H1>
+<div id="inputs">
+    <i>write your nick name here</i>
+    <hr/>
+    <input id="name_box"type="text" placeholder="nick name ">
+    <button id="butt">done</button>
+
+</div>
+
+
+<div id="statbox" style="display: none;"class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-comment"></span> Online status of users
+
+                </div>
+                <div class="panel-body">
+                    <ul id="stat" class="chat">
+
+
+
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<!--from here -->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+<div id="chat" class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-comment"></span> Chat
+
+                </div>
+                <div class="panel-body">
+                    <ul id='messages' class="chat">
+
+
+
+                    </ul>
+                </div>
+                <div class="panel-footer">
+                    <div class="input-group">
+                        <input id="btn-input" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                        <span class="input-group-btn">
+                            <button class="btn btn-warning btn-sm" id="btn-chat">
+                                Send</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!--till here -->
+  <!--
+<div id="chats">
+    PRIVATE messages
+
+    <select id ='to'></select>
+    <input type='text'	id='pvtmsg'/>
+    <button id='but'>Send</button>
+</div>
+ -->
+
+<div id="chats" class="container">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <span class="glyphicon glyphicon-comment"></span> Chat(Pvt message sender)
+
+                </div>
+
+                <div class="panel-footer">
+                    <select id ='to'></select>
+                    <div class="input-group">
+                        <input id="pvtmsg" type="text" class="form-control input-sm" placeholder="Type your message here..." />
+                        <span class="input-group-btn">
+                            <button class="btn btn-warning btn-sm" id="but">
+                                Send</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "one_one_chat",
+  "version": "1.0.0",
+  "description": "one to one chat",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "3.4.8",
+    "ejs": "*" ,
+    "socket.io": "~0.9.16"
+  },
+  "author": "Muhammad AbdulMoiz",
+  "license": "ISC"
+}
