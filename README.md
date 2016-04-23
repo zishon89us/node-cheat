@@ -16,7 +16,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
         </a> 
     </li>
 </ul>
-###Chat
+###:speech_balloon: Chat
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/chat/one_one_chat' target='_blank'>
@@ -100,7 +100,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
             Find gender using first_name 
         </a>
     </li>
-    <li>
+    <li> :currency_exchange:
         <a href='https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/exchange_api.js#L6' target='_blank'>
             Find exchange rates i.e. USD to GBP etc... 
         </a>    
