@@ -32,8 +32,16 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
 </ul> 
 ###Express
 <ul>
-    <li>API methods in node.js using express </li>
-    <li>Restart node.js app with args forever</li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/express' target='_blank'>
+            API methods in node.js using express 
+        </a>
+    </li>
+    <li>
+        <a href='' target='_blank'>
+            Restart node.js app with args forever
+        </a>    
+    </li>
 </ul> 
 ### :page_facing_up: Files
 <ul> 
