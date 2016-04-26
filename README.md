@@ -159,5 +159,9 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
 </ul> 
 ###String
 <ul>
-    <li>Tansliteration</li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate.js#L5'  target='_blank'>
+            Tansliteration
+        </a>
+    </li>
 </ul>
