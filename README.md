@@ -156,6 +156,11 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
             Get long url of shortend 
         </a>
     </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/screenshot.js#L3'  target='_blank'>
+            Capture screenshots of websites
+        </a>
+    </li>
 </ul> 
 ###String
 <ul>
