@@ -161,6 +161,11 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
             Capture screenshots of websites
         </a>
     </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/image_size_probability.js#L3'  target='_blank'>
+            Get image size without full download
+        </a>
+    </li>
 </ul> 
 ###String
 <ul>
