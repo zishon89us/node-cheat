@@ -166,6 +166,12 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
             Get image size without full download
         </a>
     </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/language_detection.js#L2'  target='_blank'>
+            Identify language of text
+        </a>
+    </li>
+    
 </ul> 
 ###String
 <ul>
