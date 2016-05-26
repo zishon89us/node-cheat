@@ -15,6 +15,12 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
             Direct upload to s3 without saving on local disk
         </a> 
     </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/aws/s3/upload_base_64.js' target='_blank'>
+           Upload from base64 data
+        </a> 
+    </li>
+    
 </ul>
 
 ### WebRTC
