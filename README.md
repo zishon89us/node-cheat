@@ -1,6 +1,6 @@
 # node-cheat | code faster
 &#x272a; 
-Find awesome up-to-date node.js code snippets at one place. (Do you have node.js snippet solving case? share here)
+Find awesome up-to-date node.js code snippets at one place. (Do you have any node.js snippet solving case? contribute here then)
 
 
 ###:cloud: AWS
