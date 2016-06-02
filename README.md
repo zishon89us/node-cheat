@@ -198,7 +198,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate.js#L5'  target='_blank'>
-            Tansliteration
+            Tansliteration 
         </a>
     </li>
 </ul>
