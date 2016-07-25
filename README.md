@@ -56,17 +56,17 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
     <li>
         <a href='#' target='_blank'>
             Pushwoosh 
-        </a> <span style="color:#a0b9ff;">TBD</span>
+        </a> <font style="color:#a0b9ff;">(TBD)</font>
     </li>
     <li>
         <a href='#' target='_blank'>
             GCM
-        </a><span style="color:#a0b9ff;">TBD</span>
+        </a><font style="color:red;">(TBD)</font>
     </li>
     <li>
         <a href='#' target='_blank'>
             APNS
-        </a><span style="color:#a0b9ff;">TBD</span>
+        </a><font style="color:#a0b9ff;">(TBD)</font>
     </li>
 </ul>
 ###Express
