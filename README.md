@@ -1,6 +1,6 @@
 # node-cheat | code faster
 &#x272a; 
-Find awesome up-to-date node.js code snippets at one place. (Do you have node.js snippet solving case? share here)
+Find awesome up-to-date node.js code snippets at one place. (Do you have any node.js snippet solving case? contribute here then)
 
 
 ###:cloud: AWS
@@ -15,7 +15,28 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
             Direct upload to s3 without saving on local disk
         </a> 
     </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/aws/s3/upload_base_64.js' target='_blank'>
+           Upload from base64 data
+        </a> 
+    </li>
+    
 </ul>
+
+### WebRTC
+<ul>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/WebRTC/simple_video_chat' target='_blank'>
+            Simple Video Chat
+        </a> 
+    </li>
+    
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/WebRTC/tokbox_video_chat' target='_blank'>
+            Tokbox Video Chat
+        </a>
+    </li>
+</ul> 
 ###:speech_balloon: Chat
 <ul>
     <li>
@@ -30,6 +51,24 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
         </a>
     </li>
 </ul> 
+###Push Notification
+<ul>
+    <li>
+        <a href='#' target='_blank'>
+            Pushwoosh 
+        </a> <font style="color:#a0b9ff;">(TBD)</font>
+    </li>
+    <li>
+        <a href='#' target='_blank'>
+            GCM
+        </a><font style="color:red;">(TBD)</font>
+    </li>
+    <li>
+        <a href='#' target='_blank'>
+            APNS
+        </a><font style="color:#a0b9ff;">(TBD)</font>
+    </li>
+</ul>
 ###Express
 <ul>
     <li>
@@ -177,7 +216,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have node.js
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate.js#L5'  target='_blank'>
-            Tansliteration
+            Tansliteration 
         </a>
     </li>
 </ul>
