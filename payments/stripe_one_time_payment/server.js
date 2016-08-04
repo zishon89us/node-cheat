@@ -42,6 +42,43 @@ app.post('/customer', function (req, res) {
 });
 
 
+
+//charge one time using token
+app.post('/charge', function (req, res) {
+    if(req.query.token){
+        stripe.charges.create({
+            amount: req.query.amount,
+            currency: req.query.currency || "usd",
+            source: req.query.token, // obtained with Stripe.js
+            description: req.query.desc,
+            metadata: {'node_cheat_by': 'https://github.com/zishon89us'}
+        }, function(err, charge) {
+            if(err){
+                var msg = "stripe.charges.create Failed ";
+                console.log(msg, err);
+                res.send({message: msg, err: err});
+            }else{
+                var msg = "stripe.charges.create Succeeded ";
+                console.log(msg );
+                res.send({message: msg, carge: charge});
+            }
+        });
+    }else{
+        res.send({message:"Params Missing"});
+    }
+});
+
+//get a charge info with ID and also bring customer associated with ti
+app.get('/charge', function (req, res) {
+    if(req.query.chargeId){
+        stripe.charges.retrieve(req.query.chargeId, {
+            expand: ["customer"]
+        });
+    }else{
+        res.send({message:"Params Missing"});
+    }
+});
+
 https.createServer(options, app).listen(3000, function () {
     console.log('Server Started!');
 });
