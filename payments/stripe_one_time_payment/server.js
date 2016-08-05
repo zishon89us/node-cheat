@@ -16,7 +16,10 @@ var https = require('https'),
     stripe = require('stripe')(config.STRIPE_KEY),
     ejs = require('ejs'),
     path = require('path'),
+    bodyParser = require('body-parser'),
     app = require('express')();
+
+app.use(bodyParser.json({ type: 'application/*+json' }))
 
 app.set('view engine', 'ejs');
 
@@ -27,12 +30,16 @@ var options = {
 };
 
 app.get('/', function (req, res) {
-    //res.send('Hello World!');
-    res.render('index',{message:"Hello World!"});
+    res.render('create_customer', { });
+});
+
+app.get('/page2', function (req, res) {
+    res.render('card_token', { });
 });
 
 //create stripe customer
 app.post('/customer', function (req, res) {
+    console.log("creating customer with source in query ", req.query.source);
     stripe.customers.create({
             email: req.query.email || Date.now()+"@nodecheat.com",
             description: req.query.description || "Desc. for " + Date.now()+"@nodecheat.com" ,
@@ -49,8 +56,30 @@ app.post('/customer', function (req, res) {
     );
 });
 
+//add another source to customer (add another credit card to customer)
+app.post('/add-card', function (req, res) {
+    if(req.query.source && req.query.customer_id){
+        stripe.customers.createSource(req.query.customer_id, {
+                source: req.query.source // obtained with Stripe.js
+            }, function(err, card) {
+                if(err){
+                    var msg = "stripe.customers.createSource Failed ";
+                    console.log(msg, err);
+                    res.send({message: msg, err: err});
+                }else{
+                    var msg = "stripe.customers.createSource Succeeded ";
+                    res.send({message: msg, card: card});
+                }
+            }
+        );
+    }else{
+        res.send({message:"Params Missing"});
+    }
+});
+
+
 //get customer with customer_id
-app.post('/customer', function (req, res) {
+app.get('/customer', function (req, res) {
     if(req.query.customer_id){
         stripe.customers.retrieve(req.query.customer_id,
             function(err, customer) {
@@ -70,15 +99,13 @@ app.post('/customer', function (req, res) {
     }
 });
 
-
-
-//charge one time using token (obtained form stripe.js)
+//charge one time using customer_id
 app.post('/charge-immediate', function (req, res) {
-    if(req.query.token){
+    if(req.query.customer_id){
         stripe.charges.create({
             amount: req.query.amount,
             currency: req.query.currency || "usd",
-            source: req.query.token, // obtained with Stripe.js
+            customer: req.query.customer_id, // obtained with Stripe.js
             description: req.query.desc,
             metadata: {'node_cheat_by': 'https://github.com/zishon89us'}
         }, function(err, charge) {
