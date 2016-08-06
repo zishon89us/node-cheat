@@ -37,6 +37,28 @@ app.get('/page2', function (req, res) {
     res.render('card_token', { });
 });
 
+
+//get customer with customer_id
+app.get('/customer', function (req, res) {
+    if(req.query.customer_id){
+        stripe.customers.retrieve(req.query.customer_id,
+            function(err, customer) {
+                if(err){
+                    var msg = "stripe.customers.retrieve Failed ";
+                    console.log(msg, err);
+                    res.send({message: msg, err: err});
+                }else{
+                    var msg = "stripe.customers.retrieve Succeeded ";
+                    console.log(msg );
+                    res.send({message: msg, customer: customer});
+                }
+            }
+        );
+    }else{
+        res.send({message:"Params Missing"});
+    }
+});
+
 //create stripe customer
 app.post('/customer', function (req, res) {
     console.log("creating customer with source in query ", req.query.source);
@@ -77,20 +99,20 @@ app.post('/add-card', function (req, res) {
     }
 });
 
-
-//get customer with customer_id
-app.get('/customer', function (req, res) {
-    if(req.query.customer_id){
-        stripe.customers.retrieve(req.query.customer_id,
-            function(err, customer) {
+//delete card form customer
+app.post('/delete-card', function (req, res) {
+    if(req.query.card_id && req.query.customer_id){
+        stripe.customers.deleteCard(
+            req.query.customer_id,
+            req.query.card_id,
+            function(err, confirmation) {
                 if(err){
-                    var msg = "stripe.customers.retrieve Failed ";
+                    var msg = "stripe.customers.deleteCard Failed ";
                     console.log(msg, err);
                     res.send({message: msg, err: err});
                 }else{
-                    var msg = "stripe.customers.retrieve Succeeded ";
-                    console.log(msg );
-                    res.send({message: msg, customer: customer});
+                    var msg = "stripe.customers.deleteCard Succeeded ";
+                    res.send({message: msg, confirm: confirmation});
                 }
             }
         );
@@ -98,6 +120,7 @@ app.get('/customer', function (req, res) {
         res.send({message:"Params Missing"});
     }
 });
+
 
 //charge one time using customer_id
 app.post('/charge-immediate', function (req, res) {
