@@ -87,7 +87,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a><font style="color:#a0b9ff;">(TBD)</font>
     </li>
 </ul>
-###Express
+###:seedling:Express
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/express' target='_blank'>
@@ -133,7 +133,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a>
     </li>
 </ul>
-###GridFS
+###:evergreen_tree: GridFS
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/gridfs/direct_upload_gridfs/app.js#L6' target='_blank'>
