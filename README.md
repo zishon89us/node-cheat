@@ -58,6 +58,11 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
             Stripe (Immediate Charge, Customer Charge, Create Customer, Add Card, Delete Card, Authorize & Capture Split) 
         </a> 
     </li>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/payments/stripe_one_time_payment' target='_blank'>
+            Stripe Create Token out of Credit Card Info 
+        </a> 
+    </li>
 </ul>
 ###💭Push Notification
 <ul>
