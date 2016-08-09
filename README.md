@@ -50,8 +50,16 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
             Socket.io simple chat server only
         </a>
     </li>
-</ul> 
-###Push Notification
+</ul>
+###:heavy_dollar_sign: Payment
+<ul>
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/payments/stripe_one_time_payment' target='_blank'>
+            Stripe (Immediate Charge, Customer Charge, Create Customer, Add Card, Delete Card, Authorize & Capture Split) 
+        </a> 
+    </li>
+</ul>
+###💭Push Notification
 <ul>
     <li>
         <a href='#' target='_blank'>
