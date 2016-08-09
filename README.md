@@ -51,7 +51,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a>
     </li>
 </ul>
-###:heavy_dollar_sign: Payment
+###:moneybag: Payment Gateway
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/payments/stripe_one_time_payment' target='_blank'>
@@ -61,6 +61,11 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/payments/stripe_one_time_payment' target='_blank'>
             Stripe Create Token out of Credit Card Info 
+        </a> 
+    </li> 
+    <li>
+        <a href='#' target='_blank'>
+            PayPal (Coming Soon :credit_card:)
         </a> 
     </li>
 </ul>
