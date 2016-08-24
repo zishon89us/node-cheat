@@ -65,7 +65,12 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
     </li> 
     <li>
         <a href='#' target='_blank'>
-            PayPal (Coming Soon :credit_card:)
+            PayPal (TBD)
+        </a> 
+    </li> 
+    <li>
+        <a href='#' target='_blank'>
+            Authorize.net (TBD :credit_card:)
         </a> 
     </li>
 </ul>
