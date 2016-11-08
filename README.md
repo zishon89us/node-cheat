@@ -207,6 +207,11 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/hmac_signature.js#L5' target='_blank'>
             Generate hmac signature 
         </a>
+    </li>    
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/hmac_signature.js#L5' target='_blank'>
+            Generate Coupon, Voucher, Promo Codes 
+        </a>
     </li>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/builtin-modules.js#L3' target='_blank'>
