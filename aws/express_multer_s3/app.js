@@ -5,7 +5,7 @@
 //------------------------------------------------------
 //NEW-ANSWER @ DEC-2016
 //multi-part direct upload to s3 without saving on local disk
-//Web Link=> https://github.com/expressjs/multer/issues/196
+//Web Link=> http://stackoverflow.com/a/35902286/3539857
 //Run : node app.js
 //------------------------------------------------------
 
