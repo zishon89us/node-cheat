@@ -12,7 +12,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
     </li>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/aws/express_multer_s3' target='_blank'>
-            Direct upload to s3 without saving on local disk
+            Direct upload to s3 without saving on local disk [Updated at Dec 1, 2016]
         </a> 
     </li>
     <li>
