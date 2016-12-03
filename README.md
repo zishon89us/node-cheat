@@ -21,6 +21,11 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a> 
     </li>
     <li>
+        <a href='#' target='_blank'>
+            S3 Direct Upload From Client/Browser (TBD)
+        </a> 
+    </li>
+    <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/aws/s3/upload_base_64.js' target='_blank'>
            Upload from base64 data
         </a> 
