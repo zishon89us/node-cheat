@@ -22,7 +22,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
     </li>
     <li>
         <a href='#' target='_blank'>
-            S3 Direct Upload From Client/Browser (TBD)
+            S3 Direct Upload From Client/Browser (To Be Done)
         </a> 
     </li>
     <li>
@@ -75,12 +75,12 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
     </li> 
     <li>
         <a href='#' target='_blank'>
-            PayPal (TBD)
+            PayPal (To Be Done)
         </a> 
     </li> 
     <li>
         <a href='#' target='_blank'>
-            Authorize.net (TBD :credit_card:)
+            Authorize.net (To Be Done :credit_card:)
         </a> 
     </li>
 </ul>
@@ -89,22 +89,22 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
     <li>
         <a href='#' target='_blank'>
             Pushwoosh 
-        </a> <font style="color:#a0b9ff;">(TBD)</font>
+        </a> <font style="color:#a0b9ff;">(To Be Done)</font>
     </li>
     <li>
         <a href='#' target='_blank'>
             GCM
-        </a><font style="color:red;">(TBD)</font>
+        </a><font style="color:red;">(To Be Done)</font>
     </li>
     <li>
         <a href='#' target='_blank'>
             APNS
-        </a><font style="color:#a0b9ff;">(TBD)</font>
+        </a><font style="color:#a0b9ff;">(To Be Done)</font>
     </li>
     <li>
         <a href='#' target='_blank'>
             OneSignal
-        </a><font style="color:#a0b9ff;">(TBD)</font>
+        </a><font style="color:#a0b9ff;">(To Be Done)</font>
     </li>
 </ul>
 ###:seedling:Express
