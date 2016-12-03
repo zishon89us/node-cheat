@@ -16,6 +16,11 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a> 
     </li>
     <li>
+        <a href='https://github.com/zishon89us/node-cheat/tree/master/aws/express_multer_s3' target='_blank'>
+            Upload to s3 using multer-s3 [Updated at Dec 1, 2016]
+        </a> 
+    </li>
+    <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/aws/s3/upload_base_64.js' target='_blank'>
            Upload from base64 data
         </a> 
