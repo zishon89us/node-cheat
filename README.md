@@ -30,7 +30,11 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
            Upload from base64 data
         </a> 
     </li>
-    
+    <li>
+        <a href='https://github.com/zishon89us/node-cheat/blob/master/aws/step-functions/app.js' target='_blank'>
+           New – AWS Step Functions (To Be Done)
+        </a> 
+    </li>
 </ul>
 
 ### WebRTC
