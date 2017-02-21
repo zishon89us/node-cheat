@@ -7,4 +7,5 @@
     <li>Cookies are small files which are stored on a user's computer.</li>
     <li>In JavaScript, functions are regarded as first-class objects. That means you can do all the operations with a function that you can do with regular objects. You can assign functions to a variable, pass these as arguments to methods, declare them as a property of an object, and even return them from functions.</li>
     <li>An array is a data structure that contains a group of elements. Typically these elements are all of the same data type, such as an integer or string.</li>
+    <li>JavaScript is a quirky, object-oriented, C-like language.</li>
 <ul>
