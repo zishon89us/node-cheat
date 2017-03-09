@@ -9,4 +9,6 @@
     <li>An array is a data structure that contains a group of elements. Typically these elements are all of the same data type, such as an integer or string.</li>
     <li>JavaScript is a quirky, object-oriented, C-like language.</li>
     <li>Error-first callbacks means first argument of the callback is reserved for an error object. Additional arguments are used to pass data.</li>
+    <li>Callback functions are derived from a programming paradigm known as functional programming.</li>
+    <li>A callback function is also known as a higher-order function.</li>
 <ul>
