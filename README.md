@@ -3,7 +3,7 @@
 Find awesome up-to-date node.js code snippets at one place. (Do you have any node.js snippet solving case? contribute here then)
 
 
-###:cloud: AWS
+### :cloud: AWS
 <ul>
     <li>  
         <a href='https://github.com/zishon89us/node-cheat/blob/master/aws/s3/create_bucket.js' target='_blank'>
@@ -36,36 +36,33 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a> 
     </li>
 </ul>
-
-### WebRTC
+###  WebRTC
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/WebRTC/simple_video_chat' target='_blank'>
             Simple Video Chat
         </a> 
     </li>
-    
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/WebRTC/tokbox_video_chat' target='_blank'>
             Tokbox Video Chat
         </a>
     </li>
 </ul> 
-###:speech_balloon: Chat
+### :speech_balloon: Chat
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/chat/one_one_chat' target='_blank'>
             Socket.io one to one chat app
         </a> 
     </li>
-    
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/chat/simple_chat/index.js#L1' target='_blank'>
             Socket.io simple chat server only
         </a>
     </li>
 </ul>
-###:moneybag: Payment Gateway
+### :moneybag: Payment Gateway
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/payments/stripe_one_time_payment' target='_blank'>
@@ -88,7 +85,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a> 
     </li>
 </ul>
-###💭Push Notification
+### 💭Push Notification
 <ul>
     <li>
         <a href='#' target='_blank'>
@@ -111,7 +108,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a><font style="color:#a0b9ff;">(To Be Done)</font>
     </li>
 </ul>
-###:seedling:Express
+### :seedling:Express
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/express' target='_blank'>
@@ -124,7 +121,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a>    
     </li>
 </ul> 
-### :page_facing_up: Files
+###  :page_facing_up: Files
 <ul> 
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/files/line_by_line.js#L8' target='_blank'>
@@ -157,7 +154,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a>
     </li>
 </ul>
-###:evergreen_tree: GridFS
+### :evergreen_tree: GridFS
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/gridfs/direct_upload_gridfs/app.js#L6' target='_blank'>
@@ -165,7 +162,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a>
     </li>
 </ul>
-###PDF
+### PDF
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/pdf/pdf_browser' target='_blank'>
@@ -173,7 +170,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a>
     </li>
 </ul> 
-### :heart: Random But Really Useful
+###  :heart: Random But Really Useful
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/google_spreadsheets.js#L6'  target='_blank'>
@@ -194,8 +191,6 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
             Find exchange rates i.e. USD to GBP etc... 
         </a>    
     </li> 
-    
-    
     <li> :bird: 
         <a href='https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/search_tweets.js#L6' target='_blank'>
             Search tweets
@@ -206,7 +201,6 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
             Simple express server
         </a>
     </li>
-    
     <li>
         <a href='https://github.com/zishon89us/node-cheat/tree/master/random/small_tasks/xero_api' target='_blank'>
              Xero Payruns 
@@ -263,7 +257,7 @@ Find awesome up-to-date node.js code snippets at one place. (Do you have any nod
         </a>
     </li>
 </ul> 
-###String
+### String
 <ul>
     <li>
         <a href='https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate.js#L5'  target='_blank'>
