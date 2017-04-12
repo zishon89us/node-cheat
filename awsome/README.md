@@ -11,3 +11,4 @@
 *   Callback functions are derived from a programming paradigm known as functional programming.
 *   A callback function is also known as a higher-order function.
 *   The event emitter pattern allows you to decouple the producers and consumers of events using a standard interface.
+*   The main event loop is single-threaded by nature but most of the i/o is run on separate threads, because the i/o APIs in Node.js are asynchronous/non-blocking by design.
