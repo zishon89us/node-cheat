@@ -11,3 +11,9 @@
 *   Callback functions are derived from a programming paradigm known as functional programming.
 *   A callback function is also known as a higher-order function.
 *   The event emitter pattern allows you to decouple the producers and consumers of events using a standard interface.
+*   REPL stands for Read Eval Print Loop and it represents a computer environment like a window console or unix/linux shell.
+*   Node.js comes bundled with a REPL environment: 
+    *   Read– Reads user’s input, parse the input into JavaScript data-structure and stores in memory.
+    *   Eval– Takes and evaluates the data structure
+    *   Print– Prints the result
+    *   Loop– Loops the above command until user press ctrl-c twice.
