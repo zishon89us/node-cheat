@@ -19,3 +19,4 @@
     *   Print– Prints the result
     *   Loop– Loops the above command until user press ctrl-c twice.
 *   JavaScript is a single-threaded language, and thus, it creates a single stack.
+*   Callback is a chief functional programming technique that provides the flexibility of passing a function as an argument to another function.
