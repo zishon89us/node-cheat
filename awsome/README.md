@@ -2,6 +2,7 @@
 
 *   [Node.js](https://nodejs.org/en/about/) is a server-side framework, one of it’s main works is to handle browser requests.
 *   Node.js is an asynchronous event driven JavaScript runtime, It is designed to build scalable network applications.
+*   Node.js is a JavaScript runtime environment created using Chrome's v8 engine.
 *   A [cookie](http://www.webopedia.com/TERM/C/cookie.html) is a message given to a web browser by a web server. The browser stores the message in a text file. The message is then sent back to the server each time the browser requests a page from the server.
 *   Cookies are small files which are stored on a user's computer.
 *   In JavaScript, functions are regarded as first-class objects. That means you can do all the operations with a function that you can do with regular objects. You can assign functions to a variable, pass these as arguments to methods, declare them as a property of an object, and even return them from functions.
@@ -23,3 +24,4 @@
 *   Once the operation is recognized as asynchronous (which requires web API), the method is called in a different context and the execution of the callstack continues. Hence, the log last is printed before the setTimeout method displays the result. This is why JavaScript code is said to be non-blocking.
 *   Once asynchronous operation completes web API stack pushes the code (callback) to the task queue.
 *   The task queue contains every step that should be executed next in the  callstack—the order of priority is based on a First In First Out (FIFO) approach.
+*   The feature of non-blocking execution stimulates the Node.js usage as a proxy server. A node proxy server can simultaneously handle large amounts of multiple connections and is easily configurable.
