@@ -18,3 +18,4 @@
     *   Eval– Takes and evaluates the data structure
     *   Print– Prints the result
     *   Loop– Loops the above command until user press ctrl-c twice.
+*   JavaScript is a single-threaded language, and thus, it creates a single stack.
