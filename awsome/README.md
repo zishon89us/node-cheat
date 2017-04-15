@@ -21,3 +21,5 @@
 *   JavaScript is a single-threaded language, and thus, it creates a single stack.
 *   Callback is a chief functional programming technique that provides the flexibility of passing a function as an argument to another function.
 *   Once the operation is recognized as asynchronous (which requires web API), the method is called in a different context and the execution of the callstack continues. Hence, the log last is printed before the setTimeout method displays the result. This is why JavaScript code is said to be non-blocking.
+*   Once asynchronous operation completes web API stack pushes the code (callback) to the task queue.
+*   The task queue contains every step that should be executed next in the  callstack—the order of priority is based on a First In First Out (FIFO) approach.
