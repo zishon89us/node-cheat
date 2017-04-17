@@ -27,3 +27,4 @@
 *   The feature of non-blocking execution stimulates the Node.js usage as a proxy server. A node proxy server can simultaneously handle large amounts of multiple connections and is easily configurable.
 *   Rather than the whole app as a single unit, dividing the modules with respect to functionality is a microservice pattern. Microservice pattern is not new.
 *   NPM started as a Node package manager with the advent of Node.js.
+*   NPM has become a package manager not only for Node.js but for all JavaScript modules.
