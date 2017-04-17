@@ -29,3 +29,5 @@
 *   NPM started as a Node package manager with the advent of Node.js.
 *   NPM has become a package manager not only for Node.js but for all JavaScript modules.
 *   A reusable JavaScript code is said to be a package.
+*   To install latest version of npm do:
+    > npm install npm@latest -g
