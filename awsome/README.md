@@ -31,3 +31,4 @@
 *   A reusable JavaScript code is said to be a package.
 *   To install latest version of npm do:
     > npm install npm@latest -g
+*   Nowadays, RxJS is a new concept to handle asynchronous behavior.    
