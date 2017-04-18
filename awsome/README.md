@@ -33,3 +33,4 @@
     > npm install npm@latest -g
 *   Nowadays, RxJS is a new concept to handle asynchronous behavior.
 *   Using too many callbacks gives rise to callback hell and to avoid this, the promises library is used.
+*   Versioning is a great technique to maintain an application over time.
