@@ -12,16 +12,12 @@ var cc = require('coupon-code');
 
 //code of length 4 with 3 parts, looks like DEEM-Y68E-RM81
 var one = cc.generate();
-
 console.log(one);
-//console.log(cc.validate(one));
-
 
 //code of length 6 with 1 part, looks like 7HTY4Q
 var two = cc.generate({ parts : 1, partLen :6 });
-
 console.log(two);
-//console.log(cc.validate(two, { parts : 1, partLen :6 }))
 
-
-//cc.generate({ parts : 4 });
+//code of length 6 with 1 part, looks like 2WR-TLU-K4N
+var three = cc.generate({ parts : 3, partLen :3 });
+console.log(three);
