@@ -69,7 +69,7 @@
 *   [Xero Payruns](https://github.com/zishon89us/node-cheat/tree/master/random/small_tasks/xero_api)
 *   [Using passport to authenticate twitter and facebook, trying to retrieve following data for both: id, first_name, last_name, age, age_range, gender, location](https://github.com/zishon89us/node-cheat/tree/master/random/small_tasks/twitter-facebook-auth-data)
 *   [Generate hmac signature](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/hmac_signature.js#L5)
-*   [Generate Coupon, Voucher, Promo Codes](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/hmac_signature.js#L5)
+*   [Generate Coupon, Voucher, Promo Codes](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/coupon-code.js#L14)
 *   [List node.js core modules](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/builtin-modules.js#L3)
 *   [Read google_spreadsheet and parse it](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/google_spreadsheets.js#L6)
 *   [Get long url of shortend](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/long_url.js#L7)
