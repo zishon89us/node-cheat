@@ -77,8 +77,8 @@
 *   [Get image size without full download](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/image_size_probability.js#L3)
 *   [Identify language of text](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/language_detection.js#L2)
 *   [List YouTube Videos](#)
-*   Cron Jobs ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/cron-jobs/cron_jobs.js)  | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/cron-jobs/cron_jobs.js))
+*   Cron Jobs ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/cron-jobs/cron_jobs_es6.js)  | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/cron-jobs/cron_jobs.js))
 
 ### String
 
-*   [Tansliteration](https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate.js#L5)
+*   Tansliteration ([ES6](https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate_es6.js#L5) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate.js#L5))
