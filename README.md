@@ -76,8 +76,8 @@
 *   [Get long url of shortend](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/long_url.js#L7)
 *   [Capture screenshots of websites](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/screenshot.js#L3)
 *   [Get image size without full download](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/image_size_probability.js#L3)
-*   [Identify language of text](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/language_detection.js#L2)
-*   [List YouTube Videos](#)
+*   Identify language of text ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/language_detection.js#L2) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/language_detection.js#L2))
+*   List YouTube Videos ([ES6](#) | [ES5](#))
 *   Cron Jobs ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/cron-jobs/cron_jobs_es6.js)  | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/cron-jobs/cron_jobs.js))
 
 ### String
