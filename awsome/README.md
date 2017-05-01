@@ -36,3 +36,4 @@
 *   Versioning is a great technique to maintain an application over time.
 *   Semantic versioning specifications have become the core part of Node.js development. It is also known as semver. The NPM provides packages that stimulate semver practices.
 *   In computer programming, cohesion refers to the degree to which the elements inside a module belong together.
+*   The destructuring assignment syntax is a JavaScript expression that makes it possible to extract data from arrays or objects into distinct variables.
