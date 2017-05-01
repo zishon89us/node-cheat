@@ -35,3 +35,4 @@
 *   Using too many callbacks gives rise to callback hell and to avoid this, the promises library is used.
 *   Versioning is a great technique to maintain an application over time.
 *   Semantic versioning specifications have become the core part of Node.js development. It is also known as semver. The NPM provides packages that stimulate semver practices.
+*   In computer programming, cohesion refers to the degree to which the elements inside a module belong together.
