@@ -85,3 +85,6 @@
 ### String
 
 *   Tansliteration ([ES6](https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate_es6.js#L5) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate.js#L5))
+
+### Fax
+*   Phaxio API ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
