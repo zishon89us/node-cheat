@@ -81,6 +81,7 @@
 *   Cron Jobs ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/cron-jobs/cron_jobs_es6.js)  | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/cron-jobs/cron_jobs.js))
 *   Restify File Upload ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
 *   Uppy.io and tus.io to upload files ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
+*   Resize image without any external dependency ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
 
 ### String
 
