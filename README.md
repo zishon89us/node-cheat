@@ -74,7 +74,7 @@
 *   [List node.js core modules](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/builtin-modules.js#L3)
 *   [Read google_spreadsheet and parse it](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/google_spreadsheets.js#L6)
 *   [Get long url of shortend](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/long_url.js#L7)
-*   [Capture screenshots of websites](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/screenshot.js#L3)
+*   Capture screenshots of websites ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/screenshot.js#L3) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/screenshot.js#L3))
 *   Get image size without full download ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/image_size_probability.js#L3) | [ES6](#))
 *   Identify language of text ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/language_detection.js#L2) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/language_detection.js#L2))
 *   List YouTube Videos ([ES6](#) | [ES5](#))
