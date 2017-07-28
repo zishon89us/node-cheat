@@ -4,6 +4,7 @@
 
 //------------------------------------------------------
 //Run Redis on windows
-//Web Link=> https://github.com/MicrosoftArchive/redis/releases
+//Web Link=> 1) https://github.com/MicrosoftArchive/redis/releases
+//           2) http://geekindulgence.com/install-redis-as-a-windows-service-using-chocolatey/
 //Run :
 //------------------------------------------------------
