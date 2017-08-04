@@ -1,7 +1,7 @@
 {
   "name": "node-cheat",
   "version": "1.0.0",
-  "description": "Amazing node.js cheat snippets, learning everyday become top class node.js developer.",
+  "description": "Amazing node.js cheat snippets, learning everyday become top class node.js developer. :)",
   "main": "index.js",
   "dependencies": {
     "adm-zip": "^0.4.7",
