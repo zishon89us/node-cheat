@@ -38,8 +38,11 @@ app.listen(5000);
 
 //USING EJS TEMPLATE ENGINE
 var express = require('express');
+var path = require('path');
 var ejs = require('ejs');
 var app = express();
+
+app.use(express.static( path.join(__dirname, 'public')));
 
 app.set('view engine', 'ejs');
 
