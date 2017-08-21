@@ -11,6 +11,27 @@
 //------------------------------------------------------
 
 
-var ip = require('ip');
+/*Option 1*/
+const ip = require('ip');
 
 console.log(ip.address()) // my ip address
+
+
+
+
+/*Option 2*/
+
+const os = require('os'),
+	interfaces = os.networkInterfaces();
+
+let addresses = [];
+for (let k in interfaces) {
+	for (let k2 in interfaces[k]) {
+		let address = interfaces[k][k2];
+		if (address.family === 'IPv4' && !address.internal) {
+			addresses.push(address.address);
+		}
+	}
+}
+//console.log(interfaces);
+console.log(addresses);
