@@ -20,7 +20,12 @@
     "googleapis": "^4.0.0",
     "ip": "^1.1.4",
     "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-cors": "0.0.16",
+    "koa-json": "^2.0.2",
+    "koa-router": "^7.2.1",
     "koa-static": "^4.0.1",
+    "koa-validate": "^1.0.7",
     "linebyline": "^1.3.0",
     "mime": "^1.3.4",
     "multer": "^1.1.0",
@@ -40,8 +45,14 @@
     "voucher-code-generator": "^1.1.0",
     "xero": "0.0.8"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "ink-docstrap": "^1.3.0",
+    "jsdoc": "^3.5.4",
+    "jsdoc-route-plugin": "^0.1.0"
+  },
   "scripts": {
+    "cluster": "pm2 start pm2/ecosystem.config.js",
+    "jsdoc": "jsdoc -c jsdoc.conf",
     "start": "forever express/app.js a b c",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
