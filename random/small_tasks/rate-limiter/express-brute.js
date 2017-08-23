@@ -3,7 +3,7 @@
  */
 
 //------------------------------------------------------
-//Simple Express Server rate limiting example
+//Brute-force protection example
 //Web Link=> https://github.com/AdamPflug/express-brute
 //------------------------------------------------------
 
