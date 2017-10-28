@@ -2,14 +2,16 @@
  * Created by zeeshan on 10/23/2016.
  */
 
-var cron = require('node-cron'),
-    chalk = require('chalk'),
-    log = function (msg, color) {
-        color = color || 'blue';
-        console.log(chalk[color](msg), chalk.green(new Date()));
-    };
+import cron from 'node-cron';
 
-    log('Starting Now');
+import chalk from 'chalk';
+
+const log = (msg, color) => {
+    color = color || 'blue';
+    console.log(chalk[color](msg), chalk.green(new Date()));
+};
+
+log('Starting Now');
 //------------------------------------------------------
 //run script every minute
 //Web Link=>
@@ -37,38 +39,38 @@ var cron = require('node-cron'),
  });*/
 
 /*cron.schedule('0 * * * *', function () {
-    log('running a task every hour ');
-});*/
+ log('running a task every hour ');
+ });*/
 
 //Run every hour
-cron.schedule('0 * * * *', function () {
+cron.schedule('0 * * * *', () => {
     log('Running a task every hour ', 'red');
 });
 
 //Run at 30th minute every hour i.e. 5:30 then 6:30 then 7:30 and so on
-cron.schedule('30 * * * *', function () {
+cron.schedule('30 * * * *', () => {
     log('Running a task every 30 ', 'green');
 });
 
 //Run after each half hour i.e. 5:30 then 6:00 then 6:30 and so on
-cron.schedule('*!/30 * * * *', function () {
+cron.schedule('*!/30 * * * *', () => {
     log('running a task every *!/30 ', 'blue');
 });
 
 //Run quarterly or every 15 min i.e. 5:15 then 5:30 then 5:45 and so on
-cron.schedule('*/15 * * * *', function () {
+cron.schedule('*/15 * * * *', () => {
     log('Running a task every 15 min ', 'yellow');
 });
 
 //Run after every 2 i.e. 5:00 then 5:02 then 5:04 and so on
-cron.schedule('*!/2 * * * *', function () {
+cron.schedule('*!/2 * * * *', () => {
     log('Running a task every *!/2 ', 'yellow');
 });
 
 //Run after every 10 seconds i.e. 5:00:10 then 5:00:20 then 5:00:30 and so on
-cron.schedule('*/10 * * * * *', function(){
- console.log('Running a task every 10 sec', 'green');
- });
+cron.schedule('*/10 * * * * *', () => {
+    console.log('Running a task every 10 sec', 'green');
+});
 
 //task.start();
 //task.stop();
