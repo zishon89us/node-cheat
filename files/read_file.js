@@ -3,16 +3,29 @@
 //Web Link=>
 //------------------------------------------------------
 
+const fs = require('fs');
+const { promisify } = require('util');
+const filePath = './sample_files/file1.txt';
 
-var fs = require('fs'),
-    filePath = './sample_files/sample_css.css';
+//--------------Async/Await-Style-----------------------
 
-// this for async way
-/*fs.readFile(filePath, 'utf8', function (err, data) {
-    if (err) throw err;
+const readFile = promisify(fs.readFile);
+async function main() {
+    const data = await readFile(filePath, 'utf8');
     console.log(data);
-});*/
+}
 
-//this is sync way
-var css = fs.readFileSync(filePath, 'utf8');
-console.log(css);
+main();
+
+//--------------Callback-Style--------------------------
+
+/*fs.readFile(filePath, 'utf8', (err, data) => {
+ if (err) throw err;
+ console.log(data);
+ });*/
+
+
+//--------------Sync way--------------------------------
+
+/*const data = fs.readFileSync(filePath, 'utf8');
+console.log(data);*/
