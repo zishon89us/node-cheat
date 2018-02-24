@@ -8,6 +8,10 @@
 //Web Link=>
 //------------------------------------------------------
 
+//------------------------------------------------------
+//Topic: Array/String includes
+//------------------------------------------------------
+
 const { log } = console;
 const separator = () => log('------------------') ;
 
@@ -35,9 +39,20 @@ log(randomArray2.includes()); // false
 
 separator();
 const randomString = 'Hey! I am node-cheat! cool yeah!!';
-let randomEmptyString;
 
 /* Normal on String */
 log(randomString.includes('node-')); // true
 log(randomString.includes('Hey', 1)); // false
 
+//------------------------------------------------------
+//Topic: Exponentiation Operator
+//------------------------------------------------------
+const cubed  = 7 ** 3;
+let squared = 7;
+squared **= 2;
+
+log(cubed);
+log(squared);
+
+// const cubedOldStyle = Math.pow(2,3);
+// log(cubedOldStyle);
