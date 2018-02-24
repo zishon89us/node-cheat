@@ -16,13 +16,22 @@ const StringArray = ['Node', 'Cheat', 'Jane', 'Node'];
 const randomArray1 = [undefined, ];
 const randomArray2 = [null,];
 
-
+/* Normal on Array */
 log(numberArray.includes(2018)); // true
 log(numberArray.includes(5050)); // false
 
+/* Normal on Array from Index */
+log(numberArray.includes(2018, 1)); // false
+
+/* Normal on Array */
 log(randomArray1.includes(undefined)); // true
 log(randomArray1.includes(null)); // false
 log(randomArray1.includes()); // true
-log(randomArray2.includes(undefined)); // false
+
+/* Woah! what??? */
+log(randomArray2.includes(undefined)); // false ..why if log(randomArray2[1]) is giving undefined as output
 log(randomArray2.includes(null)); // true
 log(randomArray2.includes()); // false
+
+
+
