@@ -9,10 +9,10 @@
 //------------------------------------------------------
 
 const { log } = console;
+const separator = () => log('------------------') ;
 
 
 const numberArray = [2018, 2019, 2020, 2030, NaN];
-const StringArray = ['Node', 'Cheat', 'Jane', 'Node'];
 const randomArray1 = [undefined, ];
 const randomArray2 = [null,];
 
@@ -33,5 +33,11 @@ log(randomArray2.includes(undefined)); // false ..why if log(randomArray2[1]) is
 log(randomArray2.includes(null)); // true
 log(randomArray2.includes()); // false
 
+separator();
+const randomString = 'Hey! I am node-cheat! cool yeah!!';
+let randomEmptyString;
 
+/* Normal on String */
+log(randomString.includes('node-')); // true
+log(randomString.includes('Hey', 1)); // false
 
