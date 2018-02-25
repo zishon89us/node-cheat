@@ -28,6 +28,7 @@
     "fuzzy": "^0.1.1",
     "googleapis": "^4.0.0",
     "graceful-fs": "^4.1.11",
+    "gridfs-stream": "^1.1.1",
     "ip": "^1.1.4",
     "js2lua": "^0.1.5",
     "koa": "^2.3.0",
