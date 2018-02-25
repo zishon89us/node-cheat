@@ -1,5 +1,6 @@
 /**
  * Created by Zeeshan on 3/26/2016.
+ * Last updated by Zeeshan on 02/25/2018.
  */
 
 //------------------------------------------------------
@@ -8,28 +9,38 @@
 //Run : node app.js
 //Web Link=> http://stackoverflow.com/questions/20860005/storing-data-stream-from-post-request-in-gridfs-express-mongodb-node-js
 //Web Link 2=> https://github.com/aheckmann/gridfs-stream
+//NOTE: README.md contains ALL INSTRUCTIONS
 //------------------------------------------------------
 
 
 var express = require('express'),
     mongo = require('mongodb'),
     Grid = require('gridfs-stream'),
-    db = new mongo.Db('yourDatabaseName', new mongo.Server("127.0.0.1", 27017)),
+    db = new mongo.Db('node-cheat-db', new mongo.Server("localhost", 27017)),
     gfs = Grid(db, mongo),
     app = express();
 
-//store
-app.post('/video', function (req, res) {
-    req.pipe(gfs.createWriteStream({
-        filename: 'file_name_here'
-    }));
-    res.send("Success!");
+db.open(function (err) {
+    if (err) return handleError(err);
+    var gfs = Grid(db, mongo);
+    console.log('All set! Start uploading :)');
 });
 
-//get
-app.get('/video/:vid', function (req, res) {
+//POST http://localhost:3000/file
+app.post('/file', function (req, res) {
+    var writeStream = gfs.createWriteStream({
+        filename: 'file_name_here'
+    });
+    writeStream.on('close', function (file) {
+        res.send(`File has been uploaded ${file._id}`);
+    });
+    req.pipe(writeStream);
+});
+
+//GET http://localhost:3000/file/[mongo_id_of_file_here]
+app.get('/file/:fileId', function (req, res) {
     gfs.createReadStream({
-        _id: req.params.vid // or provide filename: 'file_name_here'
+        _id: req.params.fileId // or provide filename: 'file_name_here'
     }).pipe(res);
 });
 
