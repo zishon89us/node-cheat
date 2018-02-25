@@ -20,7 +20,7 @@ You should see following message:
 ### Upload File
 
 See screenshot:
-![Alt text](/screenshot/up_via_postman.png?raw=true "Upload via Postman")
+![Alt text](./screenshot/up_via_postman.png "Upload via Postman")
 
 ### Download An Uploaded File
 
