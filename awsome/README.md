@@ -39,3 +39,5 @@
 *   The destructuring assignment syntax is a JavaScript expression that makes it possible to extract data from arrays or objects into distinct variables.
 *   Node.js 8.0.0 has been delayed and will ship on or around May 30th.
 *   Immediately invoked function expressions(IIFEs).
+*   How to check if redis is working:
+> redis-cli ping
