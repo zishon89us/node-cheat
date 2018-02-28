@@ -42,3 +42,6 @@
 *   How to check if redis is working and its version:
 > redis-cli ping
 > redis-server --version
+*   How to list env variables in linux
+> printenv
+> printenv | grep LOGNAME
