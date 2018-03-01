@@ -51,7 +51,7 @@
 
 ### :evergreen_tree: GridFS
 
-*   [direct upload to GridFS without saving on local disk](https://github.com/zishon89us/node-cheat/blob/master/gridfs/direct_upload_gridfs/app.js#L6)
+*   [direct upload to GridFS without saving on local disk](https://github.com/zishon89us/node-cheat/blob/master/gridfs/direct_upload_gridfs)
 
 ### PDF
 
