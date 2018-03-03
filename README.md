@@ -83,6 +83,9 @@
 *   Uppy.io and tus.io to upload files ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
 *   Resize image without any external dependency ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
 
+### :heart: Random But Awsome One Liners
+*   [awsome](https://github.com/zishon89us/node-cheat/tree/master/awsome)
+
 ### String
 
 *   Tansliteration ([ES6](https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate_es6.js#L5) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate.js#L5))
