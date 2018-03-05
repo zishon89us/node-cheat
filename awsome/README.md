@@ -45,3 +45,4 @@
 *   How to list env variables in linux
 > printenv
 > printenv | grep LOGNAME
+*   Use Node for I/O intensive apps not for CPU Intensive apps
