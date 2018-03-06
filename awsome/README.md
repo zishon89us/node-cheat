@@ -46,3 +46,4 @@
 > printenv
 > printenv | grep LOGNAME
 *   Use Node for I/O intensive apps not for CPU Intensive apps
+*   Node.js is neither language nor framework, it is simply run time environment
