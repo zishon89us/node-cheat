@@ -47,3 +47,5 @@
 > printenv | grep LOGNAME
 *   Use Node for I/O intensive apps not for CPU Intensive apps
 *   Node.js is neither language nor framework, it is simply run time environment
+*   Data Parallelism: Same code is executed several times in parallel through instances on different elements of same datset 
+*   Task Parallelism: Different code is executed in parallel
