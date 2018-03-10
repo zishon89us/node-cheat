@@ -51,3 +51,4 @@
 *   Task Parallelism: Different code is executed in parallel
 *   Try Object.entries
 > Object.entries({first: 'John', last: 'Doe'}); // [['first', 'John'], ['last', 'Doe']]
+*   Technically speaking, #Linux is the name of the operating system's #kernel, nothing more.
