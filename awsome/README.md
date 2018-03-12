@@ -52,3 +52,4 @@
 *   Try Object.entries
 > Object.entries({first: 'John', last: 'Doe'}); // [['first', 'John'], ['last', 'Doe']]
 *   Technically speaking, #Linux is the name of the operating system's #kernel, nothing more.
+*   With Array.prototype.includes everything is easy and simple. It’s a replacement for indexOf which developers used to check for presence of a value in an array.
