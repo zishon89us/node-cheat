@@ -54,3 +54,9 @@
 *   Technically speaking, #Linux is the name of the operating system's #kernel, nothing more.
 *   With Array.prototype.includes everything is easy and simple. It’s a replacement for indexOf which developers used to check for presence of a value in an array.
 *   SWF (pronounced "Swiff") was originally an acronym for "Shockwave Flash" since the SWF format was designed for Shockwave Player.
+*   Possible types of testing: 
+>- **Unit Testing**
+>- **Functional Testing**
+>- **Integration Testing**
+>- **End-to-end Testing**
+
