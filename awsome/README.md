@@ -59,4 +59,10 @@
 >- **Functional Testing**
 >- **Integration Testing**
 >- **End-to-end Testing**
+>- **Screen-shot Testing**
+>- **Regression Testing**
+>- **Mutation Testing**
+>- **Formal Verification (e.g., TLA+)**
+>- **Acceptance Testing**
+>- **A/B Testing**
 
