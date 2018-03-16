@@ -72,3 +72,7 @@
 >- **Accessibility Testing (fits many of above ?)**
 >- **Failure Injection Testing (for distributed systems ?)**
 >- **Component Testing**
+>- **Split Testing**
+>- **Multi-variant Testing**
+>- **Visual Testing**
+>- **Distributed testing - that is, pushing to prod without tests and waiting for the feedback from users.**
