@@ -65,4 +65,10 @@
 >- **Formal Verification (e.g., TLA+)**
 >- **Acceptance Testing**
 >- **A/B Testing**
-
+>- **Accessibility Testing**
+>- **Smoke Testing**
+>- **Snapshot Testing**
+>- **Drunk User Testing**
+>- **Accessibility Testing (fits many of above ?)**
+>- **Failure Injection Testing (for distributed systems ?)**
+>- **Component Testing**
