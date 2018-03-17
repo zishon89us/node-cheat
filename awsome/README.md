@@ -81,3 +81,4 @@
 *   AWS: An availability zone is simply a data center. 
 *   AWS: Edge locations are endpoints for AWS which are used for caching content, typically this consists of CloudFront, Amazon's Content Delivery Network (CDN).
 *   AWS: Edge locations are to cache static content for fast delivery to users by near by data centers. 
+*   Sentry is open source error tracking tool that can be used to what issue occurred and how without getting any input from user.
