@@ -78,3 +78,4 @@
 >- **Distributed testing - that is, pushing to prod without tests and waiting for the feedback from users.**
 *   Free programming books https://github.com/EbookFoundation/free-programming-books
 *   AWS: A regions is a geographical area, every region consists of 2 or more availability zones (data centers). 
+*   AWS: An availability zone is simply a data center. 
