@@ -79,3 +79,5 @@
 *   Free programming books https://github.com/EbookFoundation/free-programming-books
 *   AWS: A regions is a geographical area, every region consists of 2 or more availability zones (data centers). 
 *   AWS: An availability zone is simply a data center. 
+*   AWS: Edge locations are endpoints for AWS which are used for caching content, typically this consists of CloudFront, Amazon's Content Delivery Network (CDN).
+*   AWS: Edge locations are to cache static content for fast delivery to users by near by data centers. 
