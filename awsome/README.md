@@ -83,3 +83,4 @@
 *   AWS: Edge locations are to cache static content for fast delivery to users by near by data centers. 
 *   Sentry is open source error tracking tool that can be used to what issue occurred and how without getting any input from user.
 *   According to Stack Overflow 2018 survey mongodb is the most wanted database, the world’s largest developer survey with over 100,000 respondents.
+*   BrowserStack is a cloud-based cross-browser testing tool that enables developers to test their websites across various browsers on different operating systems and mobile devices, without requiring users to install virtual machines, devices or emulators.
