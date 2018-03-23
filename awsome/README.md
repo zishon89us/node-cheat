@@ -86,3 +86,4 @@
 *   BrowserStack is a cloud-based cross-browser testing tool that enables developers to test their websites across various browsers on different operating systems and mobile devices, without requiring users to install virtual machines, devices or emulators.
 *   Idea behind async-await is to write asynchronous code that flows like synchronous.
 *   Functional programming is a programming paradigm, a coding style or a mindset you can say.
+*   Functional programming is easier to debug and maintain in terms of code.
