@@ -87,3 +87,4 @@
 *   Idea behind async-await is to write asynchronous code that flows like synchronous.
 *   Functional programming is a programming paradigm, a coding style or a mindset you can say.
 *   Functional programming is easier to debug and maintain in terms of code.
+*   The lodash/fp module promotes a more functional programming (FP) friendly style by exporting an instance of lodash with its methods wrapped to produce immutable auto-curried iteratee-first data-last methods.
