@@ -91,3 +91,5 @@
 *   OWASP means Open Web Application Security Project
 >-  Data Segregation by tenant i.e. data should be kept separately or should be modeled such a way that each tenant has data privacy while accessed
 >-  Users must have roles to prevent un-authorized data access or modification
+>-  Personally identifiable data must be encrypted at rest
+>-  Personally identifiable data must be encrypted while traveling over public network, like, should be on https
