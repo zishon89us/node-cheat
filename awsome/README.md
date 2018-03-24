@@ -93,3 +93,4 @@
 >-  Users must have roles to prevent un-authorized data access or modification
 >-  Personally identifiable data must be encrypted at rest
 >-  Personally identifiable data must be encrypted while traveling over public network, like, should be on https
+>-  Encourage a good password in terms of strength so that easy & weak passwords should be avoided 
