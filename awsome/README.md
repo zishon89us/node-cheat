@@ -90,3 +90,4 @@
 *   The lodash/fp module promotes a more functional programming (FP) friendly style by exporting an instance of lodash with its methods wrapped to produce immutable auto-curried iteratee-first data-last methods.
 *   OWASP means Open Web Application Security Project
 >-  Data Segregation by tenant i.e. data should be kept separately or should be modeled such a way that each tenant has data privacy while accessed
+>-  Users must have roles to prevent un-authorized data access or modification
