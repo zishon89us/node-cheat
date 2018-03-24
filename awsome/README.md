@@ -94,3 +94,5 @@
 >-  Personally identifiable data must be encrypted at rest
 >-  Personally identifiable data must be encrypted while traveling over public network, like, should be on https
 >-  Encourage a good password in terms of strength so that easy & weak passwords should be avoided 
+>-  Database server or application server should have authentication in place, i.e. if api server connects to database server it should have authenticated api server first and then allow to access the user(s) data
+>-  In contrast to above point no app should be able to connected to database without authentication
