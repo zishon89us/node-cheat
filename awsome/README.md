@@ -87,6 +87,7 @@
 *   Idea behind async-await is to write asynchronous code that flows like synchronous.
 *   Functional programming is a programming paradigm, a coding style or a mindset you can say.
 *   Functional programming is easier to debug and maintain in terms of code.
+*   Functional programming is like "what to do" whilst imperative programming is "how to do"
 *   The lodash/fp module promotes a more functional programming (FP) friendly style by exporting an instance of lodash with its methods wrapped to produce immutable auto-curried iteratee-first data-last methods.
 *   OWASP means Open Web Application Security Project
 >-  Data Segregation by tenant i.e. data should be kept separately or should be modeled such a way that each tenant has data privacy while accessed
