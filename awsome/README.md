@@ -102,3 +102,4 @@
 >-  A network error is a response whose status is always 0, status message is always the empty byte sequence, header list is always empty, body is always null, and trailer is always empty.
 >-  A response whose type is "error" and aborted flag is set is known as an aborted network error.
 >-  A response has an associated status message. Unless stated otherwise it is `OK`.
+>-  A response has an associated status, which is a status. Unless stated otherwise it is 200.
