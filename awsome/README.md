@@ -98,3 +98,4 @@
 >-  Changing password inside app should include old password, new password and confirm password fields at least. 
 >-  Database server or application server should have authentication in place, i.e. if api server connects to database server it should have authenticated api server first and then allow to access the user(s) data
 >-  In contrast to above point no app should be able to connected to database without authentication
+>-  A response whose type is "error" is known as a network error.
