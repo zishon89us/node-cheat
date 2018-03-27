@@ -10,11 +10,11 @@
 //Run : node app.js
 //------------------------------------------------------
 
-const express = require('express');
-const aws = require('aws-sdk');
+const express = require('express'); //"^4.13.4"
+const aws = require('aws-sdk'); //"^2.2.41"
 const bodyParser = require('body-parser');
-const multer = require('multer');
-const multerS3 = require('multer-s3');
+const multer = require('multer'); // "^1.3.0"
+const multerS3 = require('multer-s3'); //"^2.7.0"
 
 aws.config.update({
     secretAccessKey: 'YOUR_ACCESS_SECRET_KEY',
