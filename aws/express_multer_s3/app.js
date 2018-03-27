@@ -1,19 +1,20 @@
 /**
  * Created by Zeeshan on 3/9/2016.
+ * Last updated on March 27, 2018.
  */
 
 //------------------------------------------------------
-//NEW-ANSWER @ DEC-2016
+//NEW-ANSWER @ DEC-2016 [ES5 STYLE]
 //multi-part direct upload to s3 without saving on local disk
 //Web Link=> http://stackoverflow.com/a/35902286/3539857
 //Run : node app.js
 //------------------------------------------------------
 
-var express = require('express'),
-    aws = require('aws-sdk'),
+var express = require('express'), // "^4.13.4"
+    aws = require('aws-sdk'), // ^2.2.41
     bodyParser = require('body-parser'),
-    multer = require('multer'),
-    multerS3 = require('multer-s3');
+    multer = require('multer'), // "multer": "^1.1.0"
+    multerS3 = require('multer-s3'); //"^1.4.1"
 
 aws.config.update({
     secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
