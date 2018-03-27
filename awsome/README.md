@@ -103,3 +103,4 @@
 >-  A response whose type is "error" and aborted flag is set is known as an aborted network error.
 >-  A response has an associated status message. Unless stated otherwise it is `OK`.
 >-  A response has an associated status, which is a status. Unless stated otherwise it is 200.
+>-  The maximum size of a file that you can upload by using the Amazon S3 console is 78 GB.
