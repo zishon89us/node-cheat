@@ -5,7 +5,7 @@
 ### :cloud: AWS
 
 *   [CRUD s3 buckets](https://github.com/zishon89us/node-cheat/blob/master/aws/s3/create_bucket.js)
-*   [Direct upload to s3 without saving on local disk [Updated at Dec 1, 2016]](https://github.com/zishon89us/node-cheat/tree/master/aws/express_multer_s3)
+*   Direct upload to s3 without saving on local disk [Updated at March 27, 2018] ([ES6](https://github.com/zishon89us/node-cheat/blob/master/aws/express_multer_s3/app_es8.js#L6) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/aws/express_multer_s3/app.js#L7))
 *   [Upload to s3 using multer-s3 [Updated at Dec 1, 2016]](https://github.com/zishon89us/node-cheat/tree/master/aws/express_multer_s3)
 *   [S3 Direct Upload From Client/Browser (To Be Done)](#)
 *   [Upload from base64 data](https://github.com/zishon89us/node-cheat/blob/master/aws/s3/upload_base_64.js)
