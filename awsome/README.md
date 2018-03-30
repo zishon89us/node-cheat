@@ -19,6 +19,7 @@
     *   Eval– Takes and evaluates the data structure
     *   Print– Prints the result
     *   Loop– Loops the above command until user press ctrl-c twice.
+*   Node.js is good choice for multi-user, real-time and data streaming like web apps i.e. social media, chat, games and so on.
 *   JavaScript is a single-threaded language, and thus, it creates a single stack.
 *   Callback is a chief functional programming technique that provides the flexibility of passing a function as an argument to another function.
 *   Once the operation is recognized as asynchronous (which requires web API), the method is called in a different context and the execution of the callstack continues. Hence, the log last is printed before the setTimeout method displays the result. This is why JavaScript code is said to be non-blocking.
