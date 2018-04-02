@@ -28,6 +28,15 @@ const from = 'Node-Cheat <nodecheat@github.com>';
 const emailUtil = {
   _sendMail: async (options) => {
     // TODO: complete this
+	const footer = `<div>Add footer content here, may be add unsubscribe link or company info</div>`;
+
+	const mailOptions = {
+		from,
+		to: options.email,
+		subject: options.subject || subject,
+		html: `<div>${options.template} <br/> ${footer} </div>`,
+	};
+	await transporter.sendMail(mailOptions);
   },
 
   verificationCode: async (email, verificationCode) => {
