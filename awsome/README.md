@@ -99,10 +99,10 @@
 >-  Changing password inside app should include old password, new password and confirm password fields at least. 
 >-  Database server or application server should have authentication in place, i.e. if api server connects to database server it should have authenticated api server first and then allow to access the user(s) data
 >-  In contrast to above point no app should be able to connected to database without authentication
->-  A response whose type is "error" is known as a network error.
->-  A network error is a response whose status is always 0, status message is always the empty byte sequence, header list is always empty, body is always null, and trailer is always empty.
->-  A response whose type is "error" and aborted flag is set is known as an aborted network error.
->-  A response has an associated status message. Unless stated otherwise it is `OK`.
->-  A response has an associated status, which is a status. Unless stated otherwise it is 200.
->-  The maximum size of a file that you can upload by using the Amazon S3 console is 78 GB.
+*  A response whose type is "error" is known as a network error.
+*  A network error is a response whose status is always 0, status message is always the empty byte sequence, header list is always empty, body is always null, and trailer is always empty.
+*  A response whose type is "error" and aborted flag is set is known as an aborted network error.
+*  A response has an associated status message. Unless stated otherwise it is `OK`.
+*  A response has an associated status, which is a status. Unless stated otherwise it is 200.
+*  The maximum size of a file that you can upload by using the Amazon S3 console is 78 GB.
 *  Kubernetes is an open-source system for automating deployment, scaling, and management of containerized applications.
