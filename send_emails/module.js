@@ -40,7 +40,10 @@ const emailUtil = {
   },
 
   verificationCode: async (email, verificationCode) => {
-    // TODO: complete this
+	const template = `<p>Please use this verification code: <em>${verificationCode}</em></p>`;
+	emailUtil._sendMail({
+		email, template, subject, subscriber,
+	});
   },
 
   forgotPassword: async (email, code) => {
