@@ -48,7 +48,11 @@ const emailUtil = {
   },
 
   forgotPassword: async (email, code) => {
-    // TODO: complete this
+	const template = `<p>Please use ${code} code to reset your password.</p>`;
+	const customSubject = 'Forgot Password Request';
+	emailUtil._sendMail({
+		email, template, customSubject, subscriber,
+	});
   },
 
   specialAccountCreated: async (email, pass) => {
