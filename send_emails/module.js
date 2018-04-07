@@ -24,6 +24,7 @@ const transporter = nodemailer.createTransport(sgTransport(sgOptions));
 
 const subject = 'Hello Developer!';
 const from = 'Node-Cheat <nodecheat@github.com>';
+const contactEmail = 'hello@node-cheat.com';
 
 const emailUtil = {
   _sendMail: async (options) => {
@@ -55,7 +56,13 @@ const emailUtil = {
   },
 
   contactUs: async (payload) => {
-    // TODO: complete this
+	const mailOptions = {
+		from: `Hello <${payload.email}>`,
+		to: `${contactEmail}`,
+		subject: payload.subject || `${env.NAME} Contact Us Form"`,
+		text: payload.message,
+	};
+	transporter.sendMail(mailOptions);
   }
 
 };
