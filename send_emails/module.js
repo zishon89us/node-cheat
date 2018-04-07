@@ -28,7 +28,7 @@ const contactEmail = 'hello@node-cheat.com';
 
 const emailUtil = {
   _sendMail: async (options) => {
-    // TODO: complete this
+  	// TODO: options.subscriber should be handled for better email template and reputation
 	const footer = `<div>Add footer content here, may be add unsubscribe link or company info</div>`;
 
 	const mailOptions = {
