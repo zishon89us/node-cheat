@@ -56,3 +56,10 @@ log(squared);
 
 // const cubedOldStyle = Math.pow(2,3);
 // log(cubedOldStyle);
+
+//------------------------------------------------------
+//Topic: Object.values/Object.entries
+//------------------------------------------------------
+
+const data = {'ES8': 2017, 'ES7': 2016, 'ES6': 2015};
+log(Object.values(data));
