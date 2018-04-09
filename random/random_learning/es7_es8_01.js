@@ -63,3 +63,9 @@ log(squared);
 
 const data = {'ES8': 2017, 'ES7': 2016, 'ES6': 2015};
 log(Object.values(data));
+
+for(let [key, value] of Object.entries(data)){
+	log(`${key} ::: ${value}`);
+}
+
+
