@@ -112,5 +112,5 @@
 *  With Relational database it is better to scale up i.e. parallel transactions and multi-table joins
 *  MongoDB lets developer design data model that makes sense i.e. all can be done in single query if that fits
 *  MongoDB is designed to support agile software engineering practices
-
+*  MongoDB is designed to meet the scalability and performance needs of modern apps
 
