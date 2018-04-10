@@ -108,5 +108,6 @@
 *  Kubernetes is an open-source system for automating deployment, scaling, and management of containerized applications.
 *  MongoDB Compass is a great GUI tool to play, read, edit, write mongodb data sets.
 *  With MongoDB it is better to scale out i.e. add more servers if data is nested and no more joins
+*  MongoDB natively supports scaling out through sharding feature, shard data across multiple servers (nodes)
 
 
