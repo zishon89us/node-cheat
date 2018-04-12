@@ -1,6 +1,12 @@
 /**
- * Created by zeeshan on 4/12/2018.
+ * Created by zeeshan on April 12, 2018.
  */
+
+//------------------------------------------------------
+//require from unknown child folder
+//Web Link=> https://stackoverflow.com/a/49796481/3539857
+//Run : node app.js followed by npm i glob
+//------------------------------------------------------
 
 const glob = require( 'glob' );
 const path = require( 'path' );
