@@ -96,5 +96,9 @@
 
 *   SendGrid ([ES6](https://github.com/zishon89us/node-cheat/blob/master/send_emails/send_grid.js#L7) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/send_emails/send_grid.js#L7) | [Module](https://github.com/zishon89us/node-cheat/blob/master/send_emails/))
 
+### Sms
+
+*   Twilio ([ES6](#))
+
 ### Fax
 *   Phaxio API ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
