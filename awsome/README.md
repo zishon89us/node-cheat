@@ -114,3 +114,4 @@
 *  MongoDB is designed to support agile software engineering practices
 *  MongoDB is designed to meet the scalability and performance needs of modern apps
 *  A Relayed session offers the benefit of reduced latency. By having end users directly connect to each other, there are fewer network hops.
+*  AWS Lambda invokes your Lambda function via a handler object. A handler represents the name of your Lambda function
