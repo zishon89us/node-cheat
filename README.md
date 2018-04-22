@@ -95,6 +95,7 @@
 ### Emails
 
 *   SendGrid ([ES6](https://github.com/zishon89us/node-cheat/blob/master/send_emails/send_grid.js#L7) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/send_emails/send_grid.js#L7) | [Module](https://github.com/zishon89us/node-cheat/blob/master/send_emails/))
+*   Email Templates ([ES6](#))
 
 ### Sms
 
