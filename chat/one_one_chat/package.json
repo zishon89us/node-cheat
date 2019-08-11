@@ -7,9 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "express": "3.4.8",
-    "ejs": "*" ,
-    "socket.io": "~0.9.16"
+    "ejs": "^2.6.2",
+    "express": "^4.17.1",
+    "socket.io": "^2.2.0"
   },
   "author": "Muhammad AbdulMoiz",
   "license": "ISC"
