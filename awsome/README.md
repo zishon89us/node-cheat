@@ -116,3 +116,4 @@
 *  A Relayed session offers the benefit of reduced latency. By having end users directly connect to each other, there are fewer network hops.
 *  AWS Lambda invokes your Lambda function via a handler object. A handler represents the name of your Lambda function.
 *  Serverless computing allows you to build and run applications and services without thinking about servers.
+*  To remove readonly status in WebStorm IDE > sudo chown -R *username* *project/folder-name*
