@@ -34,3 +34,5 @@ node_modules
 
 .idea/*
 /aws/config.json
+/.project
+./package-lock.json
