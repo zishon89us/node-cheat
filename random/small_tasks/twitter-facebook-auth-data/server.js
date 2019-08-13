@@ -4,18 +4,18 @@
 //------------------------------------------------------
 
 
-var express = require('express');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var session = require('express-session');
-var app = express();
-var port = process.env.PORT || 3000;
-var mongoose = require('mongoose');
-var passport = require('passport');
-var flash = require('connect-flash');
+const express = require('express');
+const logger = require('morgan');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const app = express();
+const port = process.env.PORT || 3000;
+const mongoose = require('mongoose');
+const passport = require('passport');
+const flash = require('connect-flash');
 
-var configDB = require('./config/database.js');
+const configDB = require('./config/database.js');
 
 // configuration ===============================================================
 mongoose.connect(configDB.url); // connect to our database
