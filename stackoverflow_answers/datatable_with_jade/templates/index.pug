@@ -37,12 +37,6 @@ html
                 });
             .row.container
                 hr
-                .row
-                    .col-md-3
-                        h3 Sample List
-                hr
-                .col-md-12
-                    h4 SomeHeading
-                    ul.list-group
-                        for item in items
-                            li.list-group-item= item.name
+                ul.list-group
+                    for item in items
+                        li.list-group-item= item.name
