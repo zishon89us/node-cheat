@@ -19,7 +19,7 @@ app.get('/', async (req, res) => {
 
     res.render('index', {
         title: 'Node-Cheat',
-        items: [{name: 'Apple'}, {name: 'Banana'} ]
+        items: [{name: 'Apple'}, {name: 'Banana'}, {name: 'Carrot'}, {name: 'Date'}, {name: 'Egg'} ]
     });
 });
 
