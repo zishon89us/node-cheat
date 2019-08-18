@@ -13,7 +13,7 @@
 
 ### WebRTC
 
-*   [Simpl-e Video Chat](https://github.com/zishon89us/node-cheat/tree/master/WebRTC/simple_video_chat)
+*   [Simple Video Chat](https://github.com/zishon89us/node-cheat/tree/master/WebRTC/simple_video_chat)
 *   [Tokbox Video Chat](https://github.com/zishon89us/node-cheat/tree/master/WebRTC/tokbox_video_chat)
 *   PubNub ([ES5](#) | [ES6](#))
 *   Vidyo.io ([ES6](https://github.com/zishon89us/node-cheat/tree/master/WebRTC/vidyo-io_chat))
