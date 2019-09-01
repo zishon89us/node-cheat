@@ -117,3 +117,4 @@
 *  AWS Lambda invokes your Lambda function via a handler object. A handler represents the name of your Lambda function.
 *  Serverless computing allows you to build and run applications and services without thinking about servers.
 *  To remove readonly status in WebStorm IDE > sudo chown -R *username* *project/folder-name*
+*  A release is a version of your code that is deployed to an environment.
