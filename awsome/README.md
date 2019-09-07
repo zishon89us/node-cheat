@@ -119,3 +119,4 @@
 *  To remove readonly status in WebStorm IDE > sudo chown -R *username* *project/folder-name*
 *  A release is a version of your code that is deployed to an environment.
 *  To install software in .deb format Gdebi can be used, it can be installed using Software Center.
+*  wget will download the given link > wget google.com
