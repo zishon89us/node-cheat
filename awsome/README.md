@@ -122,3 +122,4 @@
 *  wget will download the given link > wget google.com 
 *  sudo is something like run as administrator i.e. used to get permissions from root
 *  ping is used to send small packet over the network if received back it means it's communicating back
+*  In TypeScript, two types are compatible if their internal structure is compatible. 
