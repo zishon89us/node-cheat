@@ -116,3 +116,10 @@
 *  A Relayed session offers the benefit of reduced latency. By having end users directly connect to each other, there are fewer network hops.
 *  AWS Lambda invokes your Lambda function via a handler object. A handler represents the name of your Lambda function.
 *  Serverless computing allows you to build and run applications and services without thinking about servers.
+*  To remove readonly status in WebStorm IDE > sudo chown -R *username* *project/folder-name*
+*  A release is a version of your code that is deployed to an environment.
+*  To install software in .deb format Gdebi can be used, it can be installed using Software Center.
+*  wget will download the given link > wget google.com 
+*  sudo is something like run as administrator i.e. used to get permissions from root
+*  ping is used to send small packet over the network if received back it means it's communicating back
+*  In TypeScript, two types are compatible if their internal structure is compatible. 

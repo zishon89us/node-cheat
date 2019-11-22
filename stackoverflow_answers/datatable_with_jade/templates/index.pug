@@ -1,0 +1,42 @@
+html
+    head
+        title= title
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        link(href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.0/flatly/bootstrap.min.css", rel="stylesheet")
+        link(href="//cdn.datatables.net/v/dt/dt-1.10.15/datatables.min.css", rel="stylesheet")
+        style(type='text/css').
+            .height-limit {
+                overflow-y: auto;
+                height: 350px;
+            }
+            ::-webkit-scrollbar {
+                width: 10px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #f1f1f1;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: #888;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+
+    body
+        div.container
+            h3.header Node-Cheat Data Tables with Jade
+        div.container
+            script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+            script(src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js')
+            script(src='//cdn.datatables.net/v/dt/dt-1.10.15/datatables.min.js')
+            script.
+                $(document).ready(function() {
+                    $('.resultTable').DataTable({paging:false, searching:false });
+                });
+            .row.container
+                hr
+                ul.list-group
+                    for item in items
+                        li.list-group-item= item.name

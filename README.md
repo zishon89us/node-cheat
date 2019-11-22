@@ -13,7 +13,7 @@
 
 ### WebRTC
 
-*   [Simpl-e Video Chat](https://github.com/zishon89us/node-cheat/tree/master/WebRTC/simple_video_chat)
+*   [Simple Video Chat](https://github.com/zishon89us/node-cheat/tree/master/WebRTC/simple_video_chat)
 *   [Tokbox Video Chat](https://github.com/zishon89us/node-cheat/tree/master/WebRTC/tokbox_video_chat)
 *   PubNub ([ES5](#) | [ES6](#))
 *   Vidyo.io ([ES6](https://github.com/zishon89us/node-cheat/tree/master/WebRTC/vidyo-io_chat))
@@ -84,6 +84,8 @@
 *   Restify File Upload ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
 *   Uppy.io and tus.io to upload files ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
 *   Resize image without any external dependency ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
+*   Uninstall packages globally ([Link](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/npm_uninstall.js))
+*   Uninstall packages listed in package.json ([Link](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/uninstall_all_packages/npm_uninstall.js))
 
 ### :heart: Random But Awsome One Liners
 *   [awsome](https://github.com/zishon89us/node-cheat/tree/master/awsome)

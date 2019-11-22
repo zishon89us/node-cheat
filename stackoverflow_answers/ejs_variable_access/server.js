@@ -4,24 +4,13 @@
 //------------------------------------------------------
 
 
-var express  = require('express');
-var app      = express();
-var port     = process.env.PORT || 3000;
-
-app.configure(function() {
-
-	// set up our express application
-	app.use(express.logger('dev')); // log every request to the console
-	app.use(express.cookieParser()); // read cookies (needed for auth)
-	app.use(express.bodyParser()); // get information from html forms
-
-	app.set('view engine', 'ejs'); // set up ejs for templating
-
-});
+const express  = require('express');
+const app = express()
+const port     = process.env.PORT || 3000;
 
 // routes ======================================================================
 
-var home = require('./controllers/home');
+const home = require('./controllers/home');
 app.get('/', function (req, res) {
 	res.render('index.ejs', {title: home.title});
 });

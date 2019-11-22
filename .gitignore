@@ -34,3 +34,6 @@ node_modules
 
 .idea/*
 /aws/config.json
+/.project
+package-lock.json
+./chat/one_one_chat/package-lock.json
