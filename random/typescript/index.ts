@@ -8,15 +8,23 @@
 //Run : tsc index.js
 //------------------------------------------------------
 
-interface User {
+interface Person {
     name: string;
-    email: string;
+    last: string;
 }
 
-function register(user: User) {
-    return "User " + user.name + " has been registered with email " + user.email;
+class Student {
+    fullName: string;
+
+    constructor(public name: string, public last: string) {
+        this.fullName = name + "" + last;
+    }
 }
 
-let user = { name: "Jane Doe", email: "jane@doe.com" };
+function register(person: Person) {
+    return "Person " + person.name + " " + person.last;
+}
 
-console.log(register(user));
+let person = {name: "Jane", last: "Doe"};
+
+console.log(register(person));
