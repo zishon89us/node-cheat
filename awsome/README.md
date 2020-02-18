@@ -127,3 +127,4 @@
 *  A cold start occurs when an AWS Lambda function is invoked after not being used for an extended period of time resulting in increased invocation latency
 *  Cold start usually occurs when an AWS Lambda function is idle for longer than five minutes
 *  In Redis, If you use PUBLISH/SUBSCRIBE or WATCH then you'll need a separate connection(s)
+*  If the Redis server runs on the same machine as the client consider using unix sockets if possible to increase throughput.
