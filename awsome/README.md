@@ -128,3 +128,4 @@
 *  Cold start usually occurs when an AWS Lambda function is idle for longer than five minutes
 *  In Redis, If you use PUBLISH/SUBSCRIBE or WATCH then you'll need a separate connection(s)
 *  If the Redis server runs on the same machine as the client consider using unix sockets if possible to increase throughput.
+*  In Redis, out of 16 databases, by default you're always connected to database 0.
