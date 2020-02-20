@@ -14,7 +14,7 @@
 *   The event emitter pattern allows you to decouple the producers and consumers of events using a standard interface.
 *   The main event loop is single-threaded by nature but most of the i/o is run on separate threads, because the i/o APIs in Node.js are asynchronous/non-blocking by design.
 *   REPL stands for Read Eval Print Loop and it represents a computer environment like a window console or unix/linux shell.
-*   Node.js comes bundled with a REPL environment: 
+*   Node.js comes bundled with a REPL environment:
     *   Read– Reads user’s input, parse the input into JavaScript data-structure and stores in memory.
     *   Eval– Takes and evaluates the data structure
     *   Print– Prints the result
@@ -48,14 +48,14 @@
 > printenv | grep LOGNAME
 *   Use Node for I/O intensive apps not for CPU Intensive apps
 *   Node.js is neither language nor framework, it is simply run time environment
-*   Data Parallelism: Same code is executed several times in parallel through instances on different elements of same datset 
+*   Data Parallelism: Same code is executed several times in parallel through instances on different elements of same datset
 *   Task Parallelism: Different code is executed in parallel
 *   Try Object.entries
 > Object.entries({first: 'John', last: 'Doe'}); // [['first', 'John'], ['last', 'Doe']]
 *   Technically speaking, #Linux is the name of the operating system's #kernel, nothing more.
 *   With Array.prototype.includes everything is easy and simple. It’s a replacement for indexOf which developers used to check for presence of a value in an array.
 *   SWF (pronounced "Swiff") was originally an acronym for "Shockwave Flash" since the SWF format was designed for Shockwave Player.
-*   Possible types of testing: 
+*   Possible types of testing:
 >- **Unit Testing**
 >- **Functional Testing**
 >- **Integration Testing**
@@ -78,10 +78,10 @@
 >- **Visual Testing**
 >- **Distributed testing - that is, pushing to prod without tests and waiting for the feedback from users.**
 *   Free programming books https://github.com/EbookFoundation/free-programming-books
-*   AWS: A regions is a geographical area, every region consists of 2 or more availability zones (data centers). 
-*   AWS: An availability zone is simply a data center. 
+*   AWS: A regions is a geographical area, every region consists of 2 or more availability zones (data centers).
+*   AWS: An availability zone is simply a data center.
 *   AWS: Edge locations are endpoints for AWS which are used for caching content, typically this consists of CloudFront, Amazon's Content Delivery Network (CDN).
-*   AWS: Edge locations are to cache static content for fast delivery to users by near by data centers. 
+*   AWS: Edge locations are to cache static content for fast delivery to users by near by data centers.
 *   Sentry is open source error tracking tool that can be used to what issue occurred and how without getting any input from user.
 *   According to Stack Overflow 2018 survey mongodb is the most wanted database, the world’s largest developer survey with over 100,000 respondents.
 *   BrowserStack is a cloud-based cross-browser testing tool that enables developers to test their websites across various browsers on different operating systems and mobile devices, without requiring users to install virtual machines, devices or emulators.
@@ -95,8 +95,8 @@
 >-  Users must have roles to prevent un-authorized data access or modification
 >-  Personally identifiable data must be encrypted at rest
 >-  Personally identifiable data must be encrypted while traveling over public network, like, should be on https
->-  Encourage a good password in terms of strength so that easy & weak passwords should be avoided 
->-  Changing password inside app should include old password, new password and confirm password fields at least. 
+>-  Encourage a good password in terms of strength so that easy & weak passwords should be avoided
+>-  Changing password inside app should include old password, new password and confirm password fields at least.
 >-  Database server or application server should have authentication in place, i.e. if api server connects to database server it should have authenticated api server first and then allow to access the user(s) data
 >-  In contrast to above point no app should be able to connected to database without authentication
 *  A response whose type is "error" is known as a network error.
@@ -119,7 +119,7 @@
 *  To remove readonly status in WebStorm IDE > sudo chown -R *username* *project/folder-name*
 *  A release is a version of your code that is deployed to an environment.
 *  To install software in .deb format Gdebi can be used, it can be installed using Software Center.
-*  wget will download the given link > wget google.com 
+*  wget will download the given link > wget google.com
 *  sudo is something like run as administrator i.e. used to get permissions from root
 *  ping is used to send small packet over the network if received back it means it's communicating back
 *  In TypeScript, two types are compatible if their internal structure is compatible.
@@ -129,3 +129,4 @@
 *  In Redis, If you use PUBLISH/SUBSCRIBE or WATCH then you'll need a separate connection(s)
 *  If the Redis server runs on the same machine as the client consider using unix sockets if possible to increase throughput.
 *  In Redis, out of 16 databases, by default you're always connected to database 0.
+*  There is a useful tool to convert curl syntax to any language, Link: https://curl.trillworks.com/
