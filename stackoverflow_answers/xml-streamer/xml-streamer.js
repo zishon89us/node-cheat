@@ -1,8 +1,13 @@
-const _streamer = require('./xml-streamer');
+const fs = require('fs');
 
-async function main() {
-    const xml = await readStream( path.resolve(__dirname, 'test.xml'));
-    console.log(xml);
+module.exports.readStream = function (file) {
+    console.log("read stream started");
+    const readStream = fs.createReadStream(file);
+    readStream.setEncoding('utf8');
+    return new Promise((resolve, reject) => {
+        let data = "";
+        readStream.on("data", chunk => data += chunk);
+        readStream.on("end", () => {console.log(data); resolve(data);});
+        readStream.on("error", error => reject(error));
+    });
 }
-
-main();
