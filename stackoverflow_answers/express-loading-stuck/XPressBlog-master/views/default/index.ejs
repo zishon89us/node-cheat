@@ -1,0 +1,46 @@
+<!-- Post Header -->
+  <header class="masthead" style="background-image: url('assets/images/home-bg.jpg')">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <div class="site-heading">
+            <h1><%= page_heading %></h1>
+            <span class="subheading"><%= page_subheading %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+        <% if (posts) { %>
+            <% posts.forEach(function(post) { %>
+                <div class="post-preview">
+                    <a href="/<%= post.id %>">
+                        <h2 class="post-title"><%= post.title %></h2>
+                        <h3 class="post-subtitle"><%= post.short_description %></h3>
+                    </a>
+                    <p class="post-meta">Posted by <a href="#">Start Bootstrap</a> on September 24, 2019</p>
+                </div>
+                <hr>
+            <% }); %>
+        <% } else{ %> 
+            <p>There are no posts</p> 
+        <% } %>
+
+        <div class="clearfix d-flex justify-content-center">
+          <div class="px-1">
+            <a class="btn btn-primary" href="#">&larr; Older Posts</a>
+          </div>
+
+          <div class="px-1">
+            <a class="btn btn-primary" href="#">Newer Posts &rarr;</a>
+          </div>
+        </div>
+
+        </div>
+    </div>
+</div>
