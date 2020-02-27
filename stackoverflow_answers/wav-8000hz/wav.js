@@ -1,7 +1,13 @@
+//------------------------------------------------------
+//Change Wav Sampel Rate -
+//Web Link=> https://stackoverflow.com/questions/60426885/how-to-convert-wav-file-into-8000hz-using-nodejs/60427748#60427748
+//Run : node wav.js
+//------------------------------------------------------
+
+
 const fs = require('fs');
 const WaveFile = require('wavefile').WaveFile;
 
-// Option 1
 let wav = new WaveFile(fs.readFileSync("440Hz_44100Hz_16bit_05sec.wav"));
 
 // do it like this
