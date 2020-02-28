@@ -130,3 +130,4 @@
 *  If the Redis server runs on the same machine as the client consider using unix sockets if possible to increase throughput.
 *  In Redis, out of 16 databases, by default you're always connected to database 0.
 *  There is a useful tool to convert curl syntax to any language, Link: https://curl.trillworks.com/
+*  .
