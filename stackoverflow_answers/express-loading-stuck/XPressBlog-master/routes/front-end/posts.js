@@ -11,9 +11,7 @@ router.get('/', postsController.getPosts);
 // Get Single Post
 router.get('/:id', postsController.getSinglePost);
 
+// Get Single Post
+router.delete('/:id', postsController.deleteSinglePost);
+
 module.exports = router;
-
-
-
-
-

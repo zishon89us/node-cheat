@@ -8,3 +8,9 @@ exports.getSinglePost = (req, res, next) => {
     const {id} = req.params;
     res.send(`This will load single post with slug : ${id}`);
 };
+
+
+exports.deleteSinglePost = (req, res, next) => {
+    const {id} = req.params;
+    res.send(`This will DELETE post with id : ${id}`);
+};
