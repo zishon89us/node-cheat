@@ -131,3 +131,4 @@
 *  In Redis, out of 16 databases, by default you're always connected to database 0.
 *  There is a useful tool to convert curl syntax to any language, Link: https://curl.trillworks.com/
 *  Since `await` can only be used inside an `async` function. Top-level `await` is a proposal to allow `await` at the top level of JavaScript modules.
+*  git reset --hard origin/master -it will discard all staged and unstaged changes and will leave you as master remote level
