@@ -8,6 +8,7 @@ var options = {
     passphrase: "APN_PASSPHRASE",
     cert : "CERTIFICATE_FOR_APN"
 };
+// How to get GCM KEY ? Follow instructions on link: https://pushalert.co/blog/how-to-get-gcm-api-key-project-number/
 var sender = new gcm.Sender("GCM_API_KEY");
 var apnConnection = new apn.Connection(options);
 var PushNotification = function(){};
