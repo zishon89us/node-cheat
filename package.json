@@ -66,7 +66,7 @@
     "soap": "^0.29.0",
     "socket.io": "^2.2.0",
     "stripe": "^4.9.0",
-    "systeminformation": "^3.33.12",
+    "systeminformation": "^4.27.11",
     "tail": "^0.4.0",
     "transliteration": "^0.1.1",
     "twilio": "^3.11.1",
