@@ -48,3 +48,9 @@ fs.renameSync(newFilePath, path.join(__dirname, 'sample_files_copy', '__' + newF
 
 // delete it
 fs.unlinkSync(newFilePathCopy);
+
+// create dir if not exists
+// rename dir
+// delete directory that has items
+
+
