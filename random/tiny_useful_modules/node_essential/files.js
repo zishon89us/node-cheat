@@ -5,7 +5,7 @@
 //------------------------------------------------------
 
 
-// read folder and file
+// read folder and files
 const fs = require('fs');
 const path = require('path');
 const files = fs.readdirSync('./sample_files');
@@ -18,5 +18,11 @@ files.map(file => {
 		}
 		console.log(text);
 	})
+});
+
+fs.writeFileSync(path.join(__dirname, 'sample_files', files[0]), 'Just a new line 1');
+
+fs.appendFile(path.join(__dirname, 'sample_files', files[1]), `\nJust a new line appended`, (err, data) => {
+	console.log(data);
 })
 
