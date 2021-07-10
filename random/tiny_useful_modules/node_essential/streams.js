@@ -1,22 +1,25 @@
 //------------------------------------------------------
 //Node.js essentials
 //Web Link=> 
-//Run : node files
+//Run : node streams
 //------------------------------------------------------
 
+// streams interface provides us with the technique to read and write data 
+// to/from files, internet or other processes etc..
 
-// read folder and file
 const fs = require('fs');
 const path = require('path');
-const files = fs.readdirSync('./sample_files');
 
-console.log(files);
-files.map(file => {
-	fs.readFile(path.join(__dirname, 'sample_files', file), 'utf-8', (err, text) => {
-		if (err) {
-			console.log('Error ', err);
-		}
-		console.log(text);
-	})
-})
+const readStream = fs.createReadStream(path.join(__dirname, 'sample_files', 'file1.txt'), 'utf-8');
 
+readStream.on('data', data => {
+	console.log(`File chunck ${data.length} length read.`);
+});
+
+// readStream.once('data', data => {
+// 	console.log(data);
+// });
+
+readStream.on('end', data => {
+	console.log(`File reading complete.`);
+});
