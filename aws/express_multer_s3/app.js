@@ -1,10 +1,10 @@
 /**
  * Created by Zeeshan on 3/9/2016.
- * Last updated on March 27, 2018.
+ * Last updated on March 4, 2022.
  */
 
 //------------------------------------------------------
-//NEW-ANSWER @ DEC-2016 [ES5 STYLE]
+//UPDATED-ANSWER @ MAR-2022 [ES5 STYLE]
 //multi-part direct upload to s3 without saving on local disk
 //Web Link=> http://stackoverflow.com/a/35902286/3539857
 //Run : node app.js
@@ -30,7 +30,8 @@ app.use(bodyParser.json());
 var upload = multer({
     storage: multerS3({
         s3: s3,
-        bucket: 'bucket-name',
+				acl: 'public-read',
+        bucket: 'node-cheat',
         key: function (req, file, cb) {
             console.log(file);
             cb(null, file.originalname); //use Date.now() for unique file keys
@@ -45,7 +46,12 @@ app.get('/', function (req, res) {
 
 //used by upload form
 app.post('/upload', upload.array('upl',1), function (req, res, next) {
-    res.send("Uploaded!");
+    res.send({
+			message: "Uploaded!",
+			urls: req.files.map(function(file) {
+				return {url: file.location, name: file.key, type: file.mimetype, size: file.size};
+			})
+		});
 });
 
 app.listen(3000, function () {
