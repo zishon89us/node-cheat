@@ -45,7 +45,7 @@ app.get('/', function (req, res) {
 });
 
 //used by upload form
-app.post('/upload', upload.array('upl',1), function (req, res, next) {
+app.post('/upload', upload.array('upl', 25), function (req, res, next) {
     res.send({
 			message: "Uploaded!",
 			urls: req.files.map(function(file) {
