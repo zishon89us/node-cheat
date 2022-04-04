@@ -31,7 +31,7 @@ const upload = multer({
     storage: multerS3({
         s3: s3,
         acl: 'public-read',
-        bucket: 'YOUR_BUCKET_NAME',
+        bucket: 'node-cheat',
         key: function (req, file, cb) {
             console.log(file);
             cb(null, file.originalname); //use Date.now() for unique file keys
@@ -46,7 +46,12 @@ app.get('/', (req, res) => {
 
 //used by upload form
 app.post('/upload', upload.array('upl',1), (req, res, next) => {
-    res.send("Uploaded!");
+		res.send({
+			message: "Uploaded!",
+			urls: req.files.map(function(file) {
+				return {url: file.location, name: file.key, type: file.mimetype, size: file.size};
+			})
+		});
 });
 
 app.listen(3000, () => {
