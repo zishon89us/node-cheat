@@ -10,9 +10,9 @@
 
 const _ = require('lodash');
 const twilio = {
-	'from': '+1XXXXXXXXXXX',
-	'accountSid': 'AC5a615xxxxxxxxxxxxxxxxxxxx', // process.env.accountSid
-	'authToken': 'dd4cdxxxxxxxxxxxxxxxxxxxd33c390a81' // process.env.authToken
+	'from': process.env.TWILIO_PHONE_NUMBER || '+1XXXXXXXXXXX',
+	'accountSid': process.env.TWILIO_ACCOUNT_SID || 'YOUR_TWILIO_ACCOUNT_SID',
+	'authToken': process.env.TWILIO_AUTH_TOKEN || 'YOUR_TWILIO_AUTH_TOKEN'
 };
 
 const client = require('twilio')(twilio.accountSid, twilio.authToken);

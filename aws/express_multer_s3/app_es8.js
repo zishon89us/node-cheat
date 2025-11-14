@@ -17,9 +17,9 @@ const multer = require('multer'); // "^1.3.0"
 const multerS3 = require('multer-s3'); //"^2.7.0"
 
 aws.config.update({
-    secretAccessKey: 'YOUR_ACCESS_SECRET_KEY',
-    accessKeyId: 'YOUR_ACCESS_KEY_ID',
-    region: 'us-east-1'
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'YOUR_SECRET_ACCESS_KEY',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'YOUR_ACCESS_KEY_ID',
+    region: process.env.AWS_REGION || 'us-east-1'
 });
 
 const app = express();

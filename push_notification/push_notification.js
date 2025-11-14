@@ -4,11 +4,11 @@
 var gcm = require('node-gcm');
 var apn = require('apn');
 var options = {
-    key: "PATH_TO_KEY_FOR_APN",
-    passphrase: "APN_PASSPHRASE",
-    cert : "CERTIFICATE_FOR_APN"
+    key: process.env.APN_KEY_PATH || "PATH_TO_KEY_FOR_APN",
+    passphrase: process.env.APN_PASSPHRASE || "YOUR_APN_PASSPHRASE",
+    cert : process.env.APN_CERT_PATH || "PATH_TO_CERTIFICATE_FOR_APN"
 };
-var sender = new gcm.Sender("GCM_API_KEY");
+var sender = new gcm.Sender(process.env.GCM_API_KEY || "YOUR_GCM_API_KEY");
 var apnConnection = new apn.Connection(options);
 var PushNotification = function(){};
 /*
