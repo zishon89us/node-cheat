@@ -17,9 +17,9 @@ var express = require('express'), // "^4.13.4"
     multerS3 = require('multer-s3'); //"^1.4.1"
 
 aws.config.update({
-    secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-    accessKeyId: 'XXXXXXXXXXXXXXX',
-    region: 'us-east-1'
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'YOUR_SECRET_ACCESS_KEY',
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'YOUR_ACCESS_KEY_ID',
+    region: process.env.AWS_REGION || 'us-east-1'
 });
 
 var app = express(),
@@ -80,9 +80,9 @@ var upload = multer({
     storage: s3({
         dirname: '/',
         bucket: 'bucket-name',
-        secretAccessKey: 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
-        accessKeyId: 'XXXXXXXXXXXXXXX',
-        region: 'us-east-1',
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'YOUR_SECRET_ACCESS_KEY',
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'YOUR_ACCESS_KEY_ID',
+        region: process.env.AWS_REGION || 'us-east-1',
         filename: function (req, file, cb) {
             cb(null, file.originalname); //use Date.now() for unique file keys
         }

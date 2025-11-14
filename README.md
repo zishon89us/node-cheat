@@ -1,4 +1,29 @@
-# node-cheat | code faster 
+# node-cheat | code faster
+
+## ⚠️ ARCHIVE NOTICE (2025)
+
+**This repository contains Node.js code examples from 2016-2018 and is now archived.**
+
+### Important Security Warnings:
+- ⚠️ Many examples use **outdated dependencies** with known security vulnerabilities
+- ⚠️ Code patterns may not follow **modern best practices** (callbacks vs async/await, old package versions)
+- ⚠️ Examples are for **educational reference only** - NOT production-ready code
+- ⚠️ Always use current package versions and refer to official documentation for production code
+
+### Before Using Any Code:
+1. **Update all dependencies** to their latest versions
+2. **Review security advisories** for packages used
+3. **Use environment variables** (see `.env.example`) - never hardcode credentials
+4. **Follow modern async patterns** (async/await instead of callbacks where applicable)
+5. **Validate all user inputs** and implement proper error handling
+
+### Recommended Modern Alternatives:
+- [Official Node.js Documentation](https://nodejs.org/docs/latest/api/)
+- [30 Seconds of Code](https://www.30secondsofcode.org/js/p/1)
+- Package-specific official documentation (Express, AWS SDK, Stripe, etc.)
+- AI assistants (ChatGPT, GitHub Copilot, etc.) for current best practices
+
+---
 
 ✪ Find awesome up-to-date node.js code snippets at one place. (Do you have any node.js snippet solving case? contribute here then) 
 
