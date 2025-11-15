@@ -1,0 +1,22 @@
+{
+  "name": "SecureAI Security Scanner",
+  "url": "https://github.com/zishon89us/secureai",
+  "hook_attributes": {
+    "url": "https://your-deployment-url.com/webhooks/github"
+  },
+  "redirect_url": "https://your-deployment-url.com/setup",
+  "description": "AI-powered security vulnerability scanner that automatically detects and reports security issues in your code",
+  "public": true,
+  "default_events": [
+    "pull_request",
+    "push",
+    "check_run"
+  ],
+  "default_permissions": {
+    "contents": "read",
+    "pull_requests": "write",
+    "checks": "write",
+    "issues": "write"
+  },
+  "setup_url": "https://your-deployment-url.com/setup"
+}
