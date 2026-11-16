@@ -26,5 +26,8 @@
     "passport": "^0.7.0",
     "passport-twitter": "^1.0.4",
     "twitter-api-v2": "^1.31.0"
+  },
+  "overrides": {
+    "xmldom": "npm:@xmldom/xmldom@^0.8.15"
   }
 }
