@@ -28,18 +28,20 @@ function nearestPackageJson(file) {
 
 const builtins = new Set(builtinModules);
 
-function bareImports(source) {
-  const specs = new Set();
+function importSpecifiers(source) {
   const patterns = [
     /\bimport\s+(?:[^'"()]*?\s+from\s+)?['"]([^'"]+)['"]/g,
     /\bexport\s+[^'"]*?\s+from\s+['"]([^'"]+)['"]/g,
     /\bimport\(\s*['"]([^'"]+)['"]\s*\)/g,
   ];
-  for (const re of patterns) {
-    for (const [, spec] of source.matchAll(re)) {
-      if (spec.startsWith('.') || spec.startsWith('/') || spec.startsWith('node:')) continue;
-      specs.add(spec.startsWith('@') ? spec.split('/').slice(0, 2).join('/') : spec.split('/')[0]);
-    }
+  return patterns.flatMap((re) => [...source.matchAll(re)].map((m) => m[1]));
+}
+
+function bareImports(source) {
+  const specs = new Set();
+  for (const spec of importSpecifiers(source)) {
+    if (spec.startsWith('.') || spec.startsWith('/') || spec.startsWith('node:')) continue;
+    specs.add(spec.startsWith('@') ? spec.split('/').slice(0, 2).join('/') : spec.split('/')[0]);
   }
   return [...specs];
 }
@@ -69,6 +71,13 @@ describe('examples', () => {
       const declared = { ...pkg.dependencies, ...pkg.devDependencies, ...pkg.optionalDependencies };
       const missing = bareImports(source).filter((s) => !builtins.has(s) && !(s in declared));
       expect(missing).toEqual([]);
+    });
+
+    it('imports only relative files that exist', () => {
+      const broken = importSpecifiers(source)
+        .filter((s) => s.startsWith('.'))
+        .filter((s) => !existsSync(join(dirname(file), s)));
+      expect(broken).toEqual([]);
     });
   });
 });

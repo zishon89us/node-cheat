@@ -34,7 +34,7 @@ export default [
     },
   },
   {
-    files: ['WebRTC/**/public/**/*.js'],
+    files: ['realtime/webrtc/**/public/**/*.js'],
     languageOptions: { sourceType: 'module' },
   },
   prettier,
