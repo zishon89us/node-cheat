@@ -1,29 +1,29 @@
-# Direct Upload via GridFS
+# Direct upload to GridFS
 
-### Node Server
+Streams the request body into MongoDB GridFS using the driver's built-in `GridFSBucket` (the old `gridfs-stream` package is sunset).
 
-Clone `direct_upload_gridfs` directory then run following:
+## Run
 
-> npm i express mongodb gridfs-stream
+```bash
+npm i express mongodb
+docker run --rm -p 27017:27017 mongo:8   # in another terminal
+MONGODB_URI=mongodb://127.0.0.1:27017 node app.js
+```
 
-Now start server by following:
+Optional env vars: `MONGODB_DB` (default `node-cheat-db`), `MAX_UPLOAD_BYTES` (default 10 MB), `PORT`.
 
-> node app.js
+## Upload
 
-You should see following message:
+```bash
+curl -X POST "http://localhost:3000/file?name=photo.png" \
+  -H "Content-Type: image/png" --data-binary @photo.png
+# {"id":"665f...","name":"photo.png"}
+```
 
-> `All set! Start uploading :)`
+## Download
 
-##### Tip: Make sure mongodb server is running.
+Open `http://localhost:3000/file/<id>` in a browser, or:
 
-
-### Upload File
-
-See screenshot:
-![Alt text](./screenshot/up_via_postman.png "Upload via Postman")
-
-### Download An Uploaded File
-
-In upload api response you will get a unique id, use that id here:
-
-e.g. open in browser: `http://localhost:3000/file/5a92df918e2ee43084ef89e9`
+```bash
+curl -OJ http://localhost:3000/file/<id>
+```

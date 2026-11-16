@@ -1,38 +1,25 @@
-/**
- * Created by Zeeshan on 3/7/2016.
- */
+// API methods with Express 5
+// Run: node express/app.js [args...]
 
-//------------------------------------------------------
-//API methods in node.js using express
-//Web Link=> http://stackoverflow.com/questions/35813290/how-to-write-api-methods-nodejs-express-3-application-in-visual-studio-2015/35813955#35813955
-//------------------------------------------------------
+import express from 'express';
+import { likeComment, unlikeComment } from './routes.js';
 
-var express = require('express')
-var app = express()
+const app = express();
+app.use(express.json());
 
-//automated args received here
-console.log(process.argv[2]);
-console.log(process.argv[3]);
-console.log(process.argv[4]);
+console.log('CLI args:', process.argv.slice(2));
 
-var routes = require('./routes');
-
-//you can check if server is not down
-app.get('/live', function (req, res) {
-    res.send('Yes I am breathing!');
-})
-
-//like comment api
-//IT SHOULD BE 'POST' BUT FOR TESTING PURPOSE I HAVE KEPT I 'GET' TEMPORARILY
-app.get('/comment/like', function(req, res, next) { //http://localhost:3000/comment/like
-    console.log('Step 1 @ app.js');
-    routes.likeComment(req, res);
+app.get('/live', (req, res) => {
+  res.send('Yes I am breathing!');
 });
 
-//unlike comment api
-app.post('/comment/unlike', function(req, res, next) {
-    routes.unlikeComment(req, res);
+app.post('/comment/:id/like', likeComment);
+app.post('/comment/:id/unlike', unlikeComment);
+
+app.use((err, req, res, _next) => {
+  console.error(err);
+  res.status(err.status ?? 500).json({ error: err.expose ? err.message : 'Internal server error' });
 });
 
-app.listen(3000);
-console.log('Listening');
+const port = Number(process.env.PORT ?? 3000);
+app.listen(port, () => console.log(`Listening on http://localhost:${port}`));

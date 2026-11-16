@@ -1,8 +1,15 @@
-/**
- * Created by Zeeshan on 3/7/2016.
- */
+// Serve responses compressed with gzip/brotli using the `compression` middleware
+// Run: node express/gzip/app.js
 
-//------------------------------------------------------
-//use gzip to serve pages faster
-//Web Link=> http://stackoverflow.com/questions/35846425/amazon-lambda-function-merge-multiple-s3-images-and-put-to-a-destination-bucket
-//------------------------------------------------------
+import express from 'express';
+import compression from 'compression';
+
+const app = express();
+app.use(compression());
+
+app.get('/', (req, res) => {
+  res.send('Hello, compressed world! '.repeat(500));
+});
+
+const port = Number(process.env.PORT ?? 3000);
+app.listen(port, () => console.log(`Listening on http://localhost:${port}`));

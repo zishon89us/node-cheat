@@ -1,25 +1,21 @@
-/**
- * Created by Zeeshan on 3/19/2016.
- */
+// Show a PDF file in the browser
+// Run: node pdf/pdf_browser/app.js  (place a PDF at pdf/pdf_browser/files/my_pdf_file.pdf)
 
-//------------------------------------------------------
-//pdf file in browser
-//Web Link=> http://stackoverflow.com/questions/36097762/how-do-i-find-path-to-item-in-nodejs/36098977#36098977
-//------------------------------------------------------
+import { join } from 'node:path';
+import express from 'express';
 
-var express = require('express'),
-    fs = require('fs'),
-    app = express();
+const app = express();
+const pdfPath = join(import.meta.dirname, 'files', 'my_pdf_file.pdf');
 
-app.get('/', function (req, res) {
-    var filePath = "/files/my_pdf_file.pdf";
-
-    fs.readFile(__dirname + filePath , function (err,data){
-        res.contentType("application/pdf");
-        res.send(data);
-    });
+app.get('/', (req, res, next) => {
+  res.setHeader('Content-Disposition', 'inline; filename="my_pdf_file.pdf"');
+  res.sendFile(pdfPath, { headers: { 'Content-Type': 'application/pdf' } }, (err) => {
+    if (!err) return;
+    if (res.headersSent) return next(err);
+    res.removeHeader('Content-Disposition');
+    res.status(err.code === 'ENOENT' ? 404 : 500).json({ error: 'PDF not available' });
+  });
 });
 
-app.listen(3000, function(){
-    console.log('Listening on 3000');
-});
+const port = Number(process.env.PORT ?? 3000);
+app.listen(port, () => console.log(`Listening on http://localhost:${port}`));

@@ -1,38 +1,17 @@
-//------------------------------------------------------
-//Option 1 :run bat file in node.js
-//Web Link=>
-//------------------------------------------------------
+// Run another program from Node.js safely (cross-platform, no shell).
+// Run: node express/index.js
 
-var automaton = require('automaton').create( );
-automaton.run('run', {cmd: 'my.bat'}).pipe(process.stdout);
+import { execFile, spawn } from 'node:child_process';
+import { join } from 'node:path';
+import { promisify } from 'node:util';
 
+const execFileAsync = promisify(execFile);
 
-//------------------------------------------------------
-//Option 2 :run bat file in node.js
-//Web Link=>
-//------------------------------------------------------
+// Option 1: buffered output — arguments are passed as an array, never interpolated into a shell string
+const { stdout } = await execFileAsync(process.execPath, ['--version']);
+console.log('Node version:', stdout.trim());
 
-/*
-var spawn = require('child_process').spawn;
-var bat = spawn('cmd.exe', ['/c', 'my.bat']);
-
-bat.stdout.on('data', function(data) {
-    console.log(data);
-});
-
-bat.stderr.on('data', function(data) {
-    console.log(data);
-});
-
-bat.on('exit', function(code)  {
-    console.log("Child exited with code ${code}");
-});*/
-
-
-//------------------------------------------------------
-//Option 3 :run bat file in node.js
-//Web Link=>
-//------------------------------------------------------
-/*
-var shell = require('shelljs');
-shell.exec('my.bat');*/
+// Option 2: streamed output for long-running processes
+const child = spawn(process.execPath, [join(import.meta.dirname, 'app.js'), 'a', 'b', 'c'], { stdio: 'inherit' });
+setTimeout(() => child.kill(), 2000);
+child.on('exit', (code, signal) => console.log(`Child exited (code=${code}, signal=${signal})`));

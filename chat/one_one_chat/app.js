@@ -1,77 +1,63 @@
+// One-to-one + group chat with Socket.IO v4
+// Run: npm install && npm start
 
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var sio = require('socket.io');
+import { createServer } from 'node:http';
+import { join } from 'node:path';
+import express from 'express';
+import { Server } from 'socket.io';
 
-var app = express();
-var users = [];
-var user_id = new Object();
+const NAME_PATTERN = /^[\p{L}\p{N}_ -]{1,20}$/u;
+const MAX_MESSAGE_LENGTH = 500;
 
-// all environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-app.use(express.static(path.join(__dirname, 'public')));
+const app = express();
+app.use(express.static(join(import.meta.dirname, 'public')));
 
+const server = createServer(app);
+const io = new Server(server, { maxHttpBufferSize: 10_000 });
 
-app.get('/', function(req, res){
-    res.render('index', { title: 'Express' });
+const users = new Map(); // name -> socket id
+const userList = () => [...users.keys()];
+const cleanText = (value) => (typeof value === 'string' ? value.trim().slice(0, MAX_MESSAGE_LENGTH) : '');
+
+io.on('connection', (socket) => {
+  socket.emit('users', userList());
+
+  socket.on('join', (rawName, ack) => {
+    if (typeof ack !== 'function') return;
+    const name = typeof rawName === 'string' ? rawName.trim() : '';
+    if (socket.data.name) return ack({ ok: false, error: 'You already joined.' });
+    if (!NAME_PATTERN.test(name)) return ack({ ok: false, error: 'Use 1-20 letters, numbers, spaces, _ or -.' });
+    if (users.has(name)) return ack({ ok: false, error: 'This name is already taken.' });
+
+    socket.data.name = name;
+    users.set(name, socket.id);
+    ack({ ok: true });
+    io.emit('announcement', `${name} joined the chat`);
+    io.emit('users', userList());
+  });
+
+  socket.on('text', (rawText) => {
+    const text = cleanText(rawText);
+    if (!socket.data.name || !text) return;
+    socket.broadcast.emit('text', { from: socket.data.name, text, at: Date.now() });
+  });
+
+  socket.on('private', (payload) => {
+    const to = typeof payload?.to === 'string' ? payload.to : '';
+    const text = cleanText(payload?.text);
+    const targetId = users.get(to);
+    if (!socket.data.name || !text || !targetId) return;
+    io.to(targetId).emit('private', { from: socket.data.name, text, at: Date.now() });
+  });
+
+  socket.on('disconnect', () => {
+    const { name } = socket.data;
+    if (!name) return;
+    users.delete(name);
+    io.emit('announcement', `${name} left the chat`);
+    io.emit('users', userList());
+  });
 });
 
-/*http.createServer(app).listen(app.get('port'), function(){
- console.log('Express server listening on port ' + app.get('port'));
- });*/
-var server = http.createServer(app).listen(app.get('port'), function(){
-    console.log('Express server listening on port ' + app.get('port'));
-});
-
-
-////////////////////////////////
-
-var io = sio.listen(server);
-io.sockets.on('connection',function(socket){
-    var my_count=users.length+1;;
-    ///////////////////
-    socket.emit('getusers',users)
-    //////////////////
-    socket.on('join',function(name){
-        socket.nickname = name;
-        user_id[name] = socket.id;
-        var arg = [];
-        arg[0]=name+' joined the chat';
-        users.push(name);
-        socket.emit('announcement',arg[0]);
-        socket.broadcast.emit('announcement',arg[0]);
-        socket.emit('users',users);
-        socket.broadcast.emit('users',users);
-        socket.emit('online',name);
-        socket.broadcast.emit('online',name);
-    });
-
-
-    socket.on('text',function(msg){
-        socket.broadcast.emit('text',socket.nickname,msg);
-    });
-
-    socket.on('disconnect',function(){
-
-        socket.broadcast.emit('discon',socket.nickname);
-        console.log('!!!!!!!!!!!!!!!!!Socket is disconnected name   '+socket.nickname);
-        var count;
-        for(var i=0;i<users.length;i++){
-            if(users[i] == socket.nickname)
-                count = i;
-
-        }
-        users.splice(count,1);
-        socket.emit('users',users);
-        socket.broadcast.emit('users',users);
-        socket.broadcast.emit('offline',socket.nickname);
-    });
-
-    socket.on('pvt_',function(arr){
-        io.sockets.socket(user_id[arr[0]]).emit('text',socket.nickname,arr[1]);
-    });
-
-});
+const port = Number(process.env.PORT ?? 3000);
+server.listen(port, () => console.log(`Chat listening on http://localhost:${port}`));

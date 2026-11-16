@@ -1,27 +1,17 @@
-/**
- * Created by Zeeshan on 8/3/2016.
- */
+// Express over HTTPS
+// Run: SSL_KEY_PATH=key.pem SSL_CERT_PATH=cert.pem node HTTPS/express_https/server.js
 
-//------------------------------------------------------
-//https basic node.js server
-//Web Link=> https://docs.nodejitsu.com/articles/HTTP/servers/how-to-create-a-HTTPS-server/
-//Run : node server.js
-//Note : See Web Link to generate keys
-//------------------------------------------------------
+import { createServer } from 'node:https';
+import express from 'express';
+import { loadTlsOptions } from '../tls.js';
 
-var https = require('https'),
-    fs = require('fs'),
-    app = require('express')();
+const app = express();
 
-var options = {
-    key: fs.readFileSync('../keys/key.pem'),
-    cert: fs.readFileSync('../keys/cert.pem')
-};
-
-app.get('/', function (req, res) {
-    res.send('Hello World!');
+app.get('/', (req, res) => {
+  res.send('Hello World!');
 });
 
-https.createServer(options, app).listen(3000, function () {
-    console.log('Server Started!');
+const port = Number(process.env.PORT ?? 3000);
+createServer(await loadTlsOptions(), app).listen(port, () => {
+  console.log(`Listening on https://localhost:${port}`);
 });

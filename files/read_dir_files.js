@@ -1,41 +1,17 @@
-var fs = require('fs'),
-    async = require('async'),
-    readMultipleFiles = require('read-multiple-files');
+// Read every file in a directory concurrently
+// Run: node files/read_dir_files.js
 
-var dirPath = 'sample_files/';
+import { readdir, readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
-//------------------------------------------------------
-//fs module to read multiple files using async
-//Web Link=>
-//------------------------------------------------------
+const dir = join(import.meta.dirname, 'sample_files');
 
+const entries = await readdir(dir, { withFileTypes: true });
+const files = entries.filter((e) => e.isFile()).map((e) => join(dir, e.name));
 
-fs.readdir(dirPath, function (err, filesPath) {
-    if (err) throw err;
-    filesPath = filesPath.map(function (filePath) {
-        return dirPath + filePath;
-    });
-    async.map(filesPath, function (filePath, cb) {
-        fs.readFile(filePath, 'utf8', cb);
-    }, function (err, results) {
-        console.log(results);
-    });
-});
+const results = await Promise.allSettled(files.map((file) => readFile(file, 'utf8')));
 
-//------------------------------------------------------
-//read-multiple-files
-//Web Link=> http://stackoverflow.com/questions/35823727/returning-the-content-of-multiple-files-in-node-js/35824248#35824248
-//------------------------------------------------------
-
-
-fs.readdir(dirPath, function (err, filesPath) {
-    if (err) throw err;
-    filesPath = filesPath.map(function (filePath) {
-        return dirPath + filePath;
-    });
-    readMultipleFiles(filesPath, 'utf8', function (err, results) {
-        if (err)
-            throw err;
-        console.log(results);
-    });
+results.forEach((result, i) => {
+  if (result.status === 'fulfilled') console.log(files[i], `${result.value.length} chars`);
+  else console.error(files[i], result.reason.message);
 });

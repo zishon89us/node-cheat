@@ -1,48 +1,53 @@
-var express = require('express'),
-    app = express(),
-    server = require('http').createServer(app),
-    io = require('socket.io')(server),
-    port = process.env.PORT || 3000;
+// Simple group chat with typing indicators (Socket.IO v4)
+// Run: npm install && npm start
 
-server.listen(port, function () {
-    console.log('Server listening at port %d', port);
+import { createServer } from 'node:http';
+import { join } from 'node:path';
+import express from 'express';
+import { Server } from 'socket.io';
+
+const NAME_PATTERN = /^[\p{L}\p{N}_ -]{1,14}$/u;
+const MAX_MESSAGE_LENGTH = 500;
+
+const app = express();
+app.use(express.static(join(import.meta.dirname, 'public')));
+
+const server = createServer(app);
+const io = new Server(server, { maxHttpBufferSize: 10_000 });
+
+let numUsers = 0;
+
+io.on('connection', (socket) => {
+  socket.on('add user', (rawName) => {
+    const username = typeof rawName === 'string' ? rawName.trim() : '';
+    if (socket.data.username || !NAME_PATTERN.test(username)) return;
+
+    socket.data.username = username;
+    numUsers += 1;
+    socket.emit('login', { numUsers });
+    socket.broadcast.emit('user joined', { username, numUsers });
+  });
+
+  socket.on('new message', (rawMessage) => {
+    const message = typeof rawMessage === 'string' ? rawMessage.trim().slice(0, MAX_MESSAGE_LENGTH) : '';
+    if (!socket.data.username || !message) return;
+    socket.broadcast.emit('new message', { username: socket.data.username, message });
+  });
+
+  socket.on('typing', () => {
+    if (socket.data.username) socket.broadcast.emit('typing', { username: socket.data.username });
+  });
+
+  socket.on('stop typing', () => {
+    if (socket.data.username) socket.broadcast.emit('stop typing', { username: socket.data.username });
+  });
+
+  socket.on('disconnect', () => {
+    if (!socket.data.username) return;
+    numUsers -= 1;
+    socket.broadcast.emit('user left', { username: socket.data.username, numUsers });
+  });
 });
 
-// Routing
-app.use(express.static(__dirname + '/public'));
-
-var users = {},
-    sockets = {};
-
-io.on('connection', function (socket) {
-    var addedUser = false;
-
-    //only private messaging is handled
-    socket.on('new message', function (to, data) {
-
-        // send private message by looking at socket info previously saved
-        sockets[users[to]].emit(
-            'message',
-            {
-                message : data,
-                from : sockets[socket.id].username
-            }
-        );
-
-    });
-
-    //handle new user
-    socket.on('add user', function (username) {
-
-        users[username] = socket.id;    //  reference to your socket ID
-        sockets[socket.id] = { username : username, socket : socket };  //  reference to your socket
-
-        // let everyone know
-        socket.broadcast.emit('user joined', {
-            username: socket.username,
-            onlineUsers: Object.keys(sockets).length
-        });
-
-    });
-
-});
+const port = Number(process.env.PORT ?? 3000);
+server.listen(port, () => console.log(`Server listening on http://localhost:${port}`));
