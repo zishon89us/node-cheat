@@ -29,4 +29,13 @@ build/
 .project
 .DS_Store
 Thumbs.db
-random/tiny_useful_modules/screenshot_dest/
+
+# Files produced by running the examples
+media/screenshot_dest/
+media/ffmpeg/files/
+media/ffmpeg/thumbs/
+files/node-cheat.xlsx
+files/unzip/downloaded.zip
+files/unzip/sample_output/
+apis/youtube/downloads/
+stackoverflow_answers/wav-8000hz/*.wav

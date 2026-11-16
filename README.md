@@ -20,74 +20,89 @@ Also in this repo: **[SecureAI](./secureai)**, a GitHub App that scans pull requ
 nvm use                       # Node 24
 npm install
 cp .env.example .env          # fill in what your example needs
-node --env-file=.env express/app.js
+node --env-file=.env web/express/app.js
 ```
 
-Folders that have their own `package.json` (the chat apps, WebRTC, and some sub-apps under `random/` and `stackoverflow_answers/`) are installed and run from inside that folder.
+Folders with their own `package.json` (the chat and WebRTC apps, the Passport apps in `auth/`, `web/express-generator-app`, and a few in `stackoverflow_answers/`) are installed and run from inside that folder.
 
 ## Examples
 
-### Cloud — AWS
+Each top-level folder is one category.
+
+### [`aws/`](aws)
 
 - [S3 bucket CRUD](aws/s3/create_bucket.js) · [Upload base64 data to S3](aws/s3/upload_base_64.js)
 - [Stream uploads straight to S3 with multer-s3](aws/express_multer_s3/app.js)
-- [Lambda: merge images with sharp](aws/lamda/image_merge.js)
+- [Lambda: merge images with sharp](aws/lambda/image_merge.js)
 - [SQS polling worker](aws/sqs_service_worker/polling_agent.js) · [Start a Step Functions execution](aws/step-functions/app.js)
 
-### Payments — Stripe
+### [`payments/`](payments) — Stripe
 
 - [PaymentIntents, customers, saved cards, authorize & capture](payments/stripe_one_time_payment/server.js)
 - [Embedded Checkout](payments/stripe/server.js)
 
-### Messaging
+### [`messaging/`](messaging)
 
-- Email (SendGrid): [send](send_emails/send_grid.js) · [reusable module](send_emails/module.js) · [event webhook](send_emails/send_grid_events.js) · [subusers](send_emails/send_grid_sub_user.js) · [raw v3 API](send_emails/sendgrid_api.js)
-- [SMS with Twilio](send_sms/twillio_sms.js) · [Fax with Telnyx](fax/send_fax.js)
-- [Push notifications: FCM + APNs](push_notification/push_notification.js)
+- Email (SendGrid): [send](messaging/email/send_grid.js) · [reusable module](messaging/email/module.js) · [event webhook](messaging/email/send_grid_events.js) · [subusers](messaging/email/send_grid_sub_user.js) · [raw v3 API](messaging/email/sendgrid_api.js)
+- [SMS with Twilio](messaging/sms/twilio_sms.js) · [Fax with Telnyx](messaging/fax/send_fax.js)
+- [Push notifications: FCM + APNs](messaging/push/push_notification.js)
 
-### Real-time
+### [`realtime/`](realtime)
 
-- socket.io chat: [one-to-one](chat/one_one_chat/app.js) · [simple room](chat/simple_chat/index.js)
-- [WebRTC video chat with socket.io signaling](WebRTC/simple_video_chat)
+- socket.io chat: [one-to-one](realtime/chat/one_one_chat/app.js) · [simple room](realtime/chat/simple_chat/index.js)
+- [WebRTC video chat with socket.io signaling](realtime/webrtc/simple_video_chat)
 
-### Web servers
+### [`web/`](web)
 
-- Express 5: [routes & API](express/app.js) · [gzip compression](express/gzip/app.js) · [safe child processes](express/index.js)
-- [HTTPS with Node and with Express](HTTPS) · [Static hosting](static-hosting/index.js) · [Graceful deploy/shutdown](deployment/2018_style.js)
-- [Rate limiting](random/small_tasks/rate-limiter/express-rate-limit.js) · [Restrict static files](random/small_tasks/express_server_restrict_static_files/app.js)
-- [Express app generator layout](random/small_tasks/standalone-express-server)
+- Express 5: [routes & API](web/express/app.js) · [gzip compression](web/express/gzip/app.js) · [safe child processes](web/express/index.js) · [views](web/express-views/app.js) · [generator layout](web/express-generator-app)
+- [HTTPS with Node and with Express](web/https) · [Static hosting](web/static-hosting/index.js) · [Graceful shutdown](web/graceful-shutdown/server.js)
+- [Rate limiting](web/rate-limiting/express-rate-limit.js) · [Restrict static files](web/restrict-static-files/app.js)
 
-### Files and media
+### [`files/`](files)
 
 - [Read a file](files/read_file.js) · [Write a file](files/write_file.js) · [Read line by line](files/line_by_line.js) · [Read a directory](files/read_dir_files.js)
-- File downloads: [http](files/download_file_http_server/app.js) · [Express](files/express_server_download_file/app.js) · [Express & Koa static](random/small_tasks/download_files_server)
-- [Serve a PDF](pdf/pdf_browser/app.js) · [ffmpeg thumbnails](ffmpeg/ffmpeg.js) · [Write .xlsx](random/tiny_useful_modules/write_xlsx.js) · [Unzip](random/tiny_useful_modules/unzip/unzip.js)
+- Downloads: [http](files/download_file_http_server/app.js) · [Express](files/express_server_download_file/app.js) · [Express & Koa static](files/static-downloads)
+- [Write .xlsx](files/write_xlsx.js) · [Unzip](files/unzip/unzip.js)
 
-### Databases
+### [`media/`](media)
 
-- MongoDB: [bulk update](mongodb/bulk-update.js) · [GridFS streaming upload](gridfs/direct_upload_gridfs/app.js)
-- Redis: [service wrapper](data_storages/redis/redis_service.js) · [reconnect strategy](redis/connect-retry.js)
+- [ffmpeg thumbnails](media/ffmpeg/generate_thumbnail_approach_1.js) · [Serve a PDF](media/pdf/pdf_browser/app.js)
+- [Website screenshots](media/screenshot.js) · [Headless scraping](media/scraping/dynamic_webpages_scraping.js) · [Image size without a full download](media/image_size.js)
 
-### Auth and third-party APIs
+### [`databases/`](databases)
 
-- Passport: [X + Facebook login](random/small_tasks/twitter-facebook-auth-data) · [X screen names](random/small_tasks/twitter-screen-names)
-- [X OAuth 1.0a](random/small_tasks/twitter_auth.js) · [Search posts](random/small_tasks/search_tweets.js)
-- [Xero OAuth 2](random/small_tasks/xero_api/xero.js) · [Google Sheets](random/tiny_useful_modules/google_spreadsheets.js) · [YouTube channel videos](random/small_tasks/youtube-videos/list_channel_videos.js)
-- [Exchange rates](random/small_tasks/exchange_api.js) · [Gender by name](random/small_tasks/gender_by_name.js)
+- MongoDB: [bulk update](databases/mongodb/bulk-update.js) · [GridFS streaming upload](databases/gridfs/direct_upload_gridfs/app.js)
+- Redis: [service wrapper](databases/redis/redis_service.js) · [reconnect strategy](databases/redis/connect-retry.js)
 
-### Utilities
+### [`auth/`](auth)
 
-- [HMAC signatures](random/tiny_useful_modules/hmac_signature.js) · [Generate key pairs](random/tiny_useful_modules/generate_privatekey.js) · [AES-256-GCM encryption](stackoverflow_answers/crypto-create-cipheriv.js)
-- [Coupon codes](random/tiny_useful_modules/coupon-code.js) · [Language detection](random/tiny_useful_modules/language_detection.js) · [Transliteration](string/tranliterate.js)
-- [Image size without a full download](random/tiny_useful_modules/image_size_probability.js) · [Expand short URLs](random/tiny_useful_modules/long_url.js) · [Website screenshots](random/tiny_useful_modules/screenshot.js) · [Headless scraping](scraping/dynamic_webpages_scraping.js)
-- [Cron jobs](random/small_tasks/cron-jobs/cron_jobs.js) · [Durations](day/duration.js) · [Dynamic imports](dynamic-execution/start.js) · [List built-in modules](random/tiny_useful_modules/builtin-modules.js)
-- [Node essentials: events, streams, readline, timers, process](random/tiny_useful_modules/node_essential)
+- Passport: [X + Facebook login](auth/passport-x-facebook) · [X screen names](auth/passport-x-screen-names)
+- [X OAuth 1.0a request signing](auth/x_oauth.js)
 
-### Answers from Stack Overflow
+### [`apis/`](apis) — third-party HTTP APIs
 
-[Promises in loops](stackoverflow_answers/loop-await/loop-await.js) · [Error handling](stackoverflow_answers/error-handling.js) · [finally](stackoverflow_answers/always-then.js) · [Deep copy a directory](stackoverflow_answers/copy-dir-deep.js) · [Nested plugin loading](stackoverflow_answers/require_nested/app.js) · [Streaming XML](stackoverflow_answers/xml-streamer/main.js) · [Resample WAV to 8 kHz](stackoverflow_answers/wav-8000hz/wav.js) · [and more](stackoverflow_answers)
+- [Search X posts](apis/x_search_posts.js) · [Xero OAuth 2](apis/xero/xero.js) · [YouTube channel videos](apis/youtube/list_channel_videos.js)
+- [Google Sheets](apis/google_sheets.js) · [Alfred workflow over a sheet](apis/alfred_sheets_workflow.js)
+- [Exchange rates](apis/exchange_rates.js) · [Gender by name](apis/gender_by_name.js) · [Expand short URLs](apis/expand_short_url.js) · [Parallel API calls](apis/parallel_api_calls.js)
 
-One-liners and tips: [awsome](awsome/README.md)
+### [`utilities/`](utilities)
+
+- [HMAC signatures](utilities/hmac_signature.js) · [Generate key pairs](utilities/generate_key_pair.js) · [Coupon codes](utilities/coupon_codes.js)
+- [Language detection](utilities/language_detection.js) · [Transliteration](utilities/transliterate.js) · [Durations](utilities/duration.js)
+- [Cron jobs](utilities/cron_jobs.js) · [Dynamic imports](utilities/dynamic-imports/start.js) · [Local IP](utilities/local_ip.js) · [List built-in modules](utilities/builtin_modules.js) · [npm cleanup](utilities/npm)
+
+### [`node-basics/`](node-basics)
+
+- [Essentials: events, streams, readline, timers, process](node-basics/essentials)
+- [Callbacks → async/await](node-basics/callbacks_to_async.js) · [Modern JS features](node-basics/modern_js_features.js) · [TypeScript with plain `node`](node-basics/typescript)
+
+### [`stackoverflow_answers/`](stackoverflow_answers)
+
+[Promises in loops](stackoverflow_answers/loop-await/loop-await.js) · [Error handling](stackoverflow_answers/error-handling.js) · [finally](stackoverflow_answers/always-then.js) · [Deep copy a directory](stackoverflow_answers/copy-dir-deep.js) · [AES-256-GCM encryption](stackoverflow_answers/crypto-create-cipheriv.js) · [Nested plugin loading](stackoverflow_answers/require_nested/app.js) · [Streaming XML](stackoverflow_answers/xml-streamer/main.js) · [Resample WAV to 8 kHz](stackoverflow_answers/wav-8000hz/wav.js) · [and more](stackoverflow_answers)
+
+### [`tips/`](tips/README.md)
+
+One-liners and tips collected over the years.
 
 ## Development
 
