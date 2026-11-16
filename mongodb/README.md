@@ -2,8 +2,8 @@
 
 Examples use the official `mongodb` driver (v7, promise API only).
 
-| File | Shows |
-|------|-------|
+| File             | Shows                                         |
+| ---------------- | --------------------------------------------- |
 | `bulk-update.js` | Bulk upsert with `bulkWrite` + a unique index |
 
 Start a local server with `docker run --rm -p 27017:27017 mongo:8`, then:

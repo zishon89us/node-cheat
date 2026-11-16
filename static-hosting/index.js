@@ -6,7 +6,9 @@ import { join } from 'node:path';
 import express from 'express';
 
 const app = express();
-app.use(express.static(join(import.meta.dirname, 'public'), { dotfiles: 'ignore', index: 'index.html' }));
+app.use(
+  express.static(join(import.meta.dirname, 'public'), { dotfiles: 'ignore', index: 'index.html' }),
+);
 
 const port = Number(process.env.PORT ?? 3000);
 app.listen(port, () => console.log(`Static site on http://localhost:${port}`));

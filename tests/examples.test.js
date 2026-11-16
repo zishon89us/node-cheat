@@ -6,7 +6,6 @@ import { builtinModules } from 'node:module';
 
 const root = join(import.meta.dirname, '..');
 const skipDirs = new Set(['node_modules', '.git', 'secureai', 'coverage', 'public', 'views']);
-const browserRoots = ['WebRTC'];
 
 function walk(dir, out = []) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -19,9 +18,7 @@ function walk(dir, out = []) {
   return out;
 }
 
-const files = walk(root)
-  .filter((f) => !browserRoots.some((b) => relative(root, f).startsWith(b + '/')))
-  .filter((f) => !f.endsWith('.min.js'));
+const files = walk(root).filter((f) => !f.endsWith('.min.js'));
 
 function nearestPackageJson(file) {
   let dir = dirname(file);
@@ -60,7 +57,11 @@ describe('examples', () => {
     });
 
     it('uses no CommonJS require()', () => {
-      expect(source).not.toMatch(/(^|[^.\w])require\(\s*['"]/m);
+      const code = source
+        .split('\n')
+        .filter((line) => !line.trim().startsWith('//'))
+        .join('\n');
+      expect(code).not.toMatch(/(^|[^.\w])require\(\s*['"]/m);
     });
 
     it('declares every imported package', () => {

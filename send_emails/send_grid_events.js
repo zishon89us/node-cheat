@@ -3,8 +3,10 @@
 
 import { sendgridApi } from './sendgrid_api.js';
 
-export const enableOpenTracking = () => sendgridApi('PATCH', '/tracking_settings/open', { body: { enabled: true } });
-export const disableOpenTracking = () => sendgridApi('PATCH', '/tracking_settings/open', { body: { enabled: false } });
+export const enableOpenTracking = () =>
+  sendgridApi('PATCH', '/tracking_settings/open', { body: { enabled: true } });
+export const disableOpenTracking = () =>
+  sendgridApi('PATCH', '/tracking_settings/open', { body: { enabled: false } });
 
 // Choose which events SendGrid POSTs to your webhook.
 export const configureEventWebhook = (url, events = {}) =>
@@ -30,11 +32,13 @@ export const configureEventWebhook = (url, events = {}) =>
 export const getEventWebhook = () => sendgridApi('GET', '/user/webhooks/event/settings');
 
 // Assign dedicated sending IPs to a subuser.
-export const setSubuserIps = (subuser, ips) => sendgridApi('PUT', `/subusers/${encodeURIComponent(subuser)}/ips`, { body: ips });
+export const setSubuserIps = (subuser, ips) =>
+  sendgridApi('PUT', `/subusers/${encodeURIComponent(subuser)}/ips`, { body: ips });
 
 if (import.meta.main) {
   const url = process.env.EVENT_WEBHOOK_URL;
-  if (!url?.startsWith('https://')) throw new Error('Set EVENT_WEBHOOK_URL to a public https:// endpoint');
+  if (!url?.startsWith('https://'))
+    throw new Error('Set EVENT_WEBHOOK_URL to a public https:// endpoint');
   await enableOpenTracking();
   console.log(await configureEventWebhook(url));
 }

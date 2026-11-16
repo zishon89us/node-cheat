@@ -10,7 +10,10 @@ import { join } from 'node:path';
 const fileName = join(import.meta.dirname, 'sample_files', 'file_w.txt');
 
 // Chunked: pipeline handles backpressure and closes the file
-await pipeline(Readable.from(['This is first row.\n', 'This is second row.\n']), createWriteStream(fileName));
+await pipeline(
+  Readable.from(['This is first row.\n', 'This is second row.\n']),
+  createWriteStream(fileName),
+);
 console.log('Streamed write done');
 
 // Whole file

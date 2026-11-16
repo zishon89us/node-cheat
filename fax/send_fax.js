@@ -15,10 +15,18 @@ if (!/^\+[1-9]\d{6,14}$/.test(to ?? '') || !mediaUrl?.startsWith('https://')) {
 const res = await fetch('https://api.telnyx.com/v2/faxes', {
   method: 'POST',
   headers: { Authorization: `Bearer ${TELNYX_API_KEY}`, 'Content-Type': 'application/json' },
-  body: JSON.stringify({ connection_id: TELNYX_FAX_CONNECTION_ID, from: TELNYX_FAX_FROM, to, media_url: mediaUrl }),
+  body: JSON.stringify({
+    connection_id: TELNYX_FAX_CONNECTION_ID,
+    from: TELNYX_FAX_FROM,
+    to,
+    media_url: mediaUrl,
+  }),
   signal: AbortSignal.timeout(15_000),
 });
 
 const payload = await res.json();
-if (!res.ok) throw new Error(`Fax request failed (${res.status}): ${JSON.stringify(payload.errors ?? payload)}`);
+if (!res.ok)
+  throw new Error(
+    `Fax request failed (${res.status}): ${JSON.stringify(payload.errors ?? payload)}`,
+  );
 console.log(`Fax ${payload.data.id} queued, status: ${payload.data.status}`);

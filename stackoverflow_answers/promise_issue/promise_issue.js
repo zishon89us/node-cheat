@@ -15,7 +15,8 @@ const ROOT = resolve(import.meta.dirname);
 
 async function readList(relativeDir) {
   const dir = resolve(ROOT, relativeDir);
-  if (dir !== ROOT && !dir.startsWith(ROOT + sep)) throw new RangeError('Path outside allowed root');
+  if (dir !== ROOT && !dir.startsWith(ROOT + sep))
+    throw new RangeError('Path outside allowed root');
 
   const entries = await readdir(dir, { withFileTypes: true });
   return entries.map((entry) => ({

@@ -7,7 +7,12 @@
 
 import { TwitterApi } from 'twitter-api-v2';
 
-const { TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET } = process.env;
+const {
+  TWITTER_CONSUMER_KEY,
+  TWITTER_CONSUMER_SECRET,
+  TWITTER_ACCESS_TOKEN,
+  TWITTER_ACCESS_TOKEN_SECRET,
+} = process.env;
 if (!TWITTER_CONSUMER_KEY || !TWITTER_CONSUMER_SECRET) {
   throw new Error('Set TWITTER_CONSUMER_KEY and TWITTER_CONSUMER_SECRET');
 }
@@ -18,7 +23,9 @@ const appClient = await new TwitterApi({
   appSecret: TWITTER_CONSUMER_SECRET,
 }).appLogin();
 
-const { data: user } = await appClient.v2.userByUsername('shan89', { 'user.fields': ['description', 'public_metrics'] });
+const { data: user } = await appClient.v2.userByUsername('shan89', {
+  'user.fields': ['description', 'public_metrics'],
+});
 console.log('App-only lookup:', user);
 
 // 2. User context: requires an access token/secret for a specific account

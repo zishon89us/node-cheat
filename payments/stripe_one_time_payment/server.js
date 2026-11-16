@@ -17,7 +17,10 @@ app.use(express.json());
 
 const id = (prefix) => z.string().regex(new RegExp(`^${prefix}_[A-Za-z0-9]+$`));
 const amount = z.number().int().positive().max(99_999_999);
-const currency = z.string().regex(/^[a-z]{3}$/).default('usd');
+const currency = z
+  .string()
+  .regex(/^[a-z]{3}$/)
+  .default('usd');
 
 function parse(schema, data) {
   const result = schema.safeParse(data);
@@ -29,8 +32,12 @@ function parse(schema, data) {
   return result.data;
 }
 
-app.get('/', (req, res) => res.render('create_customer', { publishableKey: STRIPE_PUBLISHABLE_KEY }));
-app.get('/page2', (req, res) => res.render('card_token', { publishableKey: STRIPE_PUBLISHABLE_KEY }));
+app.get('/', (req, res) =>
+  res.render('create_customer', { publishableKey: STRIPE_PUBLISHABLE_KEY }),
+);
+app.get('/page2', (req, res) =>
+  res.render('card_token', { publishableKey: STRIPE_PUBLISHABLE_KEY }),
+);
 
 app.get('/customer', async (req, res) => {
   const { customer_id } = parse(z.object({ customer_id: id('cus') }), req.query);
@@ -44,7 +51,10 @@ app.post('/customer', async (req, res) => {
     req.body,
   );
   const customer = await stripe.customers.create({ email, description });
-  const setupIntent = await stripe.setupIntents.create({ customer: customer.id, usage: 'off_session' });
+  const setupIntent = await stripe.setupIntents.create({
+    customer: customer.id,
+    usage: 'off_session',
+  });
   res.json({ customer, clientSecret: setupIntent.client_secret });
 });
 
@@ -53,7 +63,9 @@ app.post('/add-card', async (req, res) => {
     z.object({ customer_id: id('cus'), payment_method: id('pm') }),
     req.body,
   );
-  res.json({ paymentMethod: await stripe.paymentMethods.attach(payment_method, { customer: customer_id }) });
+  res.json({
+    paymentMethod: await stripe.paymentMethods.attach(payment_method, { customer: customer_id }),
+  });
 });
 
 app.post('/delete-card', async (req, res) => {
@@ -98,12 +110,18 @@ app.post('/charge-capture', async (req, res) => {
     z.object({ payment_intent_id: id('pi'), amount_to_capture: amount.optional() }),
     req.body,
   );
-  res.json({ paymentIntent: await stripe.paymentIntents.capture(payment_intent_id, { amount_to_capture }) });
+  res.json({
+    paymentIntent: await stripe.paymentIntents.capture(payment_intent_id, { amount_to_capture }),
+  });
 });
 
 app.get('/charge', async (req, res) => {
   const { payment_intent_id } = parse(z.object({ payment_intent_id: id('pi') }), req.query);
-  res.json({ paymentIntent: await stripe.paymentIntents.retrieve(payment_intent_id, { expand: ['customer'] }) });
+  res.json({
+    paymentIntent: await stripe.paymentIntents.retrieve(payment_intent_id, {
+      expand: ['customer'],
+    }),
+  });
 });
 
 app.get('/event', async (req, res) => {

@@ -15,7 +15,10 @@ const from = requireEnv('MAIL_FROM');
 const contactEmail = process.env.CONTACT_EMAIL ?? from;
 
 const escapeHtml = (value) =>
-  String(value).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  String(value).replace(
+    /[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c],
+  );
 
 const footer = '<div>Add footer content here, e.g. an unsubscribe link or company info.</div>';
 

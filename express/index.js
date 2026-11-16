@@ -12,6 +12,8 @@ const { stdout } = await execFileAsync(process.execPath, ['--version']);
 console.log('Node version:', stdout.trim());
 
 // Option 2: streamed output for long-running processes
-const child = spawn(process.execPath, [join(import.meta.dirname, 'app.js'), 'a', 'b', 'c'], { stdio: 'inherit' });
+const child = spawn(process.execPath, [join(import.meta.dirname, 'app.js'), 'a', 'b', 'c'], {
+  stdio: 'inherit',
+});
 setTimeout(() => child.kill(), 2000);
 child.on('exit', (code, signal) => console.log(`Child exited (code=${code}, signal=${signal})`));

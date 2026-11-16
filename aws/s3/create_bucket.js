@@ -22,18 +22,23 @@ const s3 = new S3Client({ region });
 await s3.send(
   new CreateBucketCommand({
     Bucket,
-    ...(region === 'us-east-1' ? {} : { CreateBucketConfiguration: { LocationConstraint: region } }),
+    ...(region === 'us-east-1'
+      ? {}
+      : { CreateBucketConfiguration: { LocationConstraint: region } }),
   }),
 );
 await waitUntilBucketExists({ client: s3, maxWaitTime: 60 }, { Bucket });
 console.log(`Created ${Bucket}`);
 
 const Key = 'this_is_key';
-await s3.send(new PutObjectCommand({ Bucket, Key, Body: 'This is data.', ContentType: 'text/plain' }));
+await s3.send(
+  new PutObjectCommand({ Bucket, Key, Body: 'This is data.', ContentType: 'text/plain' }),
+);
 console.log(`Uploaded ${Key}`);
 
 const { Buckets = [] } = await s3.send(new ListBucketsCommand({}));
-for (const { Name, CreationDate } of Buckets) console.log('Bucket:', Name, CreationDate?.toISOString());
+for (const { Name, CreationDate } of Buckets)
+  console.log('Bucket:', Name, CreationDate?.toISOString());
 
 // A bucket must be empty before it can be deleted.
 await s3.send(new DeleteObjectCommand({ Bucket, Key }));

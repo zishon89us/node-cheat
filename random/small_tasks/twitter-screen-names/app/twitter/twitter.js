@@ -14,7 +14,9 @@ const readNames = async (sheetId) => {
   const doc = new GoogleSpreadsheet(sheetId, { apiKey: googleApiKey });
   await doc.loadInfo();
   const rows = await doc.sheetsByIndex[0].getRows({ limit: MAX_NAMES });
-  return rows.map((row) => `${row.get('first') ?? ''} ${row.get('last') ?? ''}`.trim()).filter(Boolean);
+  return rows
+    .map((row) => `${row.get('first') ?? ''} ${row.get('last') ?? ''}`.trim())
+    .filter(Boolean);
 };
 
 export const usernames = async (req, res) => {
@@ -38,7 +40,9 @@ export const usernames = async (req, res) => {
   for (const name of names) {
     const page = await client.v2.searchUsers(name);
     const match = page.data.data?.[0];
-    results.push(match ? { name: match.name, screen_name: match.username } : { name, screen_name: null });
+    results.push(
+      match ? { name: match.name, screen_name: match.username } : { name, screen_name: null },
+    );
   }
 
   res.json(results);

@@ -23,5 +23,7 @@ export const twitterAuth =
     : null;
 
 if (!facebookAuth && !twitterAuth) {
-  throw new Error('Set FACEBOOK_APP_ID/FACEBOOK_APP_SECRET and/or TWITTER_CONSUMER_KEY/TWITTER_CONSUMER_SECRET');
+  throw new Error(
+    'Set FACEBOOK_APP_ID/FACEBOOK_APP_SECRET and/or TWITTER_CONSUMER_KEY/TWITTER_CONSUMER_SECRET',
+  );
 }

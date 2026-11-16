@@ -25,7 +25,11 @@ function fcm() {
 
 function apns() {
   apnProvider ??= new apn.Provider({
-    token: { key: requireEnv('APNS_KEY_PATH'), keyId: requireEnv('APNS_KEY_ID'), teamId: requireEnv('APNS_TEAM_ID') },
+    token: {
+      key: requireEnv('APNS_KEY_PATH'),
+      keyId: requireEnv('APNS_KEY_ID'),
+      teamId: requireEnv('APNS_TEAM_ID'),
+    },
     production: process.env.APNS_PRODUCTION === 'true',
   });
   return apnProvider;
@@ -33,7 +37,9 @@ function apns() {
 
 async function sendAndroid(tokens, { title, body, type }) {
   // FCM accepts at most 500 tokens per multicast call.
-  const chunks = Array.from({ length: Math.ceil(tokens.length / 500) }, (_, i) => tokens.slice(i * 500, i * 500 + 500));
+  const chunks = Array.from({ length: Math.ceil(tokens.length / 500) }, (_, i) =>
+    tokens.slice(i * 500, i * 500 + 500),
+  );
   let successCount = 0;
   const failedTokens = [];
   for (const chunk of chunks) {

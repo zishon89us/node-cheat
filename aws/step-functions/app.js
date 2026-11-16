@@ -22,4 +22,6 @@ do {
   console.log('Status:', execution.status);
 } while (execution.status === 'RUNNING');
 
-console.log(execution.status === 'SUCCEEDED' ? JSON.parse(execution.output ?? 'null') : execution.cause);
+console.log(
+  execution.status === 'SUCCEEDED' ? JSON.parse(execution.output ?? 'null') : execution.cause,
+);

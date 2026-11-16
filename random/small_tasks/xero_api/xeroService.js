@@ -12,7 +12,10 @@ const toXeroDateTime = (date) => {
 };
 
 const dateRangeFilter = (startDate, endDate) =>
-  [startDate && `Date >= ${toXeroDateTime(startDate)}`, endDate && `Date < ${toXeroDateTime(endDate)}`]
+  [
+    startDate && `Date >= ${toXeroDateTime(startDate)}`,
+    endDate && `Date < ${toXeroDateTime(endDate)}`,
+  ]
     .filter(Boolean)
     .join(' && ') || undefined;
 
@@ -24,17 +27,29 @@ export class XeroService {
   }
 
   async getActiveAccounts() {
-    const { body } = await this.xero.accountingApi.getAccounts(this.tenantId, undefined, 'Status=="ACTIVE"');
+    const { body } = await this.xero.accountingApi.getAccounts(
+      this.tenantId,
+      undefined,
+      'Status=="ACTIVE"',
+    );
     return body.accounts;
   }
 
   async getPayments(startDate, endDate) {
-    const { body } = await this.xero.accountingApi.getPayments(this.tenantId, undefined, dateRangeFilter(startDate, endDate));
+    const { body } = await this.xero.accountingApi.getPayments(
+      this.tenantId,
+      undefined,
+      dateRangeFilter(startDate, endDate),
+    );
     return body.payments;
   }
 
   async getInvoices(startDate, endDate) {
-    const { body } = await this.xero.accountingApi.getInvoices(this.tenantId, undefined, dateRangeFilter(startDate, endDate));
+    const { body } = await this.xero.accountingApi.getInvoices(
+      this.tenantId,
+      undefined,
+      dateRangeFilter(startDate, endDate),
+    );
     return body.invoices;
   }
 

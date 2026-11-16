@@ -10,7 +10,13 @@ const addresses = Object.values(networkInterfaces())
   .flat()
   .filter((iface) => !iface.internal);
 
-console.log('IPv4:', addresses.filter((a) => a.family === 'IPv4').map((a) => a.address));
-console.log('IPv6:', addresses.filter((a) => a.family === 'IPv6').map((a) => a.address));
+console.log(
+  'IPv4:',
+  addresses.filter((a) => a.family === 'IPv4').map((a) => a.address),
+);
+console.log(
+  'IPv6:',
+  addresses.filter((a) => a.family === 'IPv6').map((a) => a.address),
+);
 
 // The `ip` package used before has unpatched SSRF advisories (CVE-2024-29415); the built-in API is enough.

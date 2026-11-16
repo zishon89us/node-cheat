@@ -18,7 +18,8 @@ const io = new Server(server, { maxHttpBufferSize: 64_000 });
 io.on('connection', (socket) => {
   socket.on('join', async (room, ack) => {
     if (typeof ack !== 'function') return;
-    if (typeof room !== 'string' || !ROOM_PATTERN.test(room)) return ack({ ok: false, error: 'Invalid room name' });
+    if (typeof room !== 'string' || !ROOM_PATTERN.test(room))
+      return ack({ ok: false, error: 'Invalid room name' });
 
     const peers = await io.in(room).fetchSockets();
     if (peers.length >= 2) return ack({ ok: false, error: 'Room is full' });
@@ -41,4 +42,6 @@ io.on('connection', (socket) => {
 });
 
 const port = Number(process.env.PORT ?? 3000);
-server.listen(port, () => console.log(`Open http://localhost:${port}/?room=demo in two browser tabs`));
+server.listen(port, () =>
+  console.log(`Open http://localhost:${port}/?room=demo in two browser tabs`),
+);

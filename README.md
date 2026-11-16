@@ -8,6 +8,7 @@
 ## 🎯 Looking for Modern Code?
 
 **Check out [SecureAI](./secureai)** - A production-ready, AI-powered security scanner built with 2026 best practices:
+
 - ✅ TypeScript + Modern Node.js patterns
 - ✅ AI integration with Claude API
 - ✅ GitHub App for automated security scanning
@@ -22,13 +23,13 @@ This repository contains Node.js code examples from 2016-2018. While the concept
 
 ### ⚠️ Important Security Warnings
 
-| Issue | Impact | Action Required |
-|-------|--------|-----------------|
-| **Outdated Dependencies** | Known CVEs, security vulnerabilities | Update to latest versions |
-| **Old Patterns** | Callbacks instead of async/await | Modernize to promises/async-await |
-| **Hardcoded Examples** | May include example API keys | Use environment variables |
-| **Missing Validation** | No input sanitization | Add validation layers |
-| **Deprecated Packages** | No longer maintained | Find modern alternatives |
+| Issue                     | Impact                               | Action Required                   |
+| ------------------------- | ------------------------------------ | --------------------------------- |
+| **Outdated Dependencies** | Known CVEs, security vulnerabilities | Update to latest versions         |
+| **Old Patterns**          | Callbacks instead of async/await     | Modernize to promises/async-await |
+| **Hardcoded Examples**    | May include example API keys         | Use environment variables         |
+| **Missing Validation**    | No input sanitization                | Add validation layers             |
+| **Deprecated Packages**   | No longer maintained                 | Find modern alternatives          |
 
 ### ✅ Before Using Any Code
 
@@ -58,7 +59,7 @@ This repository contains Node.js code examples from 2016-2018. While the concept
 - Direct upload to S3 without local storage ([ES6](./aws/express_multer_s3/app_es8.js) | [ES5](./aws/express_multer_s3/app.js))
 - [Upload using multer-s3](./aws/express_multer_s3)
 - [Upload from base64 data](./aws/s3/upload_base_64.js)
-- [AWS Step Functions](./aws/step-functions/app.js) *(WIP)*
+- [AWS Step Functions](./aws/step-functions/app.js) _(WIP)_
 - [Lambda Functions](./aws/lambda)
 - [SQS Service Worker](./aws/sqs_service_worker)
 
@@ -96,14 +97,17 @@ This repository contains Node.js code examples from 2016-2018. While the concept
 <summary><b>📧 Communication</b></summary>
 
 **Email**
+
 - [SendGrid Integration (ES6)](./send_emails/send_grid.js)
 - [Email Templates Module](./send_emails/)
 
 **SMS**
+
 - [Twilio SMS (ES6)](./send_sms/twillio_sms.js)
 
 **Fax**
-- Phaxio API *(Planned)*
+
+- Phaxio API _(Planned)_
 
 </details>
 
@@ -149,6 +153,7 @@ This repository contains Node.js code examples from 2016-2018. While the concept
 <summary><b>🛠️ Utilities</b></summary>
 
 **Popular Utilities:**
+
 - [Gender Detection by Name](./random/small_tasks/gender_by_name.js)
 - [Exchange Rate API](./random/small_tasks/exchange_api.js)
 - [Twitter Search](./random/small_tasks/search_tweets.js)
@@ -163,9 +168,11 @@ This repository contains Node.js code examples from 2016-2018. While the concept
 - [HMAC Signature](./random/tiny_useful_modules/hmac_signature.js)
 
 **Authentication:**
+
 - [Twitter/Facebook Auth](./random/small_tasks/twitter-facebook-auth-data)
 
 **More:**
+
 - [Awesome One-Liners](./awsome)
 - [String Transliteration (ES6 | ES5)](./string/)
 - [NPM Bulk Uninstall](./random/small_tasks/uninstall_all_packages/)

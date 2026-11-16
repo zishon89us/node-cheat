@@ -1,27 +1,34 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stripe embedded Checkout</title>
-  <script src="https://js.stripe.com/endive/stripe.js"></script>
-  <style>body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; }</style>
-</head>
-<body>
-  <h1>Widget, $9.99</h1>
-  <div id="checkout"></div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stripe embedded Checkout</title>
+    <script src="https://js.stripe.com/endive/stripe.js"></script>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 40rem;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Widget, $9.99</h1>
+    <div id="checkout"></div>
 
-  <script type="module">
-    const { publishableKey } = await (await fetch('/config')).json();
-    const stripe = Stripe(publishableKey);
+    <script type="module">
+      const { publishableKey } = await (await fetch('/config')).json();
+      const stripe = Stripe(publishableKey);
 
-    const checkout = await stripe.createEmbeddedCheckoutPage({
-      fetchClientSecret: async () => {
-        const res = await fetch('/checkout-session', { method: 'POST' });
-        return (await res.json()).clientSecret;
-      },
-    });
-    checkout.mount('#checkout');
-  </script>
-</body>
+      const checkout = await stripe.createEmbeddedCheckoutPage({
+        fetchClientSecret: async () => {
+          const res = await fetch('/checkout-session', { method: 'POST' });
+          return (await res.json()).clientSecret;
+        },
+      });
+      checkout.mount('#checkout');
+    </script>
+  </body>
 </html>

@@ -21,13 +21,25 @@ export default function routes(app, passport) {
   });
 
   if (facebookAuth) {
-    app.get('/auth/facebook', passport.authenticate('facebook', { authType: 'rerequest', scope: ['email', 'user_location', 'user_birthday'] }));
-    app.get('/auth/facebook/callback', passport.authenticate('facebook', { successRedirect: '/profile', failureRedirect: '/' }));
+    app.get(
+      '/auth/facebook',
+      passport.authenticate('facebook', {
+        authType: 'rerequest',
+        scope: ['email', 'user_location', 'user_birthday'],
+      }),
+    );
+    app.get(
+      '/auth/facebook/callback',
+      passport.authenticate('facebook', { successRedirect: '/profile', failureRedirect: '/' }),
+    );
   }
 
   if (twitterAuth) {
     app.get('/auth/twitter', passport.authenticate('twitter'));
-    app.get('/auth/twitter/callback', passport.authenticate('twitter', { successRedirect: '/profile', failureRedirect: '/' }));
+    app.get(
+      '/auth/twitter/callback',
+      passport.authenticate('twitter', { successRedirect: '/profile', failureRedirect: '/' }),
+    );
   }
 
   // Unlink: forget the stored OAuth token; the account stays so the user can reconnect later

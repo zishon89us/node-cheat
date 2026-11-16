@@ -16,8 +16,12 @@ const operations = {
 
 export function calc(op1, op2, operation) {
   const fn = operations[operation];
-  if (!fn) throw new TypeError(`Unknown operation "${operation}". Use: ${Object.keys(operations).join(', ')}`);
-  if (!Number.isFinite(op1) || !Number.isFinite(op2)) throw new TypeError('Operands must be numbers');
+  if (!fn)
+    throw new TypeError(
+      `Unknown operation "${operation}". Use: ${Object.keys(operations).join(', ')}`,
+    );
+  if (!Number.isFinite(op1) || !Number.isFinite(op2))
+    throw new TypeError('Operands must be numbers');
   return fn(op1, op2);
 }
 

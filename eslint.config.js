@@ -16,7 +16,10 @@ export default [
       globals: { ...globals.node },
     },
     rules: {
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_', caughtErrors: 'none' }],
+      'no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrors: 'none' },
+      ],
       'no-console': 'off',
       // Examples intentionally index objects and read paths from variables.
       'security/detect-object-injection': 'off',
@@ -24,11 +27,15 @@ export default [
     },
   },
   {
-    files: ['**/public/**/*.js', '**/views/**/*.js', 'WebRTC/**/*.js'],
+    files: ['**/public/**/*.js', '**/views/**/*.js'],
     languageOptions: {
       sourceType: 'script',
-      globals: { ...globals.browser },
+      globals: { ...globals.browser, io: 'readonly' },
     },
+  },
+  {
+    files: ['WebRTC/**/public/**/*.js'],
+    languageOptions: { sourceType: 'module' },
   },
   prettier,
 ];

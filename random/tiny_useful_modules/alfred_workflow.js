@@ -9,7 +9,8 @@ import fuzzy from 'fuzzy';
 
 const [sheetId, keyword = ''] = process.argv.slice(2);
 if (!sheetId) throw new Error('Usage: node alfred_workflow.js <sheetId> <keyword>');
-if (!process.env.GOOGLE_API_KEY) throw new Error('Set GOOGLE_API_KEY (the sheet must be shared publicly)');
+if (!process.env.GOOGLE_API_KEY)
+  throw new Error('Set GOOGLE_API_KEY (the sheet must be shared publicly)');
 
 const doc = new GoogleSpreadsheet(sheetId, { apiKey: process.env.GOOGLE_API_KEY });
 await doc.loadInfo();

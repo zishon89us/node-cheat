@@ -29,7 +29,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('new message', (rawMessage) => {
-    const message = typeof rawMessage === 'string' ? rawMessage.trim().slice(0, MAX_MESSAGE_LENGTH) : '';
+    const message =
+      typeof rawMessage === 'string' ? rawMessage.trim().slice(0, MAX_MESSAGE_LENGTH) : '';
     if (!socket.data.username || !message) return;
     socket.broadcast.emit('new message', { username: socket.data.username, message });
   });
@@ -39,7 +40,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('stop typing', () => {
-    if (socket.data.username) socket.broadcast.emit('stop typing', { username: socket.data.username });
+    if (socket.data.username)
+      socket.broadcast.emit('stop typing', { username: socket.data.username });
   });
 
   socket.on('disconnect', () => {

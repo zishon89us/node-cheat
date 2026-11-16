@@ -22,7 +22,10 @@ export default function routes(app, passport) {
   app.get('/twitter/usernames', isLoggedIn, usernames);
 
   app.get('/auth/twitter', passport.authenticate('twitter'));
-  app.get('/auth/twitter/callback', passport.authenticate('twitter', { successRedirect: '/profile', failureRedirect: '/' }));
+  app.get(
+    '/auth/twitter/callback',
+    passport.authenticate('twitter', { successRedirect: '/profile', failureRedirect: '/' }),
+  );
 
   // Unlink: forget the stored OAuth credentials; the account stays so the user can reconnect
   app.post('/unlink/twitter', isLoggedIn, async (req, res) => {

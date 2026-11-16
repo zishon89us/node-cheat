@@ -21,5 +21,6 @@ console.log(cc.validate('deem-y68e-rm81'));
 
 // No dependency: cryptographically secure code from an unambiguous alphabet
 const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-const secureCode = (length = 10) => Array.from({ length }, () => ALPHABET[randomInt(ALPHABET.length)]).join('');
+const secureCode = (length = 10) =>
+  Array.from({ length }, () => ALPHABET[randomInt(ALPHABET.length)]).join('');
 console.log(secureCode());

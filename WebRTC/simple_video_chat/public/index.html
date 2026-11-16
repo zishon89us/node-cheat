@@ -5,9 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Simple WebRTC video chat</title>
     <style>
-      body { font-family: system-ui, sans-serif; margin: 16px; }
-      .videos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
-      video { width: 100%; background: #000; border-radius: 8px; aspect-ratio: 4 / 3; }
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 16px;
+      }
+      .videos {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 12px;
+      }
+      video {
+        width: 100%;
+        background: #000;
+        border-radius: 8px;
+        aspect-ratio: 4 / 3;
+      }
     </style>
     <script src="/socket.io/socket.io.js" defer></script>
     <script src="/client.js" type="module"></script>

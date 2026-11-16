@@ -6,10 +6,15 @@
 
 const expandUrl = async (shortUrl) => {
   const url = new URL(shortUrl);
-  if (url.protocol !== 'https:' && url.protocol !== 'http:') throw new Error('Only http(s) URLs are supported');
+  if (url.protocol !== 'https:' && url.protocol !== 'http:')
+    throw new Error('Only http(s) URLs are supported');
 
   // HEAD avoids downloading the target page; some shorteners only answer GET
-  const res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: AbortSignal.timeout(10_000) });
+  const res = await fetch(url, {
+    method: 'HEAD',
+    redirect: 'follow',
+    signal: AbortSignal.timeout(10_000),
+  });
   return res.url;
 };
 

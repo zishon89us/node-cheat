@@ -15,4 +15,6 @@ const { values } = parseArgs({
   },
 });
 
-console.log(`This is value of flag A: ${values.a} & flag B: ${values.b} (verbose: ${values.verbose})`);
+console.log(
+  `This is value of flag A: ${values.a} & flag B: ${values.b} (verbose: ${values.verbose})`,
+);

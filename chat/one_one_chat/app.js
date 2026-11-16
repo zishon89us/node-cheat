@@ -17,7 +17,8 @@ const io = new Server(server, { maxHttpBufferSize: 10_000 });
 
 const users = new Map(); // name -> socket id
 const userList = () => [...users.keys()];
-const cleanText = (value) => (typeof value === 'string' ? value.trim().slice(0, MAX_MESSAGE_LENGTH) : '');
+const cleanText = (value) =>
+  typeof value === 'string' ? value.trim().slice(0, MAX_MESSAGE_LENGTH) : '';
 
 io.on('connection', (socket) => {
   socket.emit('users', userList());
@@ -26,7 +27,8 @@ io.on('connection', (socket) => {
     if (typeof ack !== 'function') return;
     const name = typeof rawName === 'string' ? rawName.trim() : '';
     if (socket.data.name) return ack({ ok: false, error: 'You already joined.' });
-    if (!NAME_PATTERN.test(name)) return ack({ ok: false, error: 'Use 1-20 letters, numbers, spaces, _ or -.' });
+    if (!NAME_PATTERN.test(name))
+      return ack({ ok: false, error: 'Use 1-20 letters, numbers, spaces, _ or -.' });
     if (users.has(name)) return ack({ ok: false, error: 'This name is already taken.' });
 
     socket.data.name = name;

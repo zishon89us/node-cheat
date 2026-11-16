@@ -9,7 +9,8 @@ import { XeroClient } from 'xero-node';
 import { XeroService } from './xeroService.js';
 
 const { XERO_CLIENT_ID, XERO_CLIENT_SECRET } = process.env;
-if (!XERO_CLIENT_ID || !XERO_CLIENT_SECRET) throw new Error('Set XERO_CLIENT_ID and XERO_CLIENT_SECRET');
+if (!XERO_CLIENT_ID || !XERO_CLIENT_SECRET)
+  throw new Error('Set XERO_CLIENT_ID and XERO_CLIENT_SECRET');
 
 const port = Number(process.env.PORT ?? 3000);
 

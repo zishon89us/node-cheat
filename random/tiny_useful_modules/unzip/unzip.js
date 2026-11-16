@@ -20,7 +20,8 @@ for (const entry of zip.getEntries()) {
 // extractEntryTo(entry, targetPath, maintainEntryPath, overwrite); adm-zip blocks "../" zip-slip paths
 zip.extractEntryTo('sample_files/file2.txt', path.join(here, 'sample_output'), false, true);
 
-const zipUrl = 'https://github.com/twbs/bootstrap/releases/download/v5.3.3/bootstrap-5.3.3-dist.zip';
+const zipUrl =
+  'https://github.com/twbs/bootstrap/releases/download/v5.3.3/bootstrap-5.3.3-dist.zip';
 
 // 2. Download a zip into memory and list its contents without touching disk
 const res = await fetch(zipUrl);
@@ -31,5 +32,8 @@ console.log(`${remoteZip.getEntries().length} entries in remote zip`);
 // 3. Stream a download straight to a file (constant memory, good for large files)
 const streamRes = await fetch(zipUrl);
 if (!streamRes.ok) throw new Error(`Download failed: ${streamRes.status}`);
-await pipeline(Readable.fromWeb(streamRes.body), createWriteStream(path.join(here, 'downloaded.zip')));
+await pipeline(
+  Readable.fromWeb(streamRes.body),
+  createWriteStream(path.join(here, 'downloaded.zip')),
+);
 console.log('File written!');

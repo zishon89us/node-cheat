@@ -7,7 +7,8 @@
 import cron from 'node-cron';
 import chalk from 'chalk';
 
-const log = (msg, color = 'blue') => console.log(chalk[color](msg), chalk.green(new Date().toISOString()));
+const log = (msg, color = 'blue') =>
+  console.log(chalk[color](msg), chalk.green(new Date().toISOString()));
 
 log('Starting now');
 

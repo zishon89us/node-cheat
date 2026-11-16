@@ -15,7 +15,8 @@ async function downloadImage(url) {
 
   const res = await fetch(parsed, { signal: AbortSignal.timeout(10_000) });
   if (!res.ok) throw new Error(`Download failed (${res.status}) for ${url}`);
-  if (!res.headers.get('content-type')?.startsWith('image/')) throw new Error(`Not an image: ${url}`);
+  if (!res.headers.get('content-type')?.startsWith('image/'))
+    throw new Error(`Not an image: ${url}`);
 
   const buffer = Buffer.from(await res.arrayBuffer());
   if (buffer.length > MAX_IMAGE_BYTES) throw new Error(`Image too large: ${url}`);
@@ -39,12 +40,16 @@ export const handler = async (event) => {
 
     const merged = await sharp(userImage)
       .resize(400, 400, { fit: 'cover' })
-      .composite([{ input: await sharp(friendImage).resize(200, 200).toBuffer(), top: 100, left: 100 }])
+      .composite([
+        { input: await sharp(friendImage).resize(200, 200).toBuffer(), top: 100, left: 100 },
+      ])
       .jpeg({ quality: 85 })
       .toBuffer();
 
     const key = `merged/${Date.now()}.jpg`;
-    await s3.send(new PutObjectCommand({ Bucket: bucket, Key: key, Body: merged, ContentType: 'image/jpeg' }));
+    await s3.send(
+      new PutObjectCommand({ Bucket: bucket, Key: key, Body: merged, ContentType: 'image/jpeg' }),
+    );
 
     return { stat: 'ok', bucket, key };
   } catch (err) {

@@ -44,7 +44,10 @@ export default function configurePassport(passport) {
   if (facebookAuth) {
     passport.use(
       new FacebookStrategy(
-        { ...facebookAuth, profileFields: ['id', 'emails', 'name', 'birthday', 'gender', 'location', 'age_range'] },
+        {
+          ...facebookAuth,
+          profileFields: ['id', 'emails', 'name', 'birthday', 'gender', 'location', 'age_range'],
+        },
         asyncVerify(async (token, profile) => {
           const json = profile._json;
           return upsertSocialUser('facebook', profile.id, token, {
@@ -66,7 +69,9 @@ export default function configurePassport(passport) {
       new TwitterStrategy(
         { ...twitterAuth, includeEmail: true },
         asyncVerify(async (token, profile) => {
-          const [firstName = '', ...rest] = (profile._json.name ?? profile.displayName ?? '').split(' ');
+          const [firstName = '', ...rest] = (profile._json.name ?? profile.displayName ?? '').split(
+            ' ',
+          );
           return upsertSocialUser('twitter', profile.id, token, {
             firstName,
             lastName: rest.at(-1) ?? '',

@@ -11,7 +11,9 @@ if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_PHONE_NUMBER) {
 const recipients = process.argv.slice(2);
 const invalid = recipients.filter((to) => !/^\+[1-9]\d{6,14}$/.test(to));
 if (recipients.length === 0 || invalid.length) {
-  throw new Error(`Pass E.164 phone numbers as arguments${invalid.length ? `; invalid: ${invalid.join(', ')}` : ''}`);
+  throw new Error(
+    `Pass E.164 phone numbers as arguments${invalid.length ? `; invalid: ${invalid.join(', ')}` : ''}`,
+  );
 }
 
 const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
@@ -22,6 +24,7 @@ const results = await Promise.allSettled(
 );
 
 results.forEach((result, i) => {
-  if (result.status === 'fulfilled') console.log(`SMS queued for ${recipients[i]} (${result.value.sid})`);
+  if (result.status === 'fulfilled')
+    console.log(`SMS queued for ${recipients[i]} (${result.value.sid})`);
   else console.error(`SMS to ${recipients[i]} failed: ${result.reason.message}`);
 });

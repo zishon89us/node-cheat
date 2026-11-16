@@ -6,10 +6,12 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 const secretBase64 = process.env.HMAC_SECRET;
-if (!secretBase64) throw new Error('Set HMAC_SECRET (base64), e.g. HMAC_SECRET=$(openssl rand -base64 48)');
+if (!secretBase64)
+  throw new Error('Set HMAC_SECRET (base64), e.g. HMAC_SECRET=$(openssl rand -base64 48)');
 const secret = Buffer.from(secretBase64, 'base64');
 
-const sign = (path, timestamp) => createHmac('sha512', secret).update(`${path}\n${timestamp}`).digest('base64');
+const sign = (path, timestamp) =>
+  createHmac('sha512', secret).update(`${path}\n${timestamp}`).digest('base64');
 
 const timestamp = Date.now();
 const path = '/account/';

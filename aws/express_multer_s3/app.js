@@ -33,7 +33,12 @@ app.get('/', (req, res) => {
 app.post('/upload', upload.array('upl', 25), (req, res) => {
   res.json({
     message: 'Uploaded!',
-    files: req.files.map(({ location, key, mimetype, size }) => ({ url: location, key, type: mimetype, size })),
+    files: req.files.map(({ location, key, mimetype, size }) => ({
+      url: location,
+      key,
+      type: mimetype,
+      size,
+    })),
   });
 });
 

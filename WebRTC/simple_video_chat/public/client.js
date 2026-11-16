@@ -14,9 +14,14 @@ const rtcConfig = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 function createPeerConnection() {
   pc = new RTCPeerConnection(rtcConfig);
   localStream.getTracks().forEach((track) => pc.addTrack(track, localStream));
-  pc.addEventListener('icecandidate', ({ candidate }) => candidate && socket.emit('ice-candidate', candidate));
+  pc.addEventListener(
+    'icecandidate',
+    ({ candidate }) => candidate && socket.emit('ice-candidate', candidate),
+  );
   pc.addEventListener('track', ({ streams: [stream] }) => (remoteVideo.srcObject = stream));
-  pc.addEventListener('connectionstatechange', () => setStatus(`Connection: ${pc.connectionState}`));
+  pc.addEventListener('connectionstatechange', () =>
+    setStatus(`Connection: ${pc.connectionState}`),
+  );
 }
 
 async function makeOffer() {
@@ -52,7 +57,9 @@ try {
   localVideo.srcObject = localStream;
   socket.emit('join', room, ({ ok, error, initiator }) => {
     if (!ok) return setStatus(error);
-    setStatus(initiator ? 'Joined; connecting to peer…' : `Waiting for someone to join room "${room}"…`);
+    setStatus(
+      initiator ? 'Joined; connecting to peer…' : `Waiting for someone to join room "${room}"…`,
+    );
   });
 } catch (err) {
   setStatus(`Camera/microphone unavailable: ${err.message}`);

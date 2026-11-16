@@ -19,7 +19,10 @@ app.post('/checkout-session', async (req, res) => {
     ui_mode: 'embedded_page',
     mode: 'payment',
     line_items: [
-      { quantity: 1, price_data: { currency: 'usd', unit_amount: 999, product_data: { name: 'Widget' } } },
+      {
+        quantity: 1,
+        price_data: { currency: 'usd', unit_amount: 999, product_data: { name: 'Widget' } },
+      },
     ],
     return_url: `${origin}/return?session_id={CHECKOUT_SESSION_ID}`,
   });

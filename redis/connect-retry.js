@@ -9,7 +9,8 @@ const client = createClient({
   url: process.env.REDIS_URL ?? 'redis://localhost:6379',
   socket: {
     reconnectStrategy: (retries, cause) => {
-      if (retries >= MAX_RETRIES) return new Error(`Giving up after ${retries} retries: ${cause.message}`);
+      if (retries >= MAX_RETRIES)
+        return new Error(`Giving up after ${retries} retries: ${cause.message}`);
       const jitter = Math.floor(Math.random() * 100);
       return Math.min(2 ** retries * 50, 3000) + jitter;
     },

@@ -33,7 +33,9 @@ app.post('/file', async (req, res) => {
     res.status(400).json({ error: 'Query param "name" must be 1-100 chars of [A-Za-z0-9_.-]' });
     return;
   }
-  const upload = bucket.openUploadStream(name, { metadata: { contentType: req.get('content-type') } });
+  const upload = bucket.openUploadStream(name, {
+    metadata: { contentType: req.get('content-type') },
+  });
   try {
     await pipeline(req, limitSize(MAX_BYTES), upload);
   } catch (err) {
@@ -62,10 +64,15 @@ app.get('/file/:id', async (req, res) => {
 
 app.use((err, req, res, _next) => {
   console.error(err);
-  if (!res.headersSent) res.status(err.status ?? 500).json({ error: err.status ? err.message : 'Internal server error' });
+  if (!res.headersSent)
+    res
+      .status(err.status ?? 500)
+      .json({ error: err.status ? err.message : 'Internal server error' });
 });
 
 const port = Number(process.env.PORT ?? 3000);
-const server = app.listen(port, () => console.log(`All set! Start uploading on http://localhost:${port}`));
+const server = app.listen(port, () =>
+  console.log(`All set! Start uploading on http://localhost:${port}`),
+);
 
 process.on('SIGTERM', () => server.close(() => client.close()));

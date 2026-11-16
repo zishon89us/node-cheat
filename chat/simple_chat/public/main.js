@@ -1,6 +1,19 @@
 // Vanilla JS client (no jQuery). User text is only ever set via textContent.
 const TYPING_TIMER_LENGTH = 400;
-const COLORS = ['#e21400', '#91580f', '#f8a700', '#f78b00', '#58dc00', '#287b00', '#a8f07a', '#4ae8c4', '#3b88eb', '#3824aa', '#a700ff', '#d300e7'];
+const COLORS = [
+  '#e21400',
+  '#91580f',
+  '#f8a700',
+  '#f78b00',
+  '#58dc00',
+  '#287b00',
+  '#a8f07a',
+  '#4ae8c4',
+  '#3b88eb',
+  '#3824aa',
+  '#a700ff',
+  '#d300e7',
+];
 
 const usernameInput = document.querySelector('.usernameInput');
 const messages = document.querySelector('.messages');
@@ -42,7 +55,9 @@ function getUsernameColor(name) {
 }
 
 const getTypingMessages = (name) =>
-  [...messages.querySelectorAll('.typing.message')].filter((node) => node.dataset.username === name);
+  [...messages.querySelectorAll('.typing.message')].filter(
+    (node) => node.dataset.username === name,
+  );
 
 function addChatMessage({ username: from, message, typing: isTyping = false }) {
   getTypingMessages(from).forEach((node) => node.remove());
@@ -55,7 +70,8 @@ function addChatMessage({ username: from, message, typing: isTyping = false }) {
   addMessageElement(item);
 }
 
-const removeChatTyping = ({ username: from }) => getTypingMessages(from).forEach((node) => node.remove());
+const removeChatTyping = ({ username: from }) =>
+  getTypingMessages(from).forEach((node) => node.remove());
 
 function setUsername() {
   username = usernameInput.value.trim();

@@ -6,7 +6,12 @@
 
 import { TwitterApi } from 'twitter-api-v2';
 
-const required = ['TWITTER_CONSUMER_KEY', 'TWITTER_CONSUMER_SECRET', 'TWITTER_ACCESS_TOKEN', 'TWITTER_ACCESS_TOKEN_SECRET'];
+const required = [
+  'TWITTER_CONSUMER_KEY',
+  'TWITTER_CONSUMER_SECRET',
+  'TWITTER_ACCESS_TOKEN',
+  'TWITTER_ACCESS_TOKEN_SECRET',
+];
 const missing = required.filter((name) => !process.env[name]);
 if (missing.length) throw new Error(`Missing env vars: ${missing.join(', ')}`);
 
