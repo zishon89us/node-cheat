@@ -1,211 +1,150 @@
-import { SecurityFinding, ScannerRule, GitHubFile, ScanResult } from '../types/index.js';
+import { createHash } from 'node:crypto';
+import type {
+  ScanResult,
+  ScannerRule,
+  SecurityFinding,
+  Severity,
+  SourceFile,
+} from '../types/index.js';
+import { MAX_FILE_BYTES, isProbablyBinary, shouldScanPath } from './filters.js';
 import { securityRules } from './rules.js';
-import crypto from 'crypto';
+
+const SEVERITY_ORDER: Record<Severity, number> = { critical: 0, high: 1, medium: 2, low: 3 };
+const TOKEN_LIKE = /[A-Za-z0-9+/=_\-.]{16,}/g;
+
+export function maskSecrets(text: string): string {
+  return text.replace(TOKEN_LIKE, token => `${token.slice(0, 4)}${'*'.repeat(8)}`);
+}
+
+export function summarize(
+  repositoryUrl: string,
+  filesScanned: number,
+  findings: SecurityFinding[]
+): ScanResult {
+  const sorted = [...findings].sort(
+    (a, b) =>
+      SEVERITY_ORDER[a.severity] - SEVERITY_ORDER[b.severity] ||
+      a.file.localeCompare(b.file) ||
+      a.line - b.line
+  );
+  const count = (s: Severity) => sorted.filter(f => f.severity === s).length;
+  return {
+    repositoryUrl,
+    scannedAt: new Date(),
+    filesScanned,
+    totalFindings: sorted.length,
+    criticalCount: count('critical'),
+    highCount: count('high'),
+    mediumCount: count('medium'),
+    lowCount: count('low'),
+    findings: sorted,
+  };
+}
 
 export class SecurityScanner {
-  private rules: ScannerRule[];
-
-  constructor(customRules?: ScannerRule[]) {
-    this.rules = customRules || securityRules;
+  constructor(private readonly rules: ScannerRule[] = securityRules) {
+    for (const rule of rules) {
+      for (const pattern of toArray(rule.pattern)) {
+        if (!pattern.flags.includes('g'))
+          throw new Error(`Rule ${rule.id} pattern must use the g flag`);
+      }
+    }
   }
 
-  /**
-   * Scan multiple files for security vulnerabilities
-   */
-  async scanFiles(files: GitHubFile[], repositoryUrl: string): Promise<ScanResult> {
-    const allFindings: SecurityFinding[] = [];
-
+  scanFiles(files: SourceFile[], repositoryUrl: string): ScanResult {
+    const findings: SecurityFinding[] = [];
+    let filesScanned = 0;
     for (const file of files) {
-      // Skip binary files, images, and non-scannable files
-      if (this.shouldSkipFile(file.path)) {
+      if (
+        !shouldScanPath(file.path) ||
+        file.content.length > MAX_FILE_BYTES ||
+        isProbablyBinary(file.content)
+      ) {
         continue;
       }
-
-      const findings = await this.scanFile(file);
-      allFindings.push(...findings);
+      filesScanned++;
+      findings.push(...this.scanFile(file));
     }
-
-    // Sort findings by severity
-    const sortedFindings = this.sortBySeverity(allFindings);
-
-    return {
-      repositoryUrl,
-      scannedAt: new Date(),
-      totalFindings: sortedFindings.length,
-      criticalCount: sortedFindings.filter(f => f.severity === 'critical').length,
-      highCount: sortedFindings.filter(f => f.severity === 'high').length,
-      mediumCount: sortedFindings.filter(f => f.severity === 'medium').length,
-      lowCount: sortedFindings.filter(f => f.severity === 'low').length,
-      findings: sortedFindings,
-    };
+    return summarize(repositoryUrl, filesScanned, findings);
   }
 
-  /**
-   * Scan a single file for vulnerabilities
-   */
-  private async scanFile(file: GitHubFile): Promise<SecurityFinding[]> {
-    const findings: SecurityFinding[] = [];
+  scanFile(file: SourceFile): SecurityFinding[] {
     const lines = file.content.split('\n');
+    const lineStarts = computeLineStarts(file.content);
+    const byId = new Map<string, SecurityFinding>();
 
     for (const rule of this.rules) {
-      const patterns = Array.isArray(rule.pattern) ? rule.pattern : [rule.pattern];
+      for (const pattern of toArray(rule.pattern)) {
+        for (const match of file.content.matchAll(pattern)) {
+          if (rule.validate && !rule.validate(match, file.content, file.path)) continue;
 
-      for (const pattern of patterns) {
-        const matches = this.findMatches(file.content, pattern);
+          const { line, column } = locate(lineStarts, match.index ?? 0);
+          const id = findingId(rule.id, file.path, line);
+          if (byId.has(id)) continue;
 
-        for (const match of matches) {
-          // Apply custom validation if provided
-          if (rule.validate && !rule.validate(match, file.content, file.path)) {
-            continue;
-          }
-
-          const position = this.getLineAndColumn(file.content, match.index!);
-          const codeSnippet = this.getCodeSnippet(lines, position.line);
-
-          const finding: SecurityFinding = {
-            id: this.generateFindingId(rule.id, file.path, position.line),
+          const mask = rule.redact ? maskSecrets : (s: string) => s;
+          byId.set(id, {
+            id,
+            ruleId: rule.id,
             severity: rule.severity,
             category: rule.category,
             title: rule.name,
             description: rule.getMessage(match),
             file: file.path,
-            line: position.line,
-            column: position.column,
-            code: codeSnippet,
-            recommendation: rule.getRecommendation(),
+            line,
+            column,
+            code: mask(snippet(lines, line, 2)),
+            context: mask(snippet(lines, line, 15)),
+            recommendation: rule.recommendation,
             cwe: rule.cwe,
             references: rule.references,
-          };
-
-          findings.push(finding);
+          });
         }
       }
     }
-
-    return findings;
+    return [...byId.values()];
   }
+}
 
-  /**
-   * Find all matches of a pattern in content
-   */
-  private findMatches(content: string, pattern: RegExp): RegExpMatchArray[] {
-    const matches: RegExpMatchArray[] = [];
-    let match: RegExpMatchArray | null;
+function toArray(pattern: RegExp | RegExp[]): RegExp[] {
+  return Array.isArray(pattern) ? pattern : [pattern];
+}
 
-    // Reset regex state
-    const regex = new RegExp(pattern.source, pattern.flags);
-
-    while ((match = regex.exec(content)) !== null) {
-      matches.push(match);
-      // Prevent infinite loops on zero-width matches
-      if (match.index === regex.lastIndex) {
-        regex.lastIndex++;
-      }
-    }
-
-    return matches;
+function computeLineStarts(content: string): number[] {
+  const starts = [0];
+  for (let i = 0; i < content.length; i++) {
+    if (content.charCodeAt(i) === 10) starts.push(i + 1);
   }
+  return starts;
+}
 
-  /**
-   * Get line and column number from string index
-   */
-  private getLineAndColumn(content: string, index: number): { line: number; column: number } {
-    const beforeMatch = content.substring(0, index);
-    const lines = beforeMatch.split('\n');
-    return {
-      line: lines.length,
-      column: lines[lines.length - 1].length + 1,
-    };
+function locate(lineStarts: number[], index: number): { line: number; column: number } {
+  let lo = 0;
+  let hi = lineStarts.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1;
+    if (lineStarts[mid] <= index) lo = mid;
+    else hi = mid - 1;
   }
+  return { line: lo + 1, column: index - lineStarts[lo] + 1 };
+}
 
-  /**
-   * Extract code snippet around the vulnerability
-   */
-  private getCodeSnippet(lines: string[], lineNumber: number, context = 2): string {
-    const start = Math.max(0, lineNumber - context - 1);
-    const end = Math.min(lines.length, lineNumber + context);
-    const snippetLines = lines.slice(start, end);
+function snippet(lines: string[], lineNumber: number, radius: number): string {
+  const start = Math.max(0, lineNumber - radius - 1);
+  const end = Math.min(lines.length, lineNumber + radius);
+  return lines
+    .slice(start, end)
+    .map((text, i) => {
+      const n = start + i + 1;
+      return `${n === lineNumber ? '>' : ' '} ${String(n).padStart(4)} | ${text}`;
+    })
+    .join('\n');
+}
 
-    return snippetLines
-      .map((line, idx) => {
-        const actualLineNumber = start + idx + 1;
-        const marker = actualLineNumber === lineNumber ? '> ' : '  ';
-        return `${marker}${actualLineNumber.toString().padStart(4, ' ')} | ${line}`;
-      })
-      .join('\n');
-  }
-
-  /**
-   * Generate unique ID for a finding
-   */
-  private generateFindingId(ruleId: string, filePath: string, line: number): string {
-    const hash = crypto
-      .createHash('sha256')
-      .update(`${ruleId}-${filePath}-${line}`)
-      .digest('hex')
-      .substring(0, 12);
-    return `${ruleId}-${hash}`;
-  }
-
-  /**
-   * Sort findings by severity (critical > high > medium > low)
-   */
-  private sortBySeverity(findings: SecurityFinding[]): SecurityFinding[] {
-    const severityOrder = { critical: 0, high: 1, medium: 2, low: 3 };
-    return findings.sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
-  }
-
-  /**
-   * Determine if a file should be skipped from scanning
-   */
-  private shouldSkipFile(filePath: string): boolean {
-    const skipExtensions = [
-      '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico',
-      '.pdf', '.zip', '.tar', '.gz', '.exe', '.dll',
-      '.so', '.dylib', '.woff', '.woff2', '.ttf', '.eot',
-      '.mp4', '.avi', '.mov', '.mp3', '.wav',
-    ];
-
-    const skipDirectories = [
-      'node_modules/',
-      'dist/',
-      'build/',
-      '.git/',
-      'coverage/',
-      'vendor/',
-      '__pycache__/',
-    ];
-
-    const lowerPath = filePath.toLowerCase();
-
-    // Skip by extension
-    if (skipExtensions.some(ext => lowerPath.endsWith(ext))) {
-      return true;
-    }
-
-    // Skip by directory
-    if (skipDirectories.some(dir => lowerPath.includes(dir))) {
-      return true;
-    }
-
-    return false;
-  }
-
-  /**
-   * Get statistics about scan results
-   */
-  getScanStatistics(result: ScanResult): string {
-    const total = result.totalFindings;
-    if (total === 0) {
-      return '✅ No security issues found!';
-    }
-
-    const parts = [];
-    if (result.criticalCount > 0) parts.push(`🔴 ${result.criticalCount} critical`);
-    if (result.highCount > 0) parts.push(`🟠 ${result.highCount} high`);
-    if (result.mediumCount > 0) parts.push(`🟡 ${result.mediumCount} medium`);
-    if (result.lowCount > 0) parts.push(`🔵 ${result.lowCount} low`);
-
-    return `Found ${total} security issue${total > 1 ? 's' : ''}: ${parts.join(', ')}`;
-  }
+function findingId(ruleId: string, filePath: string, line: number): string {
+  const hash = createHash('sha256')
+    .update(`${ruleId}:${filePath}:${line}`)
+    .digest('hex')
+    .slice(0, 12);
+  return `${ruleId}-${hash}`;
 }

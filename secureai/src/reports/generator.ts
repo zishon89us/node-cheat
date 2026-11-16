@@ -1,242 +1,147 @@
-import { ScanResult, SecurityFinding } from '../types/index.js';
+import type { ScanResult, SecurityFinding, Severity } from '../types/index.js';
+
+const ICON: Record<Severity, string> = { critical: '🔴', high: '🟠', medium: '🟡', low: '🔵' };
+const LABEL: Record<Severity, string> = {
+  critical: 'Critical',
+  high: 'High',
+  medium: 'Medium',
+  low: 'Low',
+};
+const MAX_DETAILED = 10;
+
+const LANG_BY_EXT: Record<string, string> = {
+  js: 'javascript',
+  mjs: 'javascript',
+  cjs: 'javascript',
+  jsx: 'jsx',
+  ts: 'typescript',
+  tsx: 'tsx',
+  py: 'python',
+  rb: 'ruby',
+  go: 'go',
+  java: 'java',
+  php: 'php',
+  json: 'json',
+  yml: 'yaml',
+  yaml: 'yaml',
+  sh: 'bash',
+};
+
+export function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/** Inline text from scanned files must not be able to inject markdown or HTML into the report. */
+function inline(text: string): string {
+  return escapeHtml(text).replace(/([\\`*_[\]|])/g, '\\$1');
+}
+
+function codeSpan(text: string): string {
+  return `\`${text.replace(/`/g, "'")}\``;
+}
+
+/** A fence one backtick longer than any run in the code, so code can't close it early. */
+function fenced(code: string, file: string): string {
+  const longestRun = Math.max(2, ...(code.match(/`+/g) ?? []).map(run => run.length));
+  const fence = '`'.repeat(longestRun + 1);
+  const lang = LANG_BY_EXT[file.split('.').pop()?.toLowerCase() ?? ''] ?? '';
+  return `${fence}${lang}\n${code}\n${fence}`;
+}
 
 export class ReportGenerator {
-  /**
-   * Generate a markdown report for GitHub comments
-   */
-  generateMarkdownReport(result: ScanResult, includeDetails = true): string {
-    const { findings, totalFindings, criticalCount, highCount, mediumCount, lowCount } = result;
-
-    if (totalFindings === 0) {
-      return this.generateCleanReport();
+  generateMarkdownReport(result: ScanResult): string {
+    if (result.totalFindings === 0) {
+      return `## ✅ SecureAI: no security issues found\n\nScanned ${result.filesScanned} file(s).`;
     }
 
-    const sections: string[] = [];
-
-    // Header
-    sections.push('# 🔒 SecureAI Security Scan Report\n');
-
-    // Summary
-    sections.push(this.generateSummarySection(result));
-
-    // Critical findings (always show)
-    if (criticalCount > 0) {
-      const criticalFindings = findings.filter(f => f.severity === 'critical');
-      sections.push(this.generateSeveritySection('Critical', criticalFindings, '🔴', true));
+    const sections = ['## 🔒 SecureAI security scan', this.summary(result)];
+    for (const severity of ['critical', 'high', 'medium', 'low'] as const) {
+      const group = result.findings.filter(f => f.severity === severity);
+      if (group.length === 0) continue;
+      sections.push(
+        severity === 'critical' || severity === 'high'
+          ? this.detailed(severity, group)
+          : this.collapsed(severity, group)
+      );
     }
-
-    // High findings
-    if (highCount > 0 && includeDetails) {
-      const highFindings = findings.filter(f => f.severity === 'high');
-      sections.push(this.generateSeveritySection('High', highFindings, '🟠', true));
-    }
-
-    // Medium and Low (collapsed)
-    if (mediumCount > 0 && includeDetails) {
-      const mediumFindings = findings.filter(f => f.severity === 'medium');
-      sections.push(this.generateSeveritySection('Medium', mediumFindings, '🟡', false));
-    }
-
-    if (lowCount > 0 && includeDetails) {
-      const lowFindings = findings.filter(f => f.severity === 'low');
-      sections.push(this.generateSeveritySection('Low', lowFindings, '🔵', false));
-    }
-
-    // Footer with recommendations
-    sections.push(this.generateFooter(result));
-
+    sections.push(
+      `---\n_Scanned ${result.filesScanned} file(s) at ${result.scannedAt.toISOString()}._`
+    );
     return sections.join('\n\n');
   }
 
-  /**
-   * Generate summary section
-   */
-  private generateSummarySection(result: ScanResult): string {
-    const { totalFindings, criticalCount, highCount, mediumCount, lowCount } = result;
-
-    const parts = [];
-    if (criticalCount > 0) parts.push(`🔴 **${criticalCount} Critical**`);
-    if (highCount > 0) parts.push(`🟠 **${highCount} High**`);
-    if (mediumCount > 0) parts.push(`🟡 ${mediumCount} Medium`);
-    if (lowCount > 0) parts.push(`🔵 ${lowCount} Low`);
-
-    return `## Summary
-
-Found **${totalFindings}** security issue${totalFindings > 1 ? 's' : ''}: ${parts.join(' | ')}
-
-${criticalCount > 0 ? '⚠️ **Action Required:** Critical vulnerabilities detected. Address immediately before merging.' : ''}`;
-  }
-
-  /**
-   * Generate findings section by severity
-   */
-  private generateSeveritySection(
-    severity: string,
-    findings: SecurityFinding[],
-    icon: string,
-    expanded = true
-  ): string {
-    const header = `## ${icon} ${severity} Severity (${findings.length})`;
-
-    if (!expanded) {
-      const summary = findings.map(f => `- **${f.title}** in \`${f.file}:${f.line}\``).join('\n');
-      return `${header}\n\n<details>\n<summary>Show ${findings.length} finding${findings.length > 1 ? 's' : ''}</summary>\n\n${summary}\n\n</details>`;
-    }
-
-    const items = findings.slice(0, 10).map((finding, idx) => {
-      return this.generateFindingItem(finding, idx + 1);
-    });
-
-    let content = items.join('\n\n---\n\n');
-
-    if (findings.length > 10) {
-      content += `\n\n*... and ${findings.length - 10} more ${severity.toLowerCase()} severity finding${findings.length - 10 > 1 ? 's' : ''}*`;
-    }
-
-    return `${header}\n\n${content}`;
-  }
-
-  /**
-   * Generate individual finding item
-   */
-  private generateFindingItem(finding: SecurityFinding, index: number): string {
-    const parts = [];
-
-    // Title
-    parts.push(`### ${index}. ${finding.title}`);
-
-    // Metadata
-    const metadata = [
-      `**File:** \`${finding.file}:${finding.line}\``,
-      `**Category:** ${finding.category}`,
-    ];
-    if (finding.cwe) {
-      metadata.push(`**CWE:** [${finding.cwe}](https://cwe.mitre.org/data/definitions/${finding.cwe.replace('CWE-', '')}.html)`);
-    }
-    parts.push(metadata.join(' | '));
-
-    // Description
-    parts.push(`**Description:** ${finding.description}`);
-
-    // Code snippet
-    if (finding.code) {
-      parts.push('**Code:**\n```javascript\n' + finding.code + '\n```');
-    }
-
-    // Recommendation
-    parts.push(`**💡 Recommendation:** ${finding.recommendation}`);
-
-    // References
-    if (finding.references && finding.references.length > 0) {
-      const refLinks = finding.references.map(ref => `- ${ref}`).join('\n');
-      parts.push(`**📚 References:**\n${refLinks}`);
-    }
-
-    return parts.join('\n\n');
-  }
-
-  /**
-   * Generate clean report (no issues found)
-   */
-  private generateCleanReport(): string {
-    return `# ✅ SecureAI Security Scan Report
-
-## All Clear!
-
-No security vulnerabilities detected in this code. Great job! 🎉
-
-**Next Steps:**
-- Continue following secure coding practices
-- Run security scans on every pull request
-- Keep dependencies updated
-
----
-
-*Powered by SecureAI - AI-powered security scanning*`;
-  }
-
-  /**
-   * Generate footer with recommendations
-   */
-  private generateFooter(result: ScanResult): string {
-    return `---
-
-## 📋 Recommended Actions
-
-${result.criticalCount > 0 ? '1. 🔴 **Address all critical vulnerabilities immediately**\n' : ''}${result.highCount > 0 ? '2. 🟠 **Fix high-severity issues before merging**\n' : ''}3. 📖 Review CWE references for detailed vulnerability information
-4. 🔄 Re-run scan after fixes to verify resolution
-5. 🛡️ Consider implementing security headers and CSP
-
----
-
-*Scanned at ${result.scannedAt.toISOString()} | Powered by **SecureAI** with Claude AI*`;
-  }
-
-  /**
-   * Generate condensed report for PR comments (GitHub character limits)
-   */
-  generateCondensedReport(result: ScanResult): string {
-    if (result.totalFindings === 0) {
-      return '✅ **SecureAI Scan:** No security issues found!';
-    }
-
-    const parts = [];
-    if (result.criticalCount > 0) parts.push(`🔴 ${result.criticalCount} critical`);
-    if (result.highCount > 0) parts.push(`🟠 ${result.highCount} high`);
-    if (result.mediumCount > 0) parts.push(`🟡 ${result.mediumCount} medium`);
-    if (result.lowCount > 0) parts.push(`🔵 ${result.lowCount} low`);
-
-    const topIssues = result.findings
-      .slice(0, 3)
-      .map(f => `- **${f.title}** in \`${f.file}:${f.line}\``)
-      .join('\n');
-
-    return `⚠️ **SecureAI Scan:** Found ${result.totalFindings} issue${result.totalFindings > 1 ? 's' : ''} (${parts.join(', ')})
-
-**Top Issues:**
-${topIssues}
-
-See full report for details.`;
-  }
-
-  /**
-   * Generate JSON report
-   */
   generateJSONReport(result: ScanResult): string {
     return JSON.stringify(result, null, 2);
   }
 
-  /**
-   * Generate HTML report (for web dashboard)
-   */
   generateHTMLReport(result: ScanResult): string {
     const markdown = this.generateMarkdownReport(result);
-    // In a full implementation, you'd use a markdown-to-HTML library
-    // For now, return markdown (can be rendered client-side)
-    return `<!DOCTYPE html>
+    return `<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SecureAI Security Report</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 900px; margin: 40px auto; padding: 20px; }
-    .critical { border-left: 4px solid #dc2626; padding-left: 16px; }
-    .high { border-left: 4px solid #ea580c; padding-left: 16px; }
-    .medium { border-left: 4px solid #ca8a04; padding-left: 16px; }
-    .low { border-left: 4px solid #2563eb; padding-left: 16px; }
-    code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; }
-    pre { background: #1f2937; color: #f3f4f6; padding: 16px; border-radius: 6px; overflow-x: auto; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SecureAI Report</title>
+<style>body{font-family:system-ui,sans-serif;max-width:960px;margin:2rem auto;padding:0 1rem}pre{white-space:pre-wrap;background:#f6f8fa;padding:1rem;border-radius:6px}</style>
 </head>
 <body>
-  <div id="content"></div>
-  <script>
-    // Render markdown on client side
-    const markdown = ${JSON.stringify(markdown)};
-    document.getElementById('content').innerHTML = '<pre>' + markdown + '</pre>';
-  </script>
+<pre>${escapeHtml(markdown)}</pre>
 </body>
 </html>`;
+  }
+
+  private summary(result: ScanResult): string {
+    const parts = (['critical', 'high', 'medium', 'low'] as const)
+      .map(s => [s, result[`${s}Count` as const]] as const)
+      .filter(([, n]) => n > 0)
+      .map(([s, n]) => `${ICON[s]} ${n} ${LABEL[s].toLowerCase()}`);
+    const action =
+      result.criticalCount + result.highCount > 0
+        ? '\n\n**Action required:** fix critical and high findings before merging.'
+        : '';
+    return `Found **${result.totalFindings}** potential issue(s): ${parts.join(' · ')}${action}`;
+  }
+
+  private detailed(severity: Severity, findings: SecurityFinding[]): string {
+    const items = findings.slice(0, MAX_DETAILED).map((f, i) => this.item(f, i + 1));
+    const more =
+      findings.length > MAX_DETAILED
+        ? `\n\n_…and ${findings.length - MAX_DETAILED} more ${severity} finding(s)._`
+        : '';
+    return `### ${ICON[severity]} ${LABEL[severity]} (${findings.length})\n\n${items.join('\n\n')}${more}`;
+  }
+
+  private collapsed(severity: Severity, findings: SecurityFinding[]): string {
+    const rows = findings
+      .map(f => `- **${inline(f.title)}** in ${codeSpan(`${f.file}:${f.line}`)}`)
+      .join('\n');
+    return `### ${ICON[severity]} ${LABEL[severity]} (${findings.length})\n\n<details>\n<summary>Show ${findings.length} finding(s)</summary>\n\n${rows}\n\n</details>`;
+  }
+
+  private item(f: SecurityFinding, n: number): string {
+    const meta = [codeSpan(`${f.file}:${f.line}`), inline(f.category)];
+    if (f.cwe) {
+      meta.push(
+        `[${f.cwe}](https://cwe.mitre.org/data/definitions/${f.cwe.replace('CWE-', '')}.html)`
+      );
+    }
+    const lines = [
+      `**${n}. ${inline(f.title)}** — ${meta.join(' · ')}`,
+      inline(f.description),
+      fenced(f.code, f.file),
+      `**Fix:** ${inline(f.recommendation)}`,
+    ];
+    if (f.ai) {
+      lines.push(
+        `**AI triage:** ${f.ai.verdict.replace('_', ' ')} (${Math.round(f.ai.confidence * 100)}%) — ${inline(f.ai.explanation)}`
+      );
+    }
+    if (f.references?.length) lines.push(f.references.map(r => `- ${r}`).join('\n'));
+    return lines.join('\n\n');
   }
 }

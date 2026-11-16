@@ -1,47 +1,18 @@
-# Multi-stage build for SecureAI
-FROM node:18-alpine AS builder
-
+FROM node:24-alpine AS build
 WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-COPY tsconfig.json ./
-
-# Install dependencies
+COPY package.json package-lock.json tsconfig.json tsconfig.build.json ./
 RUN npm ci
-
-# Copy source code
 COPY src ./src
-
-# Build TypeScript
 RUN npm run build
 
-# Production stage
-FROM node:18-alpine
-
+FROM node:24-alpine
 WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install production dependencies only
-RUN npm ci --omit=dev
-
-# Copy built files from builder
-COPY --from=builder /app/dist ./dist
-
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S secureai -u 1001
-
-USER secureai
-
-# Expose port
+ENV NODE_ENV=production
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev && npm cache clean --force
+COPY --from=build /app/dist ./dist
+USER node
 EXPOSE 3000
-
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
-
-# Start application
-CMD ["node", "dist/index.js"]
+  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/health').then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"
+CMD ["node", "dist/server.js"]

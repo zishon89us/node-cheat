@@ -1,21 +1,35 @@
+export type Severity = 'critical' | 'high' | 'medium' | 'low';
+
+export interface AIVerdict {
+  verdict: 'true_positive' | 'false_positive';
+  confidence: number;
+  explanation: string;
+}
+
 export interface SecurityFinding {
   id: string;
-  severity: 'critical' | 'high' | 'medium' | 'low';
+  ruleId: string;
+  severity: Severity;
   category: string;
   title: string;
   description: string;
   file: string;
   line: number;
-  column?: number;
+  column: number;
+  /** A few lines around the match; secrets are masked. */
   code: string;
+  /** A wider window used for AI triage; secrets are masked. */
+  context: string;
   recommendation: string;
   cwe?: string;
   references?: string[];
+  ai?: AIVerdict;
 }
 
 export interface ScanResult {
   repositoryUrl: string;
   scannedAt: Date;
+  filesScanned: number;
   totalFindings: number;
   criticalCount: number;
   highCount: number;
@@ -27,35 +41,20 @@ export interface ScanResult {
 export interface ScannerRule {
   id: string;
   name: string;
-  severity: 'critical' | 'high' | 'medium' | 'low';
+  severity: Severity;
   category: string;
-  description: string;
+  /** Must carry the `g` flag. */
   pattern: RegExp | RegExp[];
   validate?: (match: RegExpMatchArray, fileContent: string, filePath: string) => boolean;
   getMessage: (match: RegExpMatchArray) => string;
-  getRecommendation: () => string;
+  recommendation: string;
+  /** Mask long token-like strings in snippets so the report never republishes a secret. */
+  redact?: boolean;
   cwe?: string;
   references?: string[];
 }
 
-export interface GitHubFile {
+export interface SourceFile {
   path: string;
   content: string;
-  sha: string;
-}
-
-export interface AIAnalysisRequest {
-  finding: SecurityFinding;
-  context: {
-    fileContent: string;
-    surroundingCode: string;
-  };
-}
-
-export interface AIAnalysisResponse {
-  isVulnerable: boolean;
-  confidence: number;
-  explanation: string;
-  suggestedFix?: string;
-  falsePositiveReason?: string;
 }
