@@ -1,44 +1,30 @@
-
 //------------------------------------------------------
-//Copy Files Recursivly - it will copy recursively without using any extra package
-//Web Link=> https://stackoverflow.com/questions/60304937/nodejs-move-multiple-files-from-nested-folders-into-other-folder/60305349#60305349
-//Run :
+// Copy files recursively without any extra package
+// Web Link=> https://stackoverflow.com/questions/60304937/nodejs-move-multiple-files-from-nested-folders-into-other-folder/60305349#60305349
+// Run : node copy-dir-deep.js [src] [dest]
 //------------------------------------------------------
 
-const fs = require('fs');
-const path = require('path');
+import { cp, mkdir, readdir, copyFile, readlink, symlink } from 'node:fs/promises';
+import { join } from 'node:path';
 
-const mkdir = (dir) => {
-	try {
-		fs.mkdirSync(dir, 0755);
-	} catch(e) {
-		if(e.code != "EEXIST") {
-			throw e;
-		}
-	}
-};
+// Manual version, to show how the recursion works
+export async function copyDir(src, dest) {
+  await mkdir(dest, { recursive: true });
+  for (const entry of await readdir(src, { withFileTypes: true })) {
+    const from = join(src, entry.name);
+    const to = join(dest, entry.name);
+    if (entry.isDirectory()) await copyDir(from, to);
+    else if (entry.isSymbolicLink()) await symlink(await readlink(from), to);
+    else await copyFile(from, to);
+  }
+}
 
-const copy = (src, dest) => {
-	let oldFile = fs.createReadStream(src);
-	let newFile = fs.createWriteStream(dest);
-	oldFile.pipe(newFile);
-};
+const src = process.argv[2] ?? join(import.meta.dirname, 'a');
+const dest = process.argv[3] ?? join(import.meta.dirname, 'b');
 
-const copyDir = (src, dest) => {
-	mkdir(dest);
-	const files = fs.readdirSync(src);
-	for(var i = 0; i < files.length; i++) {
-		const current = fs.lstatSync(path.join(src, files[i]));
-		if(current.isDirectory()) {
-			copyDir(path.join(src, files[i]), path.join(dest, files[i]));
-		} else if(current.isSymbolicLink()) {
-			const symlink = fs.readlinkSync(path.join(src, files[i]));
-			fs.symlinkSync(symlink, path.join(dest, files[i]));
-		} else {
-			copy(path.join(src, files[i]), path.join(dest, files[i]));
-		}
-	}
-};
+await copyDir(src, dest);
 
+// One-liner since Node 16.7: fs.cp with recursive: true
+await cp(src, `${dest}-cp`, { recursive: true, verbatimSymlinks: true });
 
-copyDir('a', 'b');
+console.log(`Copied ${src} -> ${dest} and ${dest}-cp`);

@@ -1,27 +1,21 @@
-
 //------------------------------------------------------
-//Web Link=> https://stackoverflow.com/questions/44604873/unable-to-get-datatables-to-work-with-jade
-//Run : node index.js
+// DataTables rendered from a Pug (formerly Jade) template
+// Web Link=> https://stackoverflow.com/questions/44604873/unable-to-get-datatables-to-work-with-jade
+// Run : npm install && npm start
 //------------------------------------------------------
 
+import express from 'express';
+import { join } from 'node:path';
 
-const express = require('express');
-const path = require('path');
 const app = express();
-app.set('views', './templates');
+app.set('views', join(import.meta.dirname, 'templates'));
 app.set('view engine', 'pug');
 
-const port     = process.env.PORT || 3000;
+const items = ['Apple', 'Banana', 'Carrot', 'Date', 'Egg'].map((name, i) => ({ id: i + 1, name }));
 
-// routes ======================================================================
-
-app.get('/', async (req, res) => {
-
-    res.render('index', {
-        title: 'Node-Cheat',
-        items: [{name: 'Apple'}, {name: 'Banana'}, {name: 'Carrot'}, {name: 'Date'}, {name: 'Egg'} ]
-    });
+app.get('/', (req, res) => {
+  res.render('index', { title: 'Node-Cheat', items });
 });
 
-// launch ======================================================================
-app.listen(port, () => console.log(`IThe magic happens on port ${port}!`));
+const port = Number(process.env.PORT) || 3000;
+app.listen(port, () => console.log(`Listening on http://localhost:${port}`));

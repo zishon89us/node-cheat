@@ -1,20 +1,19 @@
 //------------------------------------------------------
-//Read README.md
-//Web Link=>
+// Pass a variable from another module into an EJS view
+// Run : npm install && npm start
 //------------------------------------------------------
 
+import express from 'express';
+import { join } from 'node:path';
+import { title } from './controllers/home.js';
 
-const express  = require('express');
-const app = express()
-const port     = process.env.PORT || 3000;
+const app = express();
+app.set('views', join(import.meta.dirname, 'views'));
+app.set('view engine', 'ejs');
 
-// routes ======================================================================
-
-const home = require('./controllers/home');
-app.get('/', function (req, res) {
-	res.render('index.ejs', {title: home.title});
+app.get('/', (req, res) => {
+  res.render('index', { title });
 });
 
-// launch ======================================================================
-app.listen(port);
-console.log('The magic happens on port ' + port);
+const port = Number(process.env.PORT) || 3000;
+app.listen(port, () => console.log(`Listening on http://localhost:${port}`));

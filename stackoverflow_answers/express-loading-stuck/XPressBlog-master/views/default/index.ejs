@@ -1,5 +1,5 @@
 <!-- Post Header -->
-  <header class="masthead" style="background-image: url('assets/images/home-bg.jpg')">
+  <header class="masthead" style="background-image: url('/assets/images/home-bg.jpg')">
     <div class="overlay"></div>
     <div class="container">
       <div class="row">
@@ -16,14 +16,14 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
-        <% if (posts) { %>
+        <% if (posts.length) { %>
             <% posts.forEach(function(post) { %>
                 <div class="post-preview">
-                    <a href="/<%= post.id %>">
+                    <a href="/<%= post._id %>">
                         <h2 class="post-title"><%= post.title %></h2>
                         <h3 class="post-subtitle"><%= post.short_description %></h3>
                     </a>
-                    <p class="post-meta">Posted by <a href="#">Start Bootstrap</a> on September 24, 2019</p>
+                    <p class="post-meta">Posted by <a href="#">Start Bootstrap</a> on <%= new Date(post.created_at).toLocaleDateString() %></p>
                 </div>
                 <hr>
             <% }); %>

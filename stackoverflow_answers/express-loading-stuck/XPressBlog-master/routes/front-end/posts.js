@@ -1,17 +1,10 @@
+import { Router } from 'express';
+import { deleteSinglePost, getPosts, getSinglePost } from '../../controllers/front-end/posts.js';
 
-const express = require('express');
-const postsController = require('../../controllers/front-end/posts');
+const router = Router();
 
-// Express router
-const router = express.Router();
+router.get('/', getPosts);
+router.get('/:id', getSinglePost);
+router.delete('/:id', deleteSinglePost);
 
-// Get Posts
-router.get('/', postsController.getPosts);
-
-// Get Single Post
-router.get('/:id', postsController.getSinglePost);
-
-// Get Single Post
-router.delete('/:id', postsController.deleteSinglePost);
-
-module.exports = router;
+export default router;

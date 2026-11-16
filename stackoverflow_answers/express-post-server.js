@@ -1,13 +1,19 @@
-const express = require('express');
-const bar = require('./express-post');
-const app = express();
+//------------------------------------------------------
+// Mount an Express router from another module
+// Run : node express-post-server.js
+//------------------------------------------------------
 
-// curl -X GET http://localhost:3000/foo
-app.get('/foo', function (req, res, next) {
-	res.send('This is foo GET!');
+import express from 'express';
+import bar from './express-post.js';
+
+const app = express();
+const port = Number(process.env.PORT) || 3000;
+
+// curl http://localhost:3000/foo
+app.get('/foo', (req, res) => {
+  res.send('This is foo GET!');
 });
 
-// register
 app.use('/bar', bar);
 
-app.listen(3000);
+app.listen(port, () => console.log(`Listening on http://localhost:${port}`));

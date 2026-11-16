@@ -1,19 +1,24 @@
+//------------------------------------------------------
+// Await inside a loop - process lines one after another
+// Run : node loop-await/loop-await.js
+//------------------------------------------------------
 
-async function myfunction (thing1, thing2, thing3) {
-	// perform your operations here
-	return 'done'; // return your results like object or string or whatever
+import { open } from 'node:fs/promises';
+import { join } from 'node:path';
+
+async function processLine(thing1, thing2, thing3) {
+  return { thing1, thing2, thing3 };
 }
 
-const fs = require('fs');
-const file = fs.readFileSync('file.txt').toString().split("\n");
+const file = await open(join(import.meta.dirname, 'file.txt'));
 
-// This main function is just a wrapper to initialize code
-async function main() {
-	for(i in file) {
-	    let [thing1, thing2, thing3] = file[i].split(":");
-	    let result = await myfunction(thing1, thing2, thing3);
-			console.log(`Result of ${i} returned`);
-	}
+let index = 0;
+for await (const line of file.readLines()) {
+  if (!line.trim()) continue;
+  const [thing1, thing2, thing3] = line.split(':');
+  const result = await processLine(thing1, thing2, thing3);
+  console.log(`Result of line ${index++}:`, result);
 }
 
-main();
+// For independent work, run in parallel instead:
+// await Promise.all(lines.map((line) => processLine(...line.split(':'))));

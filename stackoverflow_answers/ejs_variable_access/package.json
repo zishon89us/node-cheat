@@ -1,12 +1,22 @@
 {
   "name": "node-ejs-variable",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
   "main": "server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
   "author": {
     "name": "Zeeshan Hassan Memon",
     "email": "zishon89us@hotmail.com"
   },
+  "license": "ISC",
   "dependencies": {
-    "ejs": "^2.6.2",
-    "express": "^4.17.1"
+    "ejs": "^7.0.2",
+    "express": "^5.3.0"
   }
 }

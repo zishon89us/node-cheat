@@ -1,24 +1,35 @@
-
 //------------------------------------------------------
-//Error Handling - minimal ways to handle js error within nodejs
-//Web Link=> https://stackoverflow.com/questions/60247774/how-to-avoid-node-js-app-quit-when-theres-a-javascript-error/60248024#60248024
-//Run : node error-handling.js
+// Error handling - keep a Node.js app alive when JS errors happen
+// Web Link=> https://stackoverflow.com/questions/60247774/how-to-avoid-node-js-app-quit-when-theres-a-javascript-error/60248024#60248024
+// Run : node error-handling.js
 //------------------------------------------------------
 
-// Option 1
+// Option 1: synchronous try/catch
 try {
-  // trying to do something that might fail should be inside try block
-	let max_weight = 17, min_weight = 5;
-	max_weight = Match.floor(max_weight/min_weight);
-} catch(err) {
-  console.log(err); // do something with error or ignore it
+  const maxWeight = 17;
+  const minWeight = 5;
+  // eslint-disable-next-line no-undef
+  console.log(Match.floor(maxWeight / minWeight)); // typo on purpose: Match -> Math
+} catch (err) {
+  console.error('Caught sync error:', err.message);
 }
 
+// Option 2: async/await with try/catch
+async function mightFail() {
+  throw new Error('async failure');
+}
+try {
+  await mightFail();
+} catch (err) {
+  console.error('Caught async error:', err.message);
+}
 
-// Option 2
-// process.on('uncaughtException', function(err) {
-//   console.log(err); // do something with error or ignore it
-// });
-//
-// let max_weight = 17, min_weight = 5;
-// max_weight = Match.floor(max_weight / min_weight);
+// Option 3: last-resort process handlers - log, then exit; state may be corrupt
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled rejection:', reason);
+  process.exitCode = 1;
+});
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err.message);
+  process.exit(1);
+});

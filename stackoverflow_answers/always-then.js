@@ -1,32 +1,28 @@
-/**
- * Created by zeeshan on April 12, 2018.
- */
-
 //------------------------------------------------------
-//Promises - .then no matter resolved or rejected
-//Web Link=> https://stackoverflow.com/a/49797011/3539857
-//Run :
+// Promises - always land in the "then" branch, resolved or rejected
+// Web Link=> https://stackoverflow.com/a/49797011/3539857
+// Run : node always-then.js
 //------------------------------------------------------
 
-// wrap to always land inside .then
-function handleAlwaysThen(UserId) {
-	return new Promise((resolve, reject) => {
-		getUserData(UserId)
-		.then((data) => {
-			if (data.Item.UserId == UserId) {
-				resolve({success: true, checkFirst: "returning"});
-			} else {
-				resolve({success: false, checkFirst: "UserId not matched"});
-			}
-		})
-		.catch((err) => {
-			resolve({success: false, checkFirst: "firstSession"});
-		});
-	});
+const getUserData = async (userId) => {
+  if (userId === 'missing') throw new Error('not found');
+  return { Item: { UserId: userId } };
+};
+
+async function handleAlwaysThen(userId) {
+  try {
+    const data = await getUserData(userId);
+    return data.Item.UserId === userId
+      ? { success: true, checkFirst: 'returning' }
+      : { success: false, checkFirst: 'UserId not matched' };
+  } catch {
+    return { success: false, checkFirst: 'firstSession' };
+  }
 }
 
-// now just handle .then
-handleAlwaysThen(UserId)
-.then((data) => {
-	// do whatever you want with data.success data.checkFirst
-});
+console.log(await handleAlwaysThen('42'));
+console.log(await handleAlwaysThen('missing'));
+
+// Built-in alternative: Promise.allSettled never rejects
+const [result] = await Promise.allSettled([getUserData('missing')]);
+console.log(result.status, result.reason?.message);

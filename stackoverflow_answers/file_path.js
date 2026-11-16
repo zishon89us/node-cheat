@@ -1,23 +1,19 @@
-/**
- * Created by zeeshan on February 13, 2020.
- */
-
 //------------------------------------------------------
-//File Path - it will write to correct folder no matter where the app runs
-//Web Link=> https://stackoverflow.com/questions/60208760/different-path-to-a-file
-//Run :
+// File path - write to the right folder no matter where the app is started from
+// Web Link=> https://stackoverflow.com/questions/60208760/different-path-to-a-file
+// Run : node file_path.js
 //------------------------------------------------------
 
-const fs = require('fs');
-const {join} = require('path');
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
-const path = process.env.NODE_ENV !== 'production'
-	? join(__dirname, './main/files') // ./ means where I am right now; has main directory
-	: join(__dirname, './other/files'); // that has 2 more directories files_*
+// import.meta.dirname = folder of this file; process.cwd() = folder the process was started in
+const dir =
+  process.env.NODE_ENV === 'production'
+    ? join(import.meta.dirname, 'other', 'files')
+    : join(import.meta.dirname, 'main', 'files');
 
-/*const path = process.env.NODE_ENV !== 'production'
-	? join(process.cwd(), './main/files')
-	: join(process.cwd(), './other/files');*/
-
-const randomFileName = `${path}${Date.now()}.txt`;
-fs.writeFileSync(randomFileName, 'Write to main/files', 'utf-8');
+await mkdir(dir, { recursive: true });
+const file = join(dir, `${Date.now()}.txt`);
+await writeFile(file, 'Written relative to this module, not the cwd', 'utf8');
+console.log(`Wrote ${file}`);
