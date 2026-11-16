@@ -1,74 +1,59 @@
-/**
- * Created by zeeshan on April 1, 2018.
- */
+// Plug-and-play transactional email helpers on top of @sendgrid/mail.
+// Env: SENDGRID_API_KEY, MAIL_FROM (a verified sender), CONTACT_EMAIL (inbox for contact-form messages).
+// Usage: import { emailUtil } from './module.js'; await emailUtil.verificationCode('a@b.com', '123456');
 
-//------------------------------------------------------
-//Plug n Play email sending module, just required and use :)
-//Web Link=>
-//------------------------------------------------------
+import sgMail from '@sendgrid/mail';
 
-const nodemailer = require('nodemailer');
-const sgTransport = require('nodemailer-sendgrid-transport');
+function requireEnv(name) {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing environment variable ${name}`);
+  return value;
+}
 
-// const debug = require('debug')('node-cheat:emails_module');
+sgMail.setApiKey(requireEnv('SENDGRID_API_KEY'));
+const from = requireEnv('MAIL_FROM');
+const contactEmail = process.env.CONTACT_EMAIL ?? from;
 
-const SENDGRID_APIKEY = 'API_KEY_HERE'; // ideally should be in env vars
+const escapeHtml = (value) =>
+  String(value).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
-const sgOptions = {
-  auth: {
-    api_key: SENDGRID_APIKEY
-  }
+const footer = '<div>Add footer content here, e.g. an unsubscribe link or company info.</div>';
+
+async function sendMail({ to, subject, html, text, replyTo }) {
+  const [response] = await sgMail.send({
+    from,
+    to,
+    subject,
+    replyTo,
+    text,
+    html: html && `<div>${html}<br>${footer}</div>`,
+  });
+  return response.statusCode;
+}
+
+export const emailUtil = {
+  verificationCode: (email, code) =>
+    sendMail({
+      to: email,
+      subject: 'Your verification code',
+      html: `<p>Please use this verification code: <em>${escapeHtml(code)}</em></p>`,
+    }),
+
+  forgotPassword: (email, code) =>
+    sendMail({
+      to: email,
+      subject: 'Forgot Password Request',
+      html: `<p>Please use ${escapeHtml(code)} to reset your password.</p>`,
+    }),
+
+  // Send from your own verified address and put the visitor in Reply-To; sending "from" them gets rejected as spoofing.
+  contactUs: ({ email, subject, message }) =>
+    sendMail({
+      to: contactEmail,
+      replyTo: email,
+      subject: subject || 'Contact Us form',
+      text: `From: ${email}\n\n${message}`,
+    }),
 };
 
-const transporter = nodemailer.createTransport(sgTransport(sgOptions));
-
-const subject = 'Hello Developer!';
-const from = 'Node-Cheat <nodecheat@github.com>';
-const contactEmail = 'hello@node-cheat.com';
-
-const emailUtil = {
-  _sendMail: async (options) => {
-  	// TODO: options.subscriber should be handled for better email template and reputation
-	const footer = `<div>Add footer content here, may be add unsubscribe link or company info</div>`;
-
-	const mailOptions = {
-		from,
-		to: options.email,
-		subject: options.subject || subject,
-		html: `<div>${options.template} <br/> ${footer} </div>`,
-	};
-	await transporter.sendMail(mailOptions);
-  },
-
-  verificationCode: async (email, verificationCode) => {
-	const template = `<p>Please use this verification code: <em>${verificationCode}</em></p>`;
-	emailUtil._sendMail({
-		email, template, subject, subscriber,
-	});
-  },
-
-  forgotPassword: async (email, code) => {
-	const template = `<p>Please use ${code} code to reset your password.</p>`;
-	const customSubject = 'Forgot Password Request';
-	emailUtil._sendMail({
-		email, template, customSubject, subscriber,
-	});
-  },
-
-  specialAccountCreated: async (email, pass) => {
-    // TODO: complete this
-  },
-
-  contactUs: async (payload) => {
-	const mailOptions = {
-		from: `Hello <${payload.email}>`,
-		to: `${contactEmail}`,
-		subject: payload.subject || `${env.NAME} Contact Us Form"`,
-		text: payload.message,
-	};
-	transporter.sendMail(mailOptions);
-  }
-
-};
-
-module.exports = emailUtil;
+export default emailUtil;

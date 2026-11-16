@@ -1,34 +1,27 @@
-/**
- * Created by Zeeshan on April 14, 2018.
- */
+// Send an SMS to several recipients with Twilio.
+// Run: TWILIO_ACCOUNT_SID=AC... TWILIO_AUTH_TOKEN=... TWILIO_PHONE_NUMBER=+15550001111 node twillio_sms.js +15551234567 +923001234567
 
-//------------------------------------------------------
-//send sms usign twilio service
-//Web Link=>
-//Run : node twillio.js
-//------------------------------------------------------
+import twilio from 'twilio';
 
-const _ = require('lodash');
-const twilio = {
-	'from': process.env.TWILIO_PHONE_NUMBER || '+1XXXXXXXXXXX',
-	'accountSid': process.env.TWILIO_ACCOUNT_SID || 'YOUR_TWILIO_ACCOUNT_SID',
-	'authToken': process.env.TWILIO_AUTH_TOKEN || 'YOUR_TWILIO_AUTH_TOKEN'
-};
+const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER } = process.env;
+if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_PHONE_NUMBER) {
+  throw new Error('Set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN and TWILIO_PHONE_NUMBER');
+}
 
-const client = require('twilio')(twilio.accountSid, twilio.authToken);
-const toAll = ['+1XXXXXXXXX', '+‭921XXXXXXXXX'];
-const message = 'Hello via Node-Cheat!';
+const recipients = process.argv.slice(2);
+const invalid = recipients.filter((to) => !/^\+[1-9]\d{6,14}$/.test(to));
+if (recipients.length === 0 || invalid.length) {
+  throw new Error(`Pass E.164 phone numbers as arguments${invalid.length ? `; invalid: ${invalid.join(', ')}` : ''}`);
+}
 
-_.forEach(toAll, (to)=> {
-	client.messages.create({
-		to: to,
-		from: twilio.from,
-		body: message
-	}, (err, message) => {
-		if (err) {
-			console.log(err)
-		} else {
-			console.log(`sms sent to ${message.to}`);
-		}
-	});
+const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+const body = 'Hello via Node-Cheat!';
+
+const results = await Promise.allSettled(
+  recipients.map((to) => client.messages.create({ to, from: TWILIO_PHONE_NUMBER, body })),
+);
+
+results.forEach((result, i) => {
+  if (result.status === 'fulfilled') console.log(`SMS queued for ${recipients[i]} (${result.value.sid})`);
+  else console.error(`SMS to ${recipients[i]} failed: ${result.reason.message}`);
 });

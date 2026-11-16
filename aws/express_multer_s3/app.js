@@ -1,104 +1,46 @@
-/**
- * Created by Zeeshan on 3/9/2016.
- * Last updated on March 4, 2022.
- */
+// Multipart upload streamed straight to S3 (no local disk) with Express 5, multer and AWS SDK v3.
+// Run: AWS_REGION=us-east-1 S3_BUCKET=my-bucket node app.js  (credentials come from the default AWS provider chain)
+// Original answer: https://stackoverflow.com/a/35902286/3539857
 
-//------------------------------------------------------
-//UPDATED-ANSWER @ MAR-2022 [ES5 STYLE]
-//multi-part direct upload to s3 without saving on local disk
-//Web Link=> http://stackoverflow.com/a/35902286/3539857
-//Run : node app.js
-//------------------------------------------------------
+import { randomUUID } from 'node:crypto';
+import path from 'node:path';
+import express from 'express';
+import multer from 'multer';
+import multerS3 from 'multer-s3';
+import { S3Client } from '@aws-sdk/client-s3';
 
-var express = require('express'), // "^4.13.4"
-    aws = require('aws-sdk'), // ^2.2.41
-    bodyParser = require('body-parser'),
-    multer = require('multer'), // "multer": "^1.1.0"
-    multerS3 = require('multer-s3'); //"^1.4.1"
+const bucket = process.env.S3_BUCKET;
+if (!bucket) throw new Error('Set S3_BUCKET to the destination bucket name');
 
-aws.config.update({
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'YOUR_SECRET_ACCESS_KEY',
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'YOUR_ACCESS_KEY_ID',
-    region: process.env.AWS_REGION || 'us-east-1'
+const s3 = new S3Client({ region: process.env.AWS_REGION ?? 'us-east-1' });
+
+const upload = multer({
+  limits: { fileSize: 10 * 1024 * 1024, files: 25 },
+  storage: multerS3({
+    s3,
+    bucket,
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    key: (req, file, cb) => cb(null, `uploads/${randomUUID()}${path.extname(file.originalname)}`),
+  }),
 });
 
-var app = express(),
-    s3 = new aws.S3();
+const app = express();
 
-app.use(bodyParser.json());
-
-var upload = multer({
-    storage: multerS3({
-        s3: s3,
-				acl: 'public-read',
-        bucket: 'node-cheat',
-        key: function (req, file, cb) {
-            console.log(file);
-            cb(null, file.originalname); //use Date.now() for unique file keys
-        }
-    })
+app.get('/', (req, res) => {
+  res.sendFile(path.join(import.meta.dirname, 'index.html'));
 });
 
-//open in browser to see upload form
-app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/index.html');
+app.post('/upload', upload.array('upl', 25), (req, res) => {
+  res.json({
+    message: 'Uploaded!',
+    files: req.files.map(({ location, key, mimetype, size }) => ({ url: location, key, type: mimetype, size })),
+  });
 });
 
-//used by upload form
-app.post('/upload', upload.array('upl', 25), function (req, res, next) {
-    res.send({
-			message: "Uploaded!",
-			urls: req.files.map(function(file) {
-				return {url: file.location, name: file.key, type: file.mimetype, size: file.size};
-			})
-		});
+app.use((err, req, res, _next) => {
+  const status = err instanceof multer.MulterError ? 400 : 500;
+  console.error(err);
+  res.status(status).json({ error: status === 400 ? err.message : 'Upload failed' });
 });
 
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-});
-
-// ------------------------------------------------------
-// OLD-ANSWER
-//multi-part direct upload to s3 without saving on local disk
-//Web Link=> https://github.com/expressjs/multer/issues/196
-//Run : node app.js
-//NOTE ::: use multer@1.1.0 and multer-s3@1.4.1 for following snippet:
-//------------------------------------------------------
-
-/*
-var express = require('express'),
-    bodyParser = require('body-parser'),
-    multer = require('multer'),
-    s3 = require('multer-s3');
-
-var app = express();
-
-app.use(bodyParser.json());
-
-var upload = multer({
-    storage: s3({
-        dirname: '/',
-        bucket: 'bucket-name',
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'YOUR_SECRET_ACCESS_KEY',
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'YOUR_ACCESS_KEY_ID',
-        region: process.env.AWS_REGION || 'us-east-1',
-        filename: function (req, file, cb) {
-            cb(null, file.originalname); //use Date.now() for unique file keys
-        }
-    })
-});
-
-//open in browser to see upload form
-app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/index.html');
-});
-
-//use by upload form
-app.post('/upload', upload.array('upl'), function (req, res, next) {
-    res.send("Uploaded!");
-});
-
-app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-});*/
+app.listen(3000, () => console.log('Open http://localhost:3000'));
