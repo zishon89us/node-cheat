@@ -1,132 +1,108 @@
-# node-cheat | code faster
+# node-cheat
 
-## ⚠️ ARCHIVE NOTICE (2025)
+Small, runnable Node.js examples for everyday tasks: cloud storage, payments, email/SMS, real-time chat, files, databases and more. They were first written in 2016–2018 and **rewritten in 2026** for current Node.js and current library versions.
 
-**This repository contains Node.js code examples from 2016-2018 and is now archived.**
+[![CI](https://github.com/zishon89us/node-cheat/actions/workflows/ci.yml/badge.svg)](https://github.com/zishon89us/node-cheat/actions/workflows/ci.yml)
 
-### Important Security Warnings:
-- ⚠️ Many examples use **outdated dependencies** with known security vulnerabilities
-- ⚠️ Code patterns may not follow **modern best practices** (callbacks vs async/await, old package versions)
-- ⚠️ Examples are for **educational reference only** - NOT production-ready code
-- ⚠️ Always use current package versions and refer to official documentation for production code
+Also in this repo: **[SecureAI](./secureai)**, a GitHub App that scans pull requests for security issues and uses Claude to triage findings.
 
-### Before Using Any Code:
-1. **Update all dependencies** to their latest versions
-2. **Review security advisories** for packages used
-3. **Use environment variables** (see `.env.example`) - never hardcode credentials
-4. **Follow modern async patterns** (async/await instead of callbacks where applicable)
-5. **Validate all user inputs** and implement proper error handling
+## What "modern" means here
 
-### Recommended Modern Alternatives:
-- [Official Node.js Documentation](https://nodejs.org/docs/latest/api/)
-- [30 Seconds of Code](https://www.30secondsofcode.org/js/p/1)
-- Package-specific official documentation (Express, AWS SDK, Stripe, etc.)
-- AI assistants (ChatGPT, GitHub Copilot, etc.) for current best practices
+- Node.js 22+ (`.nvmrc` pins 24), native ES modules, `node:` built-ins
+- `async`/`await` everywhere and built-in `fetch`; no callbacks, `request`, `q` or `async.js`
+- Current SDKs: AWS SDK v3, Stripe PaymentIntents, Express 5, socket.io 4, MongoDB 7, Mongoose 9, node-redis, twitter-api-v2, xero-node
+- No credentials in code. Everything is read from environment variables (see [`.env.example`](.env.example))
+- Input validated at the edges, no stack traces sent to clients, path-traversal and XSS guards where relevant
 
----
+## Quick start
 
-✪ Find awesome up-to-date node.js code snippets at one place. (Do you have any node.js snippet solving case? contribute here then) 
+```bash
+nvm use                       # Node 24
+npm install
+cp .env.example .env          # fill in what your example needs
+node --env-file=.env express/app.js
+```
 
-### :cloud: AWS
+Folders that have their own `package.json` (the chat apps, WebRTC, and some sub-apps under `random/` and `stackoverflow_answers/`) are installed and run from inside that folder.
 
-*   [CRUD s3 buckets](https://github.com/zishon89us/node-cheat/blob/master/aws/s3/create_bucket.js)
-*   Direct upload to s3 without saving on local disk [Updated at March 27, 2018] ([ES6](https://github.com/zishon89us/node-cheat/blob/master/aws/express_multer_s3/app_es8.js#L6) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/aws/express_multer_s3/app.js#L7))
-*   [Upload to s3 using multer-s3 [Updated at Dec 1, 2016]](https://github.com/zishon89us/node-cheat/tree/master/aws/express_multer_s3)
-*   [S3 Direct Upload From Client/Browser (To Be Done)](#)
-*   [Upload from base64 data](https://github.com/zishon89us/node-cheat/blob/master/aws/s3/upload_base_64.js)
-*   [New – AWS Step Functions (To Be Done)](https://github.com/zishon89us/node-cheat/blob/master/aws/step-functions/app.js)
+## Examples
 
-### WebRTC
+### Cloud — AWS
 
-*   [Simple Video Chat](https://github.com/zishon89us/node-cheat/tree/master/WebRTC/simple_video_chat)
-*   [Tokbox Video Chat](https://github.com/zishon89us/node-cheat/tree/master/WebRTC/tokbox_video_chat)
-*   PubNub ([ES5](#) | [ES6](#))
-*   Vidyo.io ([ES6](https://github.com/zishon89us/node-cheat/tree/master/WebRTC/vidyo-io_chat))
-### :speech_balloon: Chat
+- [S3 bucket CRUD](aws/s3/create_bucket.js) · [Upload base64 data to S3](aws/s3/upload_base_64.js)
+- [Stream uploads straight to S3 with multer-s3](aws/express_multer_s3/app.js)
+- [Lambda: merge images with sharp](aws/lamda/image_merge.js)
+- [SQS polling worker](aws/sqs_service_worker/polling_agent.js) · [Start a Step Functions execution](aws/step-functions/app.js)
 
-*   [Socket.io one to one chat app](https://github.com/zishon89us/node-cheat/tree/master/chat/one_one_chat)
-*   [Socket.io simple chat server only](https://github.com/zishon89us/node-cheat/blob/master/chat/simple_chat/index.js#L1)
+### Payments — Stripe
 
-### :moneybag: Payment Gateway
+- [PaymentIntents, customers, saved cards, authorize & capture](payments/stripe_one_time_payment/server.js)
+- [Embedded Checkout](payments/stripe/server.js)
 
-*   [Stripe (Immediate Charge, Customer Charge, Create Customer, Add Card, Delete Card, Authorize & Capture Split)](https://github.com/zishon89us/node-cheat/tree/master/payments/stripe_one_time_payment)
-*   [Stripe Create Token out of Credit Card Info](https://github.com/zishon89us/node-cheat/tree/master/payments/stripe_one_time_payment)
-*   [PayPal (To Be Done)](#)
-*   [Authorize.net (To Be Done :credit_card:)](#)
+### Messaging
 
-### 💭Push Notification
+- Email (SendGrid): [send](send_emails/send_grid.js) · [reusable module](send_emails/module.js) · [event webhook](send_emails/send_grid_events.js) · [subusers](send_emails/send_grid_sub_user.js) · [raw v3 API](send_emails/sendgrid_api.js)
+- [SMS with Twilio](send_sms/twillio_sms.js) · [Fax with Telnyx](fax/send_fax.js)
+- [Push notifications: FCM + APNs](push_notification/push_notification.js)
 
-*   [Pushwoosh](#) <font style="color:#a0b9ff;">(To Be Done)</font>
-*   [GCM](#) <font style="color:red;">(To Be Done)</font>
-*   [APNS](#) <font style="color:#a0b9ff;">(To Be Done)</font>
-*   [OneSignal](#) <font style="color:#a0b9ff;">(To Be Done)</font>
+### Real-time
 
-### :seedling:Express
+- socket.io chat: [one-to-one](chat/one_one_chat/app.js) · [simple room](chat/simple_chat/index.js)
+- [WebRTC video chat with socket.io signaling](WebRTC/simple_video_chat)
 
-*   [API methods in node.js using express](https://github.com/zishon89us/node-cheat/tree/master/express)
-*   [Restart node.js app with args forever](https://github.com/zishon89us/node-cheat/tree/master/express)
+### Web servers
 
-### :page_facing_up: Files
+- Express 5: [routes & API](express/app.js) · [gzip compression](express/gzip/app.js) · [safe child processes](express/index.js)
+- [HTTPS with Node and with Express](HTTPS) · [Static hosting](static-hosting/index.js) · [Graceful deploy/shutdown](deployment/2018_style.js)
+- [Rate limiting](random/small_tasks/rate-limiter/express-rate-limit.js) · [Restrict static files](random/small_tasks/express_server_restrict_static_files/app.js)
+- [Express app generator layout](random/small_tasks/standalone-express-server)
 
-*   [Read file line by line using module tail](https://github.com/zishon89us/node-cheat/blob/master/files/line_by_line.js#L8)
-*   [Read file line by line using module fs and async](https://github.com/zishon89us/node-cheat/blob/master/files/line_by_line.js#L27)
-*   [fs module to read multiple files using async](https://github.com/zishon89us/node-cheat/blob/master/files/read_dir_files.js#L8)
-*   [read-multiple-files module](https://github.com/zishon89us/node-cheat/blob/master/files/read_dir_files.js#L1)
-*   [Download File to browser using Express and fs](https://github.com/zishon89us/node-cheat/tree/master/files/express_server_download_file)
-*   [Download File to browser using http](https://github.com/zishon89us/node-cheat/tree/master/files/download_file_http_server)
+### Files and media
 
-### :evergreen_tree: GridFS
+- [Read a file](files/read_file.js) · [Write a file](files/write_file.js) · [Read line by line](files/line_by_line.js) · [Read a directory](files/read_dir_files.js)
+- File downloads: [http](files/download_file_http_server/app.js) · [Express](files/express_server_download_file/app.js) · [Express & Koa static](random/small_tasks/download_files_server)
+- [Serve a PDF](pdf/pdf_browser/app.js) · [ffmpeg thumbnails](ffmpeg/ffmpeg.js) · [Write .xlsx](random/tiny_useful_modules/write_xlsx.js) · [Unzip](random/tiny_useful_modules/unzip/unzip.js)
 
-*   [direct upload to GridFS without saving on local disk](https://github.com/zishon89us/node-cheat/blob/master/gridfs/direct_upload_gridfs)
+### Databases
 
-### PDF
+- MongoDB: [bulk update](mongodb/bulk-update.js) · [GridFS streaming upload](gridfs/direct_upload_gridfs/app.js)
+- Redis: [service wrapper](data_storages/redis/redis_service.js) · [reconnect strategy](redis/connect-retry.js)
 
-*   [PDF file in browser](https://github.com/zishon89us/node-cheat/tree/master/pdf/pdf_browser)
+### Auth and third-party APIs
 
-### :heart: Random But Really Useful
+- Passport: [X + Facebook login](random/small_tasks/twitter-facebook-auth-data) · [X screen names](random/small_tasks/twitter-screen-names)
+- [X OAuth 1.0a](random/small_tasks/twitter_auth.js) · [Search posts](random/small_tasks/search_tweets.js)
+- [Xero OAuth 2](random/small_tasks/xero_api/xero.js) · [Google Sheets](random/tiny_useful_modules/google_spreadsheets.js) · [YouTube channel videos](random/small_tasks/youtube-videos/list_channel_videos.js)
+- [Exchange rates](random/small_tasks/exchange_api.js) · [Gender by name](random/small_tasks/gender_by_name.js)
 
-*   [Reads publicly published google doc spreadsheet and returns twitter usernames/handles as json](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/google_spreadsheets.js#L6)
-[](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/google_spreadsheets.js#L6)
-*   [Find gender using first_name and last_name](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/gender_by_name.js#L6)
-*   :couple: [Find gender using first_name](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/gender_by_name.js#L25)
-*   :currency_exchange: [Find exchange rates i.e. USD to GBP etc...](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/exchange_api.js#L6)
-*   :bird: [Search tweets](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/search_tweets.js#L6)
-*   [Simple express server](https://github.com/zishon89us/node-cheat/tree/master/random/small_tasks/express_server) ([ES5](#) | [ES6](#))
-*   [i18n (internationalization) (To Be Done) ](https://github.com/zishon89us/node-cheat/tree/master/random/small_tasks/express_server_i18n)
-*   [Xero Payruns](https://github.com/zishon89us/node-cheat/tree/master/random/small_tasks/xero_api)
-*   [Using passport to authenticate twitter and facebook, trying to retrieve following data for both: id, first_name, last_name, age, age_range, gender, location](https://github.com/zishon89us/node-cheat/tree/master/random/small_tasks/twitter-facebook-auth-data)
-*   [Generate hmac signature](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/hmac_signature.js#L5)
-*   [Generate Coupon, Voucher, Promo Codes](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/coupon-code.js#L14)
-*   [List node.js core modules](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/builtin-modules.js#L3)
-*   Read google_spreadsheet and parse it ([ES6](#) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/google_spreadsheets.js#L6))
-*   Get long url of shortend ([ES6](#) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/long_url.js#L7))
-*   Capture screenshots of websites ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/screenshot.js#L3) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/screenshot.js#L3))
-*   Get image size without full download ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/image_size_probability.js#L3) | [ES6](#))
-*   Identify language of text ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/language_detection.js#L2) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/language_detection.js#L2))
-*   Download YouTube Videos ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/youtube-videos/download_script.js#L6))
-*   List YouTube Videos ([ES6](#) | [ES5](#))
-*   Cron Jobs ([ES6](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/cron-jobs/cron_jobs_es6.js)  | [ES5](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/cron-jobs/cron_jobs.js))
-*   Restify File Upload ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
-*   Uppy.io and tus.io to upload files ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
-*   Resize image without any external dependency ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
-*   Uninstall packages globally ([Link](https://github.com/zishon89us/node-cheat/blob/master/random/tiny_useful_modules/npm_uninstall.js))
-*   Uninstall packages listed in package.json ([Link](https://github.com/zishon89us/node-cheat/blob/master/random/small_tasks/uninstall_all_packages/npm_uninstall.js))
+### Utilities
 
-### :heart: Random But Awsome One Liners
-*   [awsome](https://github.com/zishon89us/node-cheat/tree/master/awsome)
+- [HMAC signatures](random/tiny_useful_modules/hmac_signature.js) · [Generate key pairs](random/tiny_useful_modules/generate_privatekey.js) · [AES-256-GCM encryption](stackoverflow_answers/crypto-create-cipheriv.js)
+- [Coupon codes](random/tiny_useful_modules/coupon-code.js) · [Language detection](random/tiny_useful_modules/language_detection.js) · [Transliteration](string/tranliterate.js)
+- [Image size without a full download](random/tiny_useful_modules/image_size_probability.js) · [Expand short URLs](random/tiny_useful_modules/long_url.js) · [Website screenshots](random/tiny_useful_modules/screenshot.js) · [Headless scraping](scraping/dynamic_webpages_scraping.js)
+- [Cron jobs](random/small_tasks/cron-jobs/cron_jobs.js) · [Durations](day/duration.js) · [Dynamic imports](dynamic-execution/start.js) · [List built-in modules](random/tiny_useful_modules/builtin-modules.js)
+- [Node essentials: events, streams, readline, timers, process](random/tiny_useful_modules/node_essential)
 
-### String
+### Answers from Stack Overflow
 
-*   Tansliteration ([ES6](https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate_es6.js#L5) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/string/tranliterate.js#L5))
+[Promises in loops](stackoverflow_answers/loop-await/loop-await.js) · [Error handling](stackoverflow_answers/error-handling.js) · [finally](stackoverflow_answers/always-then.js) · [Deep copy a directory](stackoverflow_answers/copy-dir-deep.js) · [Nested plugin loading](stackoverflow_answers/require_nested/app.js) · [Streaming XML](stackoverflow_answers/xml-streamer/main.js) · [Resample WAV to 8 kHz](stackoverflow_answers/wav-8000hz/wav.js) · [and more](stackoverflow_answers)
 
-### Emails
+One-liners and tips: [awsome](awsome/README.md)
 
-*   SendGrid ([ES6](https://github.com/zishon89us/node-cheat/blob/master/send_emails/send_grid.js#L7) | [ES5](https://github.com/zishon89us/node-cheat/blob/master/send_emails/send_grid.js#L7) | [Module](https://github.com/zishon89us/node-cheat/blob/master/send_emails/))
-*   Email Templates ([ES6](#))
+## Development
 
-### Sms
+```bash
+npm run lint          # ESLint 10 with eslint-plugin-security
+npm run format:check  # Prettier
+npm test              # every example parses as ESM, uses no require(), and declares its imports
+```
 
-*   Twilio ([ES6](https://github.com/zishon89us/node-cheat/blob/master/send_sms/twillio_sms.js#L6))
+CI runs all of these on Node 22 and 24, plus `npm audit`, CodeQL and SecureAI's own checks. Dependabot keeps dependencies current.
 
-### Fax
-*   Phaxio API ([ES6 - To Be Done ]()  | [ES5 - To Be Done]())
+## Security
+
+See [SECURITY.md](SECURITY.md). These are teaching examples. Add authentication and review them before you deploy any of them.
+
+## License
+
+ISC

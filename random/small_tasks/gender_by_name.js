@@ -1,36 +1,26 @@
-/**
- * Created by Zeeshan on 3/18/2016.
- */
-
-
 //------------------------------------------------------
-//Find gender using first_name and last_name
-//Web Link=> http://api.namsor.com/
+// Guess gender from a first name (genderize.io, no key needed for low volume)
+// and from first + last name (NamSor v2, needs NAMSOR_API_KEY)
+// Run: node gender_by_name.js
 //------------------------------------------------------
 
-var request = require('request');
+const firstName = 'Zeeshan';
+const lastName = 'Memon';
 
-var firstName = 'Zeeshan',
-    lastName = 'Memon',
-    url = "http://api.namsor.com/onomastics/api/json/gender/" + firstName + "/" + lastName;
+const genderize = new URL('https://api.genderize.io/');
+genderize.searchParams.set('name', firstName);
 
-request( url, function (err, resp, body) {
-    if (!err && resp.statusCode == 200) {
-        console.log("namsor response:", JSON.parse(body));
-    }
-});
+const genderizeRes = await fetch(genderize);
+if (!genderizeRes.ok) throw new Error(`genderize.io failed: ${genderizeRes.status}`);
+console.log('genderize response:', await genderizeRes.json());
 
-
-//------------------------------------------------------
-//Find gender using first_name
-//Web Link=> https://genderize.io/#overview
-//------------------------------------------------------
-
-var url2= "https://api.genderize.io/?name=" + firstName;
-request( url2, function (err, resp, body) {
-    if (!err && resp.statusCode == 200) {
-        console.log("genderize response:", JSON.parse(body));
-    }
-});
-
-
+if (process.env.NAMSOR_API_KEY) {
+  const namsorUrl = `https://v2.namsor.com/NamSorAPIv2/api2/json/gender/${encodeURIComponent(firstName)}/${encodeURIComponent(lastName)}`;
+  const namsorRes = await fetch(namsorUrl, {
+    headers: { 'X-API-KEY': process.env.NAMSOR_API_KEY },
+  });
+  if (!namsorRes.ok) throw new Error(`NamSor failed: ${namsorRes.status}`);
+  console.log('namsor response:', await namsorRes.json());
+} else {
+  console.log('Set NAMSOR_API_KEY to also query NamSor with first + last name.');
+}

@@ -1,188 +1,91 @@
 import { Webhooks } from '@octokit/webhooks';
-import { GitHubClient } from '../github/client.js';
-import { SecurityScanner } from '../scanner/engine.js';
-import { ClaudeAnalyzer } from '../ai/claude.js';
+import type { ClaudeTriage } from '../ai/claude.js';
+import { GitHubClient, type RepoRef } from '../github/client.js';
 import { ReportGenerator } from '../reports/generator.js';
+import { SecurityScanner, summarize } from '../scanner/engine.js';
+import type { ScanResult, SourceFile } from '../types/index.js';
 
-export class WebhookHandler {
-  private webhooks: Webhooks;
-  private scanner: SecurityScanner;
-  private reportGenerator: ReportGenerator;
-  private claudeAnalyzer?: ClaudeAnalyzer;
+export interface ScanDeps {
+  scanner: SecurityScanner;
+  triage?: ClaudeTriage;
+}
 
-  constructor(webhookSecret: string, claudeApiKey?: string) {
-    this.webhooks = new Webhooks({
-      secret: webhookSecret,
-    });
+export async function runScan(
+  files: SourceFile[],
+  repositoryUrl: string,
+  deps: ScanDeps
+): Promise<ScanResult> {
+  const result = deps.scanner.scanFiles(files, repositoryUrl);
+  if (!deps.triage || result.findings.length === 0) return result;
+  const findings = await deps.triage.filter(result.findings);
+  return summarize(repositoryUrl, result.filesScanned, findings);
+}
 
-    this.scanner = new SecurityScanner();
-    this.reportGenerator = new ReportGenerator();
+export interface WebhookDeps extends ScanDeps {
+  webhookSecret: string;
+  clientForInstallation: (installationId: number) => GitHubClient;
+}
 
-    if (claudeApiKey) {
-      this.claudeAnalyzer = new ClaudeAnalyzer(claudeApiKey);
+/**
+ * Handlers acknowledge the delivery right away and scan in the background,
+ * because GitHub gives up on a webhook after 10 seconds.
+ */
+export function createWebhooks(deps: WebhookDeps): Webhooks {
+  const webhooks = new Webhooks({ secret: deps.webhookSecret });
+  const reports = new ReportGenerator();
+
+  const background = (label: string, task: () => Promise<void>) => {
+    task().catch(error => console.error(`${label} failed:`, error));
+  };
+
+  webhooks.on(
+    ['pull_request.opened', 'pull_request.synchronize', 'pull_request.reopened'],
+    ({ payload }) => {
+      const installationId = payload.installation?.id;
+      if (!installationId) return;
+      const ref: RepoRef = { owner: payload.repository.owner.login, repo: payload.repository.name };
+      const pr = payload.pull_request;
+
+      background(`Scan of ${ref.owner}/${ref.repo}#${pr.number}`, async () => {
+        const github = deps.clientForInstallation(installationId);
+        const files = await github.getPullRequestFiles(ref, pr.number);
+        const result = await runScan(files, payload.repository.html_url, deps);
+        const report = reports.generateMarkdownReport(result);
+        await github.upsertPullRequestComment(ref, pr.number, report);
+        await github.createCheckRun(ref, pr.head.sha, result, report);
+        console.log(
+          `Scanned ${ref.owner}/${ref.repo}#${pr.number}: ${result.totalFindings} finding(s)`
+        );
+      });
     }
+  );
 
-    this.setupHandlers();
-  }
-
-  /**
-   * Get Express middleware for handling webhooks
-   */
-  getMiddleware() {
-    return this.webhooks.middleware;
-  }
-
-  /**
-   * Setup webhook event handlers
-   */
-  private setupHandlers() {
-    // Handle pull request events (opened, synchronize, reopened)
-    this.webhooks.on(['pull_request.opened', 'pull_request.synchronize', 'pull_request.reopened'], async (event) => {
-      console.log(`Received PR event: ${event.name} for PR #${event.payload.pull_request.number}`);
-
-      try {
-        await this.handlePullRequest(event);
-      } catch (error) {
-        console.error('Error handling pull request:', error);
-      }
-    });
-
-    // Handle push events to main/master branches
-    this.webhooks.on('push', async (event) => {
-      const branch = event.payload.ref.replace('refs/heads/', '');
-
-      if (branch === 'main' || branch === 'master') {
-        console.log(`Received push event to ${branch}`);
-
-        try {
-          await this.handlePush(event);
-        } catch (error) {
-          console.error('Error handling push:', error);
-        }
-      }
-    });
-
-    // Handle check run requests
-    this.webhooks.on('check_run.requested_action', async (event) => {
-      console.log('Received check run request');
-
-      try {
-        await this.handleCheckRun(event);
-      } catch (error) {
-        console.error('Error handling check run:', error);
-      }
-    });
-  }
-
-  /**
-   * Handle pull request events
-   */
-  private async handlePullRequest(event: any) {
-    const { repository, pull_request, installation } = event.payload;
-
-    if (!installation) {
-      console.error('No installation found in webhook payload');
+  webhooks.on('push', ({ payload }) => {
+    const installationId = payload.installation?.id;
+    const defaultBranch = payload.repository.default_branch;
+    const owner = payload.repository.owner?.login;
+    if (
+      !installationId ||
+      !owner ||
+      payload.deleted ||
+      payload.ref !== `refs/heads/${defaultBranch}`
+    )
       return;
-    }
+    const ref: RepoRef = { owner, repo: payload.repository.name };
 
-    // Create GitHub client for this installation
-    const githubClient = await this.createGitHubClient(installation.id);
+    background(`Scan of ${ref.owner}/${ref.repo}@${defaultBranch}`, async () => {
+      const github = deps.clientForInstallation(installationId);
+      const files = await github.getRepositoryFiles(ref, payload.after);
+      const result = await runScan(files, payload.repository.html_url, deps);
+      await github.createCheckRun(
+        ref,
+        payload.after,
+        result,
+        reports.generateMarkdownReport(result)
+      );
+    });
+  });
 
-    // Get repository details
-    const owner = repository.owner.login;
-    const repo = repository.name;
-    const prNumber = pull_request.number;
-    const headSha = pull_request.head.sha;
-
-    console.log(`Scanning PR #${prNumber} in ${owner}/${repo}`);
-
-    // Fetch repository files
-    const files = await githubClient.getRepositoryFiles(owner, repo, pull_request.head.ref);
-
-    // Scan files for security issues
-    const scanResult = await this.scanner.scanFiles(files, repository.html_url);
-
-    // Use AI to reduce false positives (if available)
-    let finalFindings = scanResult.findings;
-    if (this.claudeAnalyzer && scanResult.findings.length > 0) {
-      console.log('Running AI analysis to reduce false positives...');
-      const fileContents = new Map(files.map(f => [f.path, f.content]));
-      finalFindings = await this.claudeAnalyzer.batchAnalyze(scanResult.findings, fileContents);
-
-      // Update scan result
-      scanResult.findings = finalFindings;
-      scanResult.totalFindings = finalFindings.length;
-      scanResult.criticalCount = finalFindings.filter(f => f.severity === 'critical').length;
-      scanResult.highCount = finalFindings.filter(f => f.severity === 'high').length;
-      scanResult.mediumCount = finalFindings.filter(f => f.severity === 'medium').length;
-      scanResult.lowCount = finalFindings.filter(f => f.severity === 'low').length;
-    }
-
-    // Generate report
-    const report = this.reportGenerator.generateMarkdownReport(scanResult);
-
-    // Comment on PR
-    await githubClient.commentOnPullRequest(owner, repo, prNumber, report);
-
-    // Create check run
-    await githubClient.createCheckRun(owner, repo, headSha, scanResult.totalFindings);
-
-    console.log(`Scan complete: found ${scanResult.totalFindings} issues`);
-  }
-
-  /**
-   * Handle push events
-   */
-  private async handlePush(event: any) {
-    const { repository, after, installation } = event.payload;
-
-    if (!installation) {
-      console.error('No installation found in webhook payload');
-      return;
-    }
-
-    const githubClient = await this.createGitHubClient(installation.id);
-
-    const owner = repository.owner.login;
-    const repo = repository.name;
-    const branch = event.payload.ref.replace('refs/heads/', '');
-
-    console.log(`Scanning push to ${branch} in ${owner}/${repo}`);
-
-    // Fetch repository files
-    const files = await githubClient.getRepositoryFiles(owner, repo, branch);
-
-    // Scan files
-    const scanResult = await this.scanner.scanFiles(files, repository.html_url);
-
-    // Create check run
-    await githubClient.createCheckRun(owner, repo, after, scanResult.totalFindings);
-
-    console.log(`Scan complete: found ${scanResult.totalFindings} issues`);
-  }
-
-  /**
-   * Handle check run events
-   */
-  private async handleCheckRun(event: any) {
-    console.log('Check run requested:', event.payload.check_run.name);
-    // Can implement re-scans or additional checks here
-  }
-
-  /**
-   * Create GitHub client for a specific installation
-   */
-  private async createGitHubClient(installationId: number): Promise<GitHubClient> {
-    const appId = parseInt(process.env.GITHUB_APP_ID || '0');
-    const privateKeyPath = process.env.GITHUB_PRIVATE_KEY_PATH || './private-key.pem';
-
-    return await GitHubClient.createFromApp(appId, privateKeyPath, installationId);
-  }
-
-  /**
-   * Verify webhook signature
-   */
-  async verify(payload: string, signature: string): Promise<boolean> {
-    return await this.webhooks.verify(payload, signature);
-  }
+  webhooks.onError(error => console.error('Webhook error:', error.message));
+  return webhooks;
 }

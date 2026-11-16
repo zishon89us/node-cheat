@@ -1,29 +1,25 @@
 # Node-Social
 
-## How to run app
+Facebook and X (Twitter) login with Passport 0.7, Express 5 and Mongoose 9. Sessions are stored in MongoDB.
 
-If you would like to download the code and try it for yourself:
+## Run it
 
-1. Clone the repo
-2. Install packages: `npm install`
-3. Change out the database configuration in config/database.js
-4. Change out auth keys in config/auth.js
-5. Launch: `node server.js`
-6. Visit in your browser at: `http://localhost:3000`
+1. Start MongoDB locally, or point `MONGODB_URI` at a hosted cluster.
+2. `npm install`
+3. `cp .env.example .env`, then set `SESSION_SECRET` (`openssl rand -hex 32`) and the credentials for at least one provider.
+   - Facebook: create an app at https://developers.facebook.com/apps/ and add `http://localhost:3000/auth/facebook/callback` as a valid OAuth redirect URI.
+   - X: create an app at https://developer.x.com, enable OAuth 1.0a, and set the callback to `http://localhost:3000/auth/twitter/callback`. To receive email, also enable "Request email from users".
+4. `npm run dev`
+5. Open http://localhost:3000
 
-## What is inside app
+## What it stores
 
-### Simple user login Node.js/Express Facebook/Twitter connect using PassportJS
+For both providers it stores: id, first name, last name, email, gender and location. For Facebook it also stores birthday and age range.
 
-Using passport to authenticate twitter and facebook, trying to retrieve following data for both:
+- X does not expose gender or age. The app guesses gender from the first name using [genderize.io](https://genderize.io).
+- Facebook only returns `user_birthday` and `user_location` after your app passes App Review.
 
-id, first_name, last_name, age, age_range, gender, location
+## Useful links
 
-**Note**: gender and age are not available in twitter api
-
-**Useful Links**:
-[Graph Api Explorer](https://developers.facebook.com/tools/explorer/1017328211677854?method=GET&path=me%3Ffields%3Dlocation&version=v2.5)
-[Create Facebook App](https://developers.facebook.com/apps/)
-[Gender by Name](http://api.namsor.com/onomastics/api/json/gender/Zeeshan/Hassan)
-[Stackoverflow: Get facebook account details](http://stackoverflow.com/questions/20584056/node-js-get-my-account-details-from-facebook-graph-api)
-
+- [Graph API Explorer](https://developers.facebook.com/tools/explorer/)
+- [Passport docs](https://www.passportjs.org/docs/)

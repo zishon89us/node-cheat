@@ -1,55 +1,41 @@
-const express = require("express");
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
-const path = require("path");
-const morgan = require("morgan");
-const expressLayouts = require("express-ejs-layouts");
+import express from 'express';
+import expressLayouts from 'express-ejs-layouts';
+import mongoose from 'mongoose';
+import morgan from 'morgan';
+import { join } from 'node:path';
+import dashboardRoute from './routes/admin/dashboard.js';
+import postsRoute from './routes/front-end/posts.js';
+
+const { MONGO_URI, PORT = 8080 } = process.env;
+if (!MONGO_URI) {
+  console.error('MONGO_URI is not set. Copy .env.example to .env and run `npm start`.');
+  process.exit(1);
+}
+
 const app = express();
 
-dotenv.config();
+app.set('views', join(import.meta.dirname, 'views'));
+app.set('view engine', 'ejs');
+app.set('layout', 'default/layout');
+app.locals.website_name = 'XPressBlog';
 
-//Conect to MONGODB
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(() => {
-    console.log("conected");
-  });
-
-mongoose.connection.on("error", err => {
-  console.log(`DB connection error: ${err.message}`);
-});
-
-// Set static directory
-app.use(express.static(path.join(__dirname, "public")));
-
-// Set views directory
-app.set("views", path.join(__dirname, "views"));
-
-// Set view engine
-app.set("view engine", "ejs");
-
-// Use Express Layouts
+app.use(morgan('dev'));
+app.use(express.static(join(import.meta.dirname, 'public')));
 app.use(expressLayouts);
 
-// Middleware
-app.use(morgan("dev"));
-
-// Bring the Dashboard
-const dashboardRoute = require("./routes/admin/dashboard");
-
-// Get Dashboard Routes
 app.use('/dashboard', dashboardRoute);
-
-// Bring the Posts Routes
-const postsRoute = require('./routes/front-end/posts');
-
-// Register Posts Routes
 app.use('/', postsRoute);
 
+app.use((req, res) => res.status(404).send('Not found'));
 
-const port = process.env.PORT || 8080;
+// Express 5 forwards rejected promises from async handlers here
+app.use((err, req, res, _next) => {
+  console.error(err);
+  res.status(500).send('Something went wrong');
+});
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+// Connect first, then listen: requests never hang waiting on the database
+await mongoose.connect(MONGO_URI);
+mongoose.connection.on('error', (err) => console.error(`DB connection error: ${err.message}`));
+
+app.listen(PORT, () => console.log(`Listening on http://localhost:${PORT}`));

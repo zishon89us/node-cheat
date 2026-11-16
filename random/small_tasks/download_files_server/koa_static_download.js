@@ -1,19 +1,14 @@
-/**
- * Created by Zeeshan on 8/20/2017.
- */
-
 //------------------------------------------------------
-//Simple Express Server to download files
-//Web Link=>
+// Serve a folder of downloadable files with Koa
+// Run: node koa_static_download.js, then open http://localhost:3000/file2.txt
 //------------------------------------------------------
 
-const serve = require('koa-static');
-const Koa = require('koa');
+import Koa from 'koa';
+import serve from 'koa-static';
+import path from 'node:path';
+
 const app = new Koa();
 
-// or use absolute paths
-app.use(serve(__dirname + '/public'));
+app.use(serve(path.join(import.meta.dirname, 'public')));
 
-app.listen(3000);
-
-console.log('listening on port 3000');
+app.listen(3000, () => console.log('Listening on http://localhost:3000'));

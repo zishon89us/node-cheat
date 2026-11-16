@@ -1,44 +1,31 @@
-/**
- * Created by Zeeshan on 02/26/2018.
- */
-
 //------------------------------------------------------
-//async function to resolve value based on callback style
-//Web Link=>
+// Four ways to read a file: callback, promisify, fs/promises, hand-rolled Promise
+// Run: node async-cb-resolve.js
 //------------------------------------------------------
 
-const fs = require('fs');
-const promisify = require("es6-promisify");
-const readFileFn = promisify(fs.readFile);
+import { readFile } from 'node:fs';
+import { readFile as readFileAsync } from 'node:fs/promises';
+import { promisify } from 'node:util';
+import path from 'node:path';
 
-const filePath2 = "./files/file2.txt";
+const filePath = path.join(import.meta.dirname, 'files', 'file2.txt');
 
-const readAsync = async () => {
-	return new Promise((resolve, reject) => {
-		fs.readFile(filePath2, 'utf-8', function(err, data){
-			resolve(data);
-		});
-	});
-};
+// Style 1: classic callback
+readFile(filePath, 'utf-8', (err, data) => {
+  if (err) return console.error(err);
+  console.log(`Style 1 (callback): ${data}`);
+});
 
-const main = async () => {
-	// Style 1
-	fs.readFile(filePath2, 'utf-8', function(err, data){
-	 console.log(`Style 1 : ${data}`);
-	 });
+// Style 2: util.promisify turns any (err, value) callback API into a promise
+const readFilePromisified = promisify(readFile);
+console.log(`Style 2 (promisify): ${await readFilePromisified(filePath, 'utf-8')}`);
 
-	// Style 2
-	readFileFn(filePath2, 'utf-8').then(function(data){
-		console.log(`Style 2 : ${data}`);
-	});
+// Style 3: built-in promise API (preferred)
+console.log(`Style 3 (fs/promises): ${await readFileAsync(filePath, 'utf-8')}`);
 
-	// Style 3
-	const data = await readFileFn(filePath2, 'utf-8');
-	console.log(`Style 3 : ${data}`);
-
-	// Style 4
-      const data1 = await readAsync();
-	console.log(`Style 3 : ${data1}`);
-}
-
-main();
+// Style 4: wrap a callback API yourself
+const readWithPromise = (file) =>
+  new Promise((resolve, reject) => {
+    readFile(file, 'utf-8', (err, data) => (err ? reject(err) : resolve(data)));
+  });
+console.log(`Style 4 (new Promise): ${await readWithPromise(filePath)}`);

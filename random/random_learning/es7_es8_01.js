@@ -2,7 +2,6 @@
  * Created by Zeeshan on 23/02/2018.
  */
 
-
 //------------------------------------------------------
 //Random learning thread ES7-ES8
 //Web Link=>
@@ -13,12 +12,11 @@
 //------------------------------------------------------
 
 const { log } = console;
-const separator = () => log('------------------') ;
-
+const separator = () => log('------------------');
 
 const numberArray = [2018, 2019, 2020, 2030, NaN];
-const randomArray1 = [undefined, ];
-const randomArray2 = [null,];
+const randomArray1 = [undefined];
+const randomArray2 = [null];
 
 /* Normal on Array */
 log(numberArray.includes(2018)); // true
@@ -47,7 +45,7 @@ log(randomString.includes('Hey', 1)); // false
 //------------------------------------------------------
 //Topic: Exponentiation Operator
 //------------------------------------------------------
-const cubed  = 7 ** 3;
+const cubed = 7 ** 3;
 let squared = 7;
 squared **= 2;
 
@@ -61,11 +59,9 @@ log(squared);
 //Topic: Object.values/Object.entries
 //------------------------------------------------------
 
-const data = {'ES8': 2017, 'ES7': 2016, 'ES6': 2015};
+const data = { ES8: 2017, ES7: 2016, ES6: 2015 };
 log(Object.values(data));
 
-for(let [key, value] of Object.entries(data)){
-	log(`${key} ::: ${value}`);
+for (let [key, value] of Object.entries(data)) {
+  log(`${key} ::: ${value}`);
 }
-
-

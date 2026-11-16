@@ -1,100 +1,48 @@
-/**
- * Created by Muhammad AbdulMoiz on 3/15/2016.
- */
-var aws = require('aws-sdk');
-var Q   = require('q');
-var config = require('./config');//contains configuration for aws-sdk and aws queue url
+// SQS long-polling worker with AWS SDK v3: receive, process, delete. Ctrl+C stops it cleanly.
+// Run: AWS_REGION=us-east-1 SQS_QUEUE_URL=https://sqs.us-east-1.amazonaws.com/123/my-queue node polling_agent.js
 
-var sqs = new aws.SQS({
-    region: config.AWS.region,
-    accessKeyId: config.AWS.accessKeyId,
-    secretAccessKey: config.AWS.secretAccessKey,
+import { SQSClient, ReceiveMessageCommand, DeleteMessageBatchCommand } from '@aws-sdk/client-sqs';
 
-    params: {
-        QueueUrl: config.AWS.queueUrl
-    }
-});
+const QueueUrl = process.env.SQS_QUEUE_URL;
+if (!QueueUrl) throw new Error('Set SQS_QUEUE_URL to the queue to poll');
 
-var receiveMessage = Q.nbind( sqs.receiveMessage, sqs );
-var deleteMessage = Q.nbind( sqs.deleteMessage, sqs );
+const sqs = new SQSClient({ region: process.env.AWS_REGION ?? 'us-east-1' });
+const stop = new AbortController();
+process.once('SIGINT', () => stop.abort());
 
-
-(function pollQueueForMessages() {
-
-    console.log("***Starting long-poll operation.***" );
-
-    receiveMessage({
-        WaitTimeSeconds: 5, // Enable long-polling (5-seconds).
-        VisibilityTimeout: 60 // queue changes visibility 10 seconds
-    })
-        .then(
-        function handleMessageResolve( data ) {
-
-            // If there are no message, throw an error so that we can bypass the
-            // subsequent resolution handler that is expecting to have a message
-            // delete confirmation.
-            if ( ! data.Messages ) {
-
-                throw(
-                    workflowError(
-                        "EmptyQueue",
-                        new Error( "There are no messages to process." )
-                    )
-                );
-
-            }
-
-            // ---
-            // TODO: Actually process the message in some way :P
-            // ---
-
-            //Delete Message from queue so it does'nt polls again
-            deleteMessage({
-                ReceiptHandle: message.ReceiptHandle
-            });
-            return;
-
-        }
-    )
-        .then(
-        function handleDeleteResolve( data ) {
-
-            console.log(  "Message Deleted!" );
-
-        }
-    )
-
-        // Catch any error (or rejection) that took place during processing.
-        .catch(
-        function handleError( error ) {
-
-            // The error could have occurred for both known (ex, business logic) and
-            // unknown reasons (ex, HTTP error, AWS error).
-            switch ( error.type ) {
-                case "EmptyQueue":
-                    console.log( "Expected Error:", error.message );
-                    break;
-                default:
-                    console.log( "Unexpected Error:", error.message );
-                    break;
-            }
-
-        }
-    )
-
-        // When the promise chain completes, either in success of in error, let's kick the
-        // long-poll operation back up and look for moar messages.
-        .finally( pollQueueForMessages );
-
-})();
-
-// When processing the SQS message, we will use errors to help control the flow of the
-// resolution and rejection. We can then use the error "type" to determine how to
-// process the error object.
-function workflowError( type, error ) {
-
-    error.type = type;
-
-    return( error );
-
+async function processMessage(message) {
+  console.log('Processing', message.MessageId, message.Body);
 }
+
+while (!stop.signal.aborted) {
+  try {
+    const { Messages = [] } = await sqs.send(
+      new ReceiveMessageCommand({
+        QueueUrl,
+        MaxNumberOfMessages: 10,
+        WaitTimeSeconds: 20,
+        VisibilityTimeout: 60,
+      }),
+      { abortSignal: stop.signal },
+    );
+    if (Messages.length === 0) continue;
+
+    const results = await Promise.allSettled(Messages.map(processMessage));
+    // Only delete what succeeded; failures reappear after the visibility timeout.
+    const done = Messages.filter((_, i) => results[i].status === 'fulfilled');
+    if (done.length) {
+      await sqs.send(
+        new DeleteMessageBatchCommand({
+          QueueUrl,
+          Entries: done.map(({ MessageId, ReceiptHandle }) => ({ Id: MessageId, ReceiptHandle })),
+        }),
+      );
+    }
+    console.log(`Handled ${done.length}/${Messages.length} messages`);
+  } catch (err) {
+    if (stop.signal.aborted) break;
+    console.error('Poll failed, retrying in 5s:', err.message);
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
+}
+console.log('Worker stopped');

@@ -1,91 +1,67 @@
+//------------------------------------------------------
+// Thin wrapper around common Xero accounting queries (xero-node, OAuth 2.0)
+// Web Link=> https://github.com/XeroAPI/xero-node
+//------------------------------------------------------
 
-var moment = require('moment')
-var path = require('path');
-var fs = require('fs');
-var queryString = require('querystring');
-var Xero = require('xero');
-var xero = new Xero(XERO_CONSUMER_KEY, XERO_CONSUMER_SECRET,
-    fs.readFileSync(XERO_PRIVATE_KEY)/*, undefined,
-    {'If-Modified-Since':'2016-01-26T19:03:08'}//start date when account is created*/
-    //If we don't want to include system accounts just un comment above code with correct start date of  Xero organization
-);
+// Xero filter syntax: Date >= DateTime(2015, 12, 01)
+const toXeroDateTime = (date) => {
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) throw new TypeError(`Invalid date: ${date}`);
+  const pad = (n) => String(n).padStart(2, '0');
+  return `DateTime(${d.getUTCFullYear()}, ${pad(d.getUTCMonth() + 1)}, ${pad(d.getUTCDate())})`;
+};
 
+const dateRangeFilter = (startDate, endDate) =>
+  [
+    startDate && `Date >= ${toXeroDateTime(startDate)}`,
+    endDate && `Date < ${toXeroDateTime(endDate)}`,
+  ]
+    .filter(Boolean)
+    .join(' && ') || undefined;
 
+export class XeroService {
+  /** @param {import('xero-node').XeroClient} xero an authenticated client */
+  constructor(xero, tenantId) {
+    this.xero = xero;
+    this.tenantId = tenantId;
+  }
 
-var XeroService = (function(){
+  async getActiveAccounts() {
+    const { body } = await this.xero.accountingApi.getAccounts(
+      this.tenantId,
+      undefined,
+      'Status=="ACTIVE"',
+    );
+    return body.accounts;
+  }
 
-    var XeroService = function(){
+  async getPayments(startDate, endDate) {
+    const { body } = await this.xero.accountingApi.getPayments(
+      this.tenantId,
+      undefined,
+      dateRangeFilter(startDate, endDate),
+    );
+    return body.payments;
+  }
 
-    };
+  async getInvoices(startDate, endDate) {
+    const { body } = await this.xero.accountingApi.getInvoices(
+      this.tenantId,
+      undefined,
+      dateRangeFilter(startDate, endDate),
+    );
+    return body.invoices;
+  }
 
-    XeroService.prototype.getActiveAccounts = function(){
-        var api = '/Accounts?'+queryString.stringify({where: 'Status="ACTIVE"'});
-        //filter example 'Status="ACTIVE"&SystemAccount!=null'
-        xero.call('GET', api, {}/*Body data*/, function(err, data) {
-            // Error OR data handler
-        });
-    };
+  async getBalanceSheet(date) {
+    const day = new Date(date).toISOString().slice(0, 10);
+    const { body } = await this.xero.accountingApi.getReportBalanceSheet(this.tenantId, day);
+    return body.reports;
+  }
 
-    XeroService.prototype.getPayments = function(startDate, endDate, callback){
-        //filter example : Date >= DateTime(2015, 12, 1) && Date < DateTime(2015, 12, 28)
-        //Payments
-        var format = 'YYYY, MM, DD';/*'YYYY, MM, DD'*/
-        var condition = '';
-            if(startDate){
-                condition += 'Date >= DateTime('+moment(startDate).format(format)+')';
-            }
-            if(startDate && endDate){
-                condition +=' && ';
-            }
-            if(endDate){
-                condition += 'Date < DateTime('+moment(endDate).format(format)+')';
-            }
-
-        var api = '/Payments?'+queryString.stringify({where: condition});
-        xero.call('GET', api, {}/*form data*/, function(err, data) {
-            // Error OR data handler
-        });
-    };
-
-    XeroService.prototype.getBalanceSheet = function(date, callback){
-        var api = '/Reports/BalanceSheet?'+queryString.stringify({
-                date:moment(date).format('YYYY-MM-DD')
-            });
-        xero.call('GET', api, {}/*form data*/, function(err, data) {
-             // Error OR data handler
-        });
-    };
-
-    XeroService.prototype.getInvoices = function(startDate, endDate, callback){
-        //filter example : Date >= DateTime(2015, 12, 1) && Date < DateTime(2015, 12, 28)
-        //Invoices
-        var format = 'YYYY, MM, DD';/*'YYYY, MM, DD'*/
-        var condition = '';
-        if(startDate){
-            condition += 'Date >= DateTime('+moment(startDate).format(format)+')';
-        }
-        if(startDate && endDate){
-            condition +=' && ';
-        }
-        if(endDate){
-            condition += 'Date < DateTime('+moment(endDate).format(format)+')';
-        }
-
-        var api = '/Invoices?'+queryString.stringify({where: condition});
-
-        xero.call('GET', api, {}/*form data*/, function(err, data) {
-             // Error OR data handler
-        });
-    };
-
-    var xeroInstance = new XeroService();
-    return {
-        getActiveAccounts : xeroInstance.getActiveAccounts, // Fecthing active accounts
-        getInvoices : xeroInstance.getInvoices, // Fetching Invoices via date filter
-        getPayments : xeroInstance.getPayments, // Fetching payments via date filter
-        getBalanceSheet : xeroInstance.getBalanceSheet // Fetching balance sheets via date filter
-    }
-})();
-
-module.exports = XeroService;
-
+  // Payroll (Australia); other regions use payrollUKApi / payrollNZApi
+  async getPayRuns() {
+    const { body } = await this.xero.payrollAUApi.getPayRuns(this.tenantId);
+    return body.payRuns;
+  }
+}

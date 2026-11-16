@@ -1,30 +1,13 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const postSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    short_description: {
-        type: String,
-        required: true
-    },
-    full_text: {
-        type: String,
-        required: true
-    },
-    post_image: {
-        type: String,
-        required: false
-    },
-    updated_at: {
-        type: Date,
-        default: Date.now()
-    },
-    created_at: {
-        type: Date,
-        default: Date.now()
-    }
-});
+const postSchema = new mongoose.Schema(
+  {
+    title: { type: String, required: true, trim: true },
+    short_description: { type: String, required: true, trim: true },
+    full_text: { type: String, required: true },
+    post_image: { type: String },
+  },
+  { timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' } },
+);
 
-module.exports = mongoose.model('Post', postSchema);
+export default mongoose.model('Post', postSchema);

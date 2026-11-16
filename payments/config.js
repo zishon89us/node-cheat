@@ -1,9 +1,10 @@
-// Configuration file for authentication services
-// Use environment variables or provide your own credentials
+// Shared payment configuration. Values come from the environment only.
 
-module.exports = {
-    STORMPATH_CLIENT_APIKEY_ID: process.env.STORMPATH_CLIENT_APIKEY_ID || "YOUR_STORMPATH_CLIENT_APIKEY_ID",
-    STORMPATH_CLIENT_APIKEY_SECRET: process.env.STORMPATH_CLIENT_APIKEY_SECRET || "YOUR_STORMPATH_CLIENT_APIKEY_SECRET",
-    STORMPATH_APPLICATION_HREF: process.env.STORMPATH_APPLICATION_HREF || "YOUR_STORMPATH_APPLICATION_HREF",
-    STRIPE_KEY: process.env.STRIPE_KEY || "YOUR_STRIPE_KEY"
+function requireEnv(name) {
+  const value = process.env[name];
+  if (!value) throw new Error(`Missing environment variable ${name} (see .env.example)`);
+  return value;
 }
+
+export const STRIPE_SECRET_KEY = requireEnv('STRIPE_SECRET_KEY');
+export const STRIPE_PUBLISHABLE_KEY = requireEnv('STRIPE_PUBLISHABLE_KEY');

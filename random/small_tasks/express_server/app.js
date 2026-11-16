@@ -1,58 +1,30 @@
-/**
- * Created by Zeeshan on 3/28/2016.
- */
-
 //------------------------------------------------------
-//Simple Express Server to send html file to client
-//Web Link=> http://stackoverflow.com/questions/36258158/expressjs-view-helpers-do-not-work/36258354#36258354
+// Simple Express server: send an HTML file, or render an EJS template
+// Web Link=> http://stackoverflow.com/questions/36258158/expressjs-view-helpers-do-not-work/36258354#36258354
+// Run: node app.js, then open http://localhost:5000 and http://localhost:5000/html
 //------------------------------------------------------
 
-//USING HTML
-/*
+import express from 'express';
+import path from 'node:path';
 
-var express = require('express');
-var app = express();
-
-var path = require('path');
-
-// viewed at http://localhost:5000
-app.get('/', showClientRequest, function(req, res) {
-    res.sendFile(path.join(__dirname + '/index.html'));
-});
-
-function showClientRequest(req, res, next) {
-    var request = {
-        REQUEST : {
-            HEADERS: req.headers,
-            BODY : req.body
-        }
-    }
-    console.log(request)
-    return next();
-}
-
-app.listen(5000);
-
-*/
-
-
-//USING EJS TEMPLATE ENGINE
-var express = require('express');
-var ejs = require('ejs');
-var app = express();
+const app = express();
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(import.meta.dirname, 'views'));
 
-var path = require('path');
+const logRequest = (req, res, next) => {
+  console.log(`${req.method} ${req.originalUrl}`);
+  next();
+};
 
-// viewed at http://localhost:5000
-app.get('/', showClientRequest, function(req, res) {
-    res.render('index',{message:"Hello World!"});
+// EJS template; <%= %> escapes the value
+app.get('/', logRequest, (req, res) => {
+  res.render('index', { message: 'Hello World!' });
 });
 
-function showClientRequest(req, res, next) {
-    console.log('Something Here...');
-    return next();
-}
+// Plain HTML file
+app.get('/html', logRequest, (req, res) => {
+  res.sendFile(path.join(import.meta.dirname, 'index.html'));
+});
 
-app.listen(5000);
+app.listen(5000, () => console.log('Listening on http://localhost:5000'));

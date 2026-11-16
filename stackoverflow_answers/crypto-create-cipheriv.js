@@ -1,32 +1,37 @@
 //------------------------------------------------------
-//Encrypt Decrypt - with crypto.createCipheriv and crypto.createDecipheriv respectively
-//Web Link=> https://stackoverflow.com/questions/60369148/how-do-i-replace-deprecated-crypto-createcipher-in-nodejs/60370205?noredirect=1#comment106794846_60370205
-//Run : node crypto-create-cipheriv.js
+// Encrypt / decrypt with authenticated AES-256-GCM (replacement for deprecated crypto.createCipher)
+// Web Link=> https://stackoverflow.com/questions/60369148/how-do-i-replace-deprecated-crypto-createcipher-in-nodejs/60370205
+// Run : ENCRYPTION_PASSWORD='long random passphrase' node crypto-create-cipheriv.js
 //------------------------------------------------------
 
-const crypto = require('crypto');
-const algorithm = 'aes-256-ctr';
-const ENCRYPTION_KEY = 'Put_Your_Password_Here'; // or generate sample key Buffer.from('FoCKvdLslUuB4y3EZlKate7XGottHski1LmyqJHvUhs=', 'base64');
-const IV_LENGTH = 16;
+import { createCipheriv, createDecipheriv, randomBytes, scryptSync } from 'node:crypto';
 
-function encrypt(text) {
-	let iv = crypto.randomBytes(IV_LENGTH);
-	let cipher = crypto.createCipheriv(algorithm, Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
-	let encrypted = cipher.update(text);
-	encrypted = Buffer.concat([encrypted, cipher.final()]);
-	return iv.toString('hex') + ':' + encrypted.toString('hex');
+const ALGORITHM = 'aes-256-gcm';
+const IV_LENGTH = 12;
+const SALT_LENGTH = 16;
+
+const password = process.env.ENCRYPTION_PASSWORD;
+if (!password) {
+  console.error('Set ENCRYPTION_PASSWORD to run this example.');
+  process.exit(1);
 }
 
-function decrypt(text) {
-	let textParts = text.split(':');
-	let iv = Buffer.from(textParts.shift(), 'hex');
-	let encryptedText = Buffer.from(textParts.join(':'), 'hex');
-	let decipher = crypto.createDecipheriv(algorithm, Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
-	let decrypted = decipher.update(encryptedText);
-	decrypted = Buffer.concat([decrypted, decipher.final()]);
-	return decrypted.toString();
+const deriveKey = (salt) => scryptSync(password, salt, 32);
+
+export function encrypt(plaintext) {
+  const salt = randomBytes(SALT_LENGTH);
+  const iv = randomBytes(IV_LENGTH);
+  const cipher = createCipheriv(ALGORITHM, deriveKey(salt), iv);
+  const ciphertext = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
+  return [salt, iv, cipher.getAuthTag(), ciphertext].map((b) => b.toString('base64url')).join('.');
 }
 
-let a = encrypt('node-cheat');
-let b = decrypt(a);
-console.log(a, b);
+export function decrypt(payload) {
+  const [salt, iv, tag, ciphertext] = payload.split('.').map((p) => Buffer.from(p, 'base64url'));
+  const decipher = createDecipheriv(ALGORITHM, deriveKey(salt), iv);
+  decipher.setAuthTag(tag);
+  return Buffer.concat([decipher.update(ciphertext), decipher.final()]).toString('utf8');
+}
+
+const encrypted = encrypt('node-cheat');
+console.log({ encrypted, decrypted: decrypt(encrypted) });

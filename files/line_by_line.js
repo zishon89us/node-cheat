@@ -1,41 +1,19 @@
-/**
- * Created by Zeeshan on 3/6/2016.
- */
+// Read a file line by line with node:readline (no dependencies, constant memory)
+// Web Link=> https://nodejs.org/api/readline.html#example-read-file-stream-line-by-line
+// Run: node files/line_by_line.js
 
+import { createReadStream } from 'node:fs';
+import { createInterface } from 'node:readline';
+import { join } from 'node:path';
 
+const filePath = join(import.meta.dirname, 'sample_files', 'file1.txt');
 
-//------------------------------------------------------
-//read file line by line using module tail
-//Web Link=> http://stackoverflow.com/questions/35823597/nodejs-reading-line-by-line-function-while-loop/35823722#35823722
-//------------------------------------------------------
-/*
+const rl = createInterface({ input: createReadStream(filePath), crlfDelay: Infinity });
 
- var Tail = require('tail').Tail;
+let lineCount = 0;
+for await (const line of rl) {
+  lineCount += 1;
+  console.log(lineCount, line);
+}
 
- var tail = new Tail("./sample_files/file1.txt");
-
- tail.on("line", function(data) {
- console.log(data);
- });
-
- tail.on("error", function(error) {
- console.log('ERROR: ', error);
- });
-
-*/
-//------------------------------------------------------
-//read file line by line using module fs and async
-//Web Link=> http://stackoverflow.com/questions/35823597/nodejs-reading-line-by-line-function-while-loop/35823722#35823722
-//------------------------------------------------------
-
-
-    var readline = require('linebyline'),
-        rl = readline('./sample_files/file1.txt');
-    rl.on('line', function (line, lineCount, byteCount) {
-        console.log(lineCount, line, byteCount);
-        // do something with the line of text
-    })
-    .on('error', function (e) {
-            console.log("error", e);
-        // something went wrong
-    });
+// To follow a growing file (like `tail -f`), use fs.watch or the `tail` package.

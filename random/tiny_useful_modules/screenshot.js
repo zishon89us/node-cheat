@@ -1,16 +1,37 @@
-
 //------------------------------------------------------
-//Capture Screen-shot of websites
-//Web Link=>
+// Capture screenshots of a website at several viewport sizes (headless Chromium via Playwright)
+// Web Link=> https://playwright.dev/docs/screenshots
+// Setup: npx playwright install chromium
+// Run: node screenshot.js [url]
 //------------------------------------------------------
 
-var Pageres = require('pageres');
+import { mkdir } from 'node:fs/promises';
+import path from 'node:path';
+import { chromium, devices } from 'playwright';
 
-var pageres = new Pageres({delay: 2})
-    //.src('github.com/zishon89us/node-cheat', ['1280x1024', '480x320', '1024x768', 'iphone 5s'], {crop: true})
-    .src('github.com/zishon89us/node-cheat', ['1920x1080']) //creates on capture only
-    .dest(__dirname + "/screenshot_dest") //destination folder to store captures
-    .run()
-    .then(function () {
-        console.log('Screen-shots are done!');
+const url = process.argv[2] ?? 'https://github.com/zishon89us/node-cheat';
+const outDir = path.join(import.meta.dirname, 'screenshot_dest');
+const targets = [
+  { name: '1920x1080', viewport: { width: 1920, height: 1080 } },
+  { name: '1024x768', viewport: { width: 1024, height: 768 } },
+  { name: 'iphone-15', ...devices['iPhone 15'] },
+];
+
+await mkdir(outDir, { recursive: true });
+const browser = await chromium.launch();
+try {
+  for (const { name, ...contextOptions } of targets) {
+    const context = await browser.newContext(contextOptions);
+    const page = await context.newPage();
+    await page.goto(url, { waitUntil: 'networkidle' });
+    await page.screenshot({
+      path: path.join(outDir, `${name}.png`),
+      fullPage: name !== 'iphone-15',
     });
+    await context.close();
+  }
+} finally {
+  await browser.close();
+}
+
+console.log(`Screenshots saved to ${outDir}`);

@@ -1,20 +1,20 @@
-/**
- * Created by Hair on 7/31/2016.
- */
+// Several screenshots at fixed timestamps, run in parallel.
+// Requires the ffmpeg binary. Run: node ffmpeg/generate_thumbnail_approach_2.js
 
-var ffmpeg = require('fluent-ffmpeg'),
-    fs = require('fs');
+import { mkdir } from 'node:fs/promises';
+import { join } from 'node:path';
+import { runFfmpeg } from './ffmpeg.js';
 
-var proc = ffmpeg('./files/videos/sample_1.mp4')
-    // setup event handlers
-    .on('filenames', function(filenames) {
-        console.log('screenshots are ' + filenames.join(', '));
-    })
-    .on('end', function() {
-        console.log('screenshots were saved');
-    })
-    .on('error', function(err) {
-        console.log('an error happened: ' + err.message);
-    })
-    // take 2 screenshots at predefined timemarks and size
-    .takeScreenshots({ count: 2, timemarks: [ '00:00:02.000', '6' ], size: '1280x?' }, './thumbs');
+const input = join(import.meta.dirname, 'files', 'videos', 'sample_1.mp4');
+const outDir = join(import.meta.dirname, 'thumbs');
+await mkdir(outDir, { recursive: true });
+
+const timemarks = ['00:00:02.000', '6'];
+const files = await Promise.all(
+  timemarks.map(async (time, i) => {
+    const output = join(outDir, `screenshot_${i + 1}.png`);
+    await runFfmpeg(['-ss', time, '-i', input, '-frames:v', '1', '-vf', 'scale=1280:-2', output]);
+    return output;
+  }),
+);
+console.log('Screenshots saved:', files.join(', '));

@@ -109,5 +109,7 @@ http.createServer((req, res) => {
   res.end('Insecure connection!');
 }).listen(8080);
 
-// Expected SecureAI findings: ~15+ security issues
-// This demonstrates the power of automated security scanning!
+// SecureAI currently flags 10 issues in this file (4 critical, 5 high, 1 medium).
+// The command injection, path traversal, stack-trace and plain-HTTP examples above are
+// not flagged: the tainted value arrives through a function parameter or spans lines,
+// which needs data-flow analysis that a line-oriented regex scanner does not do.

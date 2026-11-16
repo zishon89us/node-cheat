@@ -1,20 +1,33 @@
 {
   "name": "node-twitter-social",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
   "main": "server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch --env-file-if-exists=.env server.js"
+  },
   "author": {
     "name": "Zeeshan Hassan Memon",
     "email": "zishon89us@hotmail.com"
   },
   "dependencies": {
-    "bcrypt-nodejs": "latest",
-    "connect-flash": "~0.1.1",
-    "ejs": "2.5.7",
-    "express": "^4.17.1",
-    "mongoose": "^5.6.9",
-    "passport": "~0.1.17",
-    "passport-facebook": "~1.0.2",
-    "passport-google-oauth": "~0.1.5",
-    "passport-local": "~0.1.6",
-    "passport-twitter": "~1.0.2"
+    "connect-mongo": "^6.0.0",
+    "ejs": "^7.0.2",
+    "express": "^5.3.0",
+    "express-session": "^1.19.0",
+    "google-spreadsheet": "^5.3.0",
+    "mongoose": "^9.12.1",
+    "morgan": "^1.12.1",
+    "passport": "^0.7.0",
+    "passport-twitter": "^1.0.4",
+    "twitter-api-v2": "^1.31.0"
+  },
+  "overrides": {
+    "xmldom": "npm:@xmldom/xmldom@^0.8.15"
   }
 }

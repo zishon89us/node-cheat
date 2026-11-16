@@ -1,16 +1,19 @@
-//------------------------------------------------------
-//Duration - find duration between two given dates in special format
-//Web Link=> https://stackoverflow.com/questions/60349611/calculate-time-differences-in-nodejs-from-a-manually-created-format/60350332#60350332
-//Run : node duration.js
-//------------------------------------------------------
+// Duration between now and a date in a custom format (YYYY-MM-DD-HH-mm-ss), no date library needed
+// Web Link=> https://stackoverflow.com/questions/60349611
+// Run: node day/duration.js
 
-const moment = require('moment');
+const parseCustom = (value) => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) throw new Error(`Expected YYYY-MM-DD-HH-mm-ss, got "${value}"`);
+  const [, y, mo, d, h, mi, s] = match.map(Number);
+  return new Date(y, mo - 1, d, h, mi, s);
+};
 
-const yourSpecialFormat = 'YYYY-MM-DD-HH-mm-ss';
-const someDateInYourFormat = '2020-02-22-05-58-57';
+const then = parseCustom('2020-02-22-05-58-57');
+const diffMs = Date.now() - then.getTime();
 
-let now = moment(moment().format(yourSpecialFormat), yourSpecialFormat);
-let then = moment(someDateInYourFormat, yourSpecialFormat);
+console.log('Hours   ---->', diffMs / 3_600_000);
+console.log('Minutes ---->', diffMs / 60_000);
 
-console.log('Hours   ----> ', moment.duration(now.diff(then)).asHours());
-console.log('Minutes ----> ', moment.duration(now.diff(then)).asMinutes ());
+const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+console.log('Relative ---->', rtf.format(-Math.round(diffMs / 86_400_000), 'day'));

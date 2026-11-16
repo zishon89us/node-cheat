@@ -1,179 +1,59 @@
-/**
- * Created by Zeeshan on 3/7/2016.
- */
+// AWS Lambda (Node.js 22+ runtime, ESM): download two images, overlay one on the other with sharp, store the result in S3.
+// Original question: https://stackoverflow.com/q/35846425
+// Event: { "userProfileImagePath": "https://...", "friendProfileImagePath": "https://..." }
+// Env: DEST_BUCKET. Deploy sharp built for linux (e.g. npm install --os=linux --cpu=arm64 sharp) or use a layer.
 
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import sharp from 'sharp';
 
-/*
-* I was working on a lambda function which will be triggered via the amazon rest api.
+const s3 = new S3Client({});
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
- I have created the following
+async function downloadImage(url) {
+  const parsed = new URL(url);
+  if (parsed.protocol !== 'https:') throw new Error(`Only https image URLs are allowed: ${url}`);
 
- a POST end point on REST API console
- a lambda function linked to the REST API
- Now as a first try I created the function such that it will accept the param as
+  const res = await fetch(parsed, { signal: AbortSignal.timeout(10_000) });
+  if (!res.ok) throw new Error(`Download failed (${res.status}) for ${url}`);
+  if (!res.headers.get('content-type')?.startsWith('image/'))
+    throw new Error(`Not an image: ${url}`);
 
- {
- "userProfileImagePath":"facebook users profile image path via GET /{user-id}/picture"
- }
- The lambda function will get the image using request module and then upload to a bucket.
+  const buffer = Buffer.from(await res.arrayBuffer());
+  if (buffer.length > MAX_IMAGE_BYTES) throw new Error(`Image too large: ${url}`);
+  return buffer;
+}
 
- Since I was using multiple modules I have created everything locally and zipped them including the node_modules and uploaded them to lambda function console by specifying the Handler name.
+export const handler = async (event) => {
+  const bucket = process.env.DEST_BUCKET;
+  if (!bucket) return { stat: 'error', msg: 'DEST_BUCKET is not configured' };
 
- So far its good and it worked pretty well.
+  const { userProfileImagePath, friendProfileImagePath } = event ?? {};
+  if (!userProfileImagePath || !friendProfileImagePath) {
+    return { stat: 'error', msg: 'userProfileImagePath and friendProfileImagePath are required' };
+  }
 
- Now to extend this I was trying to send 2 profile images - one is from the user - the other is one of his/her friend - Merge both the images into one and then upload the merged image to the destination file.
+  try {
+    const [userImage, friendImage] = await Promise.all([
+      downloadImage(userProfileImagePath),
+      downloadImage(friendProfileImagePath),
+    ]);
 
- I tried different approach for the merging and nothing worked. Found some solutions on here and seems like they really do not like streams
+    const merged = await sharp(userImage)
+      .resize(400, 400, { fit: 'cover' })
+      .composite([
+        { input: await sharp(friendImage).resize(200, 200).toBuffer(), top: 100, left: 100 },
+      ])
+      .jpeg({ quality: 85 })
+      .toBuffer();
 
- Here is what I did so far and as I mentioned both the images are getting uploaded to a bucket however the merging seems to fail, I ran out of idea to accomplish this, would be really helpful if you can give me some directions on how to do it.
+    const key = `merged/${Date.now()}.jpg`;
+    await s3.send(
+      new PutObjectCommand({ Bucket: bucket, Key: key, Body: merged, ContentType: 'image/jpeg' }),
+    );
 
- Currently it uses async module to do individual tasks
-
- First upload both the images to s3 in parallel
- then download them using s3.getObject in parallel
- finally on completion of 2nd task try to merge and push back to s3
- Basically there will be a template image and over the template image multiple images will be placed (merged), here in the code below I am considering userProfileImagePath as the main template and trying to merge another image into it.
-
- Please let me know if there is a different way to do this.
-
- Here is what I did so far*/
-
-
-//http://stackoverflow.com/questions/35846425/amazon-lambda-function-merge-multiple-s3-images-and-put-to-a-destination-bucket
-
-/**
- * This is a test script which runs as a lambda function on amazon
- * The lamda function is linked with an amazon end point
- * The script will accept a image url (facebook/gravator) etc and will upload to a destination s3 bucket and returns the url
- * The param looks like
- {
-     "userProfileImagePath":"https://fbcdn-profile-a.......",
-     "friendProfileImagePath":"https://fbcdn-profile-a......."
- }
- */
-
-var exec = require('child_process').exec,
-    async = require('async'),
-    request = require('request'),
-    gm = require('gm'),
-    imageMagick = gm.subClass({ imageMagick: true }),
-    aws = require('aws-sdk');
-
-exports.handler = function(req, context) {
-    var errMsg = '',
-        userProfileImageName = 'user_profile',
-        friendProfileImageName = 'friend_profile',
-        mergedImageName = 'final_image',
-        destinationBucket = 'destination_bucket',
-        response = {} ,
-        s3 = new aws.S3();
-
-    if (req.userProfileImagePath === '') {
-        errMsg = 'Missing the userProfileImage';
-    }
-
-    if (req.friendProfileImagePath === '') {
-        errMsg = 'Missing the friendProfileImagePath ';
-    }
-
-    if (errMsg === '') {
-        async.auto({
-                copyUserImageToS3 : function(autoCallback) {
-                    console.log('MyImage :'+req.userProfileImagePath);
-                    //var myImageData = {} ;
-                    request({
-                        url: req.userProfileImagePath,
-                        encoding: null
-                    }, function(err, res, body) {
-                        if (err) { return autoCallback(err); }
-
-                        s3.putObject({
-                            Bucket: destinationBucket,
-                            Key: userProfileImageName+'.jpg',
-                            ContentType: res.headers['content-type'],
-                            ContentLength: res.headers['content-length'],
-                            Body: body, // buffer
-                            ACL:'public-read'
-                        }, autoCallback);
-                    });
-                },
-
-                copyFriendImageToS3 : function(autoCallback) {
-                    console.log('FriendImage :'+req.friendProfileImagePath);
-                    //var friendImageData = {} ;
-                    request({
-                        url: req.friendProfileImagePath,
-                        encoding: null
-                    }, function(err, res, body) {
-                        if (err) { return autoCallback(err); }
-
-                        s3.putObject({
-                            Bucket: destinationBucket,
-                            Key: friendProfileImageName+'.jpg',
-                            ContentType: res.headers['content-type'],
-                            ContentLength: res.headers['content-length'],
-                            Body: body, // buffer
-                            ACL:'public-read'
-                        }, autoCallback);
-                    });
-                },
-
-                getUserImageFromS3 : ['copyUserImageToS3', function(autoCallback,results) {
-                    s3.getObject({
-                        Bucket: destinationBucket,
-                        Key: userProfileImageName+'.jpg',
-                    }, autoCallback);
-                }],
-
-                getFriendImageFromS3 : ['copyFriendImageToS3', function(autoCallback,results) {
-                    s3.getObject({
-                        Bucket: destinationBucket,
-                        Key: friendProfileImageName+'.jpg',
-                    }, autoCallback);
-                }],
-
-                mergeImages : ['getUserImageFromS3','getFriendImageFromS3', function(autoCallback,results) {
-                    console.log('Here');
-                    gm()
-                        .in('-page', '+0+0')  // Custom place for each of the images
-                        .in(results.getUserImageFromS3.body)
-                        .in('-page', '+100+100')
-                        .in(results.getFriendImageFromS3.body)
-                        .minify()
-                        .mosaic()
-                        .toBuffer('JPG', function (err, buffer) {
-                            if (err) { return autoCallback(err); }
-                            s3.putObject({
-                                Bucket: destinationBucket,
-                                Key: mergedImageName+'.jpg',
-                                ContentType:  results.getUserImageFromS3.headers['content-type'],
-                                ContentLength: results.getUserImageFromS3.headers['content-length'],
-                                Body: buffer, // buffer
-                                ACL:'public-read'
-                            }, autoCallback);
-                        });
-                }],
-            },
-            function(err, results) {
-                if (err) {
-                    response = {
-                        "stat":"error",
-                        "msg":"Error manipulating the image :: "+err
-                    } ;
-                    context.done(null,response);
-                } else {
-                    response = {
-                        "stat":"ok",
-                        "imageUrl":"https://s3-................../"+mergedImageName+".jpg"
-                    } ;
-                    context.done(null,response);
-                }
-            });
-    } else {
-        response = {
-            "stat":"error",
-            "msg": errMsg
-        } ;
-        context.done(null,response);
-    }
+    return { stat: 'ok', bucket, key };
+  } catch (err) {
+    console.error(err);
+    return { stat: 'error', msg: 'Error manipulating the image' };
+  }
 };

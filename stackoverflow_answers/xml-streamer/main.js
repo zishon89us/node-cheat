@@ -1,9 +1,11 @@
-const path = require('path');
-const _streamer = require('./xml-streamer');
+//------------------------------------------------------
+// Read a file through a stream with async iteration
+// Run : node xml-streamer/main.js
+//------------------------------------------------------
 
-async function main() {
-    const xml = await _streamer.readStream( path.resolve(__dirname, 'files', 'test.xml'));
-    console.log(xml);
-}
+import { join } from 'node:path';
+import { readStream } from './xml-streamer.js';
 
-main();
+const xml = await readStream(join(import.meta.dirname, 'files', 'test.xml'));
+console.log(`Read ${xml.length} characters`);
+console.log(xml.slice(0, 200));

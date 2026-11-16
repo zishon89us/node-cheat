@@ -1,24 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-Hey! Lets try uploading to s3 directly :)
-
-<form method="post" enctype="multipart/form-data" action="/upload">
-    <p>
-        <input type="text" name="title" placeholder="optional title"/>
-    </p>
-
-    <p>
-        <input type="file" name="upl" multiple/>
-    </p>
-
-    <p>
-        <input type="submit"/>
-    </p>
-</form>
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upload to S3</title>
+  </head>
+  <body>
+    <h1>Upload directly to S3</h1>
+    <form method="post" enctype="multipart/form-data" action="/upload">
+      <p><input type="file" name="upl" multiple required /></p>
+      <p><button type="submit">Upload</button></p>
+    </form>
+  </body>
 </html>

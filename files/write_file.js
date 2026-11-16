@@ -1,32 +1,21 @@
+// Write a file in chunks (stream) or all at once
+// Run: node files/write_file.js
 
-//------------------------------------------------------
-//fs module to write file in bits or chunks
-//Web Link=>
-//------------------------------------------------------
+import { createWriteStream } from 'node:fs';
+import { writeFile } from 'node:fs/promises';
+import { pipeline } from 'node:stream/promises';
+import { Readable } from 'node:stream';
+import { join } from 'node:path';
 
-var fs = require('fs'),
-    fileName = "./sample_files/file_w.txt",
-    stream = fs.createWriteStream(fileName);
+const fileName = join(import.meta.dirname, 'sample_files', 'file_w.txt');
 
-stream.once('open', function(f) {
-    stream.write("This is first row.\n");
-    stream.write("This is second row.\n");
-    stream.end();
-});
+// Chunked: pipeline handles backpressure and closes the file
+await pipeline(
+  Readable.from(['This is first row.\n', 'This is second row.\n']),
+  createWriteStream(fileName),
+);
+console.log('Streamed write done');
 
-
-//------------------------------------------------------
-//fs module to read file as whole
-//Web Link=>
-//------------------------------------------------------
-
-
-/*
-var sampleText = "Hello World!";
-
-fs.writeFile(fileName, sampleText, function(err) {
-    if(err) {
-        return console.log(err);
-    }
-    console.log("The file was saved!");
-});*/
+// Whole file
+await writeFile(fileName, 'Hello World!\n');
+console.log('The file was saved!');

@@ -1,40 +1,31 @@
+// MongoDB bulk upsert: create documents that don't exist, replace those that do
+// Web Link=> https://www.mongodb.com/docs/drivers/node/current/crud/bulk-write/
+// Run: MONGODB_URI=mongodb://127.0.0.1:27017 node mongodb/bulk-update.js
 
-//------------------------------------------------------
-//MongoDB Bulk Upsert: Create documents if not exist or update them
-//Web Link=> https://docs.mongodb.com/manual/reference/method/Bulk.find.upsert/
-//Run : node bulk-update.js
-//------------------------------------------------------
+import { MongoClient } from 'mongodb';
 
-const mongo = require('mongodb');
-const MongoClient = mongo.MongoClient;
+const uri = process.env.MONGODB_URI;
+if (!uri) throw new Error('Set MONGODB_URI');
 
-const client = new MongoClient('mongodb://127.0.0.1:27017', { useUnifiedTopology: true });
-client.connect(async err => {
-	if (err) {
-		console.log('DB Connection Error ', err);
-	} else {
-		const db = client.db('node-cheat-db');
+const client = new MongoClient(uri);
+try {
+  const users = client.db(process.env.MONGODB_DB ?? 'node-cheat-db').collection('users');
+  await users.createIndex({ email: 1 }, { unique: true });
 
-		// lets assume you've read all file contents and data is now ready for db operation
-		let records = [
-			{first: 'john', last: 'doe', email: 'johen@doe.com'},
-			{first: 'jack', last: 'doe', email: 'jack@doe.com'},
-			{first: 'jill', last: 'doe_updated', email: 'jill@doe.com'}
-		];
+  const records = [
+    { first: 'john', last: 'doe', email: 'john@doe.com' },
+    { first: 'jack', last: 'doe', email: 'jack@doe.com' },
+    { first: 'jill', last: 'doe_updated', email: 'jill@doe.com' },
+  ];
 
-		// prepare bulk upsert so that new records are created and existing are updated
-		let bulk = db.collection('users').initializeOrderedBulkOp();
-		for (var i = 0; i < records.length; i++) {
-			bulk.find({
-        "email": records[i].email // at least 1 key should be treated as PK; in this example email is PK
-	    }).upsert(records[i]).replaceOne(records[i]);
-		}
-		bulk.execute(function (err,updateResult) {
-				if (updateResult.result.ok != 1) {
-					console.log('Bulk Upsert Error');
-				} else {
-							console.log(`Inserted: ${updateResult.result.nUpserted} and Updated: ${updateResult.result.nModified}`);
-				}
-		});
-	}
-});
+  const result = await users.bulkWrite(
+    records.map((doc) => ({
+      replaceOne: { filter: { email: doc.email }, replacement: doc, upsert: true },
+    })),
+    { ordered: false },
+  );
+
+  console.log(`Inserted: ${result.upsertedCount}, Updated: ${result.modifiedCount}`);
+} finally {
+  await client.close();
+}

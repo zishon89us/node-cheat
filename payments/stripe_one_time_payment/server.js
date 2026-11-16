@@ -1,235 +1,142 @@
-/**
- * Created by Zeeshan on 8/3/2016.
- */
+// Stripe customers, saved payment methods, immediate and authorize-then-capture payments (PaymentIntents).
+// Run: STRIPE_SECRET_KEY=sk_test_... STRIPE_PUBLISHABLE_KEY=pk_test_... node server.js
+// Card details never touch this server: the browser collects them with Stripe Elements.
 
-//------------------------------------------------------
-//https basic node.js server
-//Web Link=>
-//Run : node server.js
-//Note :
-//------------------------------------------------------
+import path from 'node:path';
+import express from 'express';
+import Stripe from 'stripe';
+import { z } from 'zod';
+import { STRIPE_SECRET_KEY, STRIPE_PUBLISHABLE_KEY } from '../config.js';
 
-
-var https = require('https'),
-    fs = require('fs'),
-    config = require('../config'),
-    stripe = require('stripe')(config.STRIPE_KEY),
-    ejs = require('ejs'),
-    path = require('path'),
-    bodyParser = require('body-parser'),
-    app = require('express')();
-
-app.use(bodyParser.json({ type: 'application/*+json' }))
+const stripe = new Stripe(STRIPE_SECRET_KEY);
+const app = express();
 
 app.set('view engine', 'ejs');
+app.set('views', path.join(import.meta.dirname, 'views'));
+app.use(express.json());
 
+const id = (prefix) => z.string().regex(new RegExp(`^${prefix}_[A-Za-z0-9]+$`));
+const amount = z.number().int().positive().max(99_999_999);
+const currency = z
+  .string()
+  .regex(/^[a-z]{3}$/)
+  .default('usd');
 
-var options = {
-    key: fs.readFileSync('../../HTTPS/keys/key.pem'),
-    cert: fs.readFileSync('../../HTTPS/keys/cert.pem')
-};
+function parse(schema, data) {
+  const result = schema.safeParse(data);
+  if (!result.success) {
+    const err = new Error(z.prettifyError(result.error));
+    err.status = 400;
+    throw err;
+  }
+  return result.data;
+}
 
-app.get('/', function (req, res) {
-    res.render('create_customer', { });
+app.get('/', (req, res) =>
+  res.render('create_customer', { publishableKey: STRIPE_PUBLISHABLE_KEY }),
+);
+app.get('/page2', (req, res) =>
+  res.render('card_token', { publishableKey: STRIPE_PUBLISHABLE_KEY }),
+);
+
+app.get('/customer', async (req, res) => {
+  const { customer_id } = parse(z.object({ customer_id: id('cus') }), req.query);
+  res.json({ customer: await stripe.customers.retrieve(customer_id) });
 });
 
-app.get('/page2', function (req, res) {
-    res.render('card_token', { });
+// Create a customer plus a SetupIntent the browser confirms to save a card for later charges.
+app.post('/customer', async (req, res) => {
+  const { email, description } = parse(
+    z.object({ email: z.email(), description: z.string().max(350).optional() }),
+    req.body,
+  );
+  const customer = await stripe.customers.create({ email, description });
+  const setupIntent = await stripe.setupIntents.create({
+    customer: customer.id,
+    usage: 'off_session',
+  });
+  res.json({ customer, clientSecret: setupIntent.client_secret });
 });
 
-
-//get customer with customer_id
-app.get('/customer', function (req, res) {
-    if(req.query.customer_id){
-        stripe.customers.retrieve(req.query.customer_id,
-            function(err, customer) {
-                if(err){
-                    var msg = "stripe.customers.retrieve Failed ";
-                    console.log(msg, err);
-                    res.send({message: msg, err: err});
-                }else{
-                    var msg = "stripe.customers.retrieve Succeeded ";
-                    console.log(msg );
-                    res.send({message: msg, customer: customer});
-                }
-            }
-        );
-    }else{
-        res.send({message:"Params Missing"});
-    }
+app.post('/add-card', async (req, res) => {
+  const { customer_id, payment_method } = parse(
+    z.object({ customer_id: id('cus'), payment_method: id('pm') }),
+    req.body,
+  );
+  res.json({
+    paymentMethod: await stripe.paymentMethods.attach(payment_method, { customer: customer_id }),
+  });
 });
 
-//create stripe customer
-app.post('/customer', function (req, res) {
-    console.log("creating customer with source in query ", req.query.source);
-    stripe.customers.create({
-            email: req.query.email || Date.now()+"@nodecheat.com",
-            description: req.query.description || "Desc. for " + Date.now()+"@nodecheat.com" ,
-            source: req.query.source // obtained with Stripe.js
-        }, function(err, customer) {
-            if(err){
-                console.log("stripe.customers.create Failed ", err);
-                res.send({message: "stripe.customers.create Failed ", err: err});
-            }else{
-                console.log("stripe.customers.create Succeeded ");
-                res.send({message: "stripe.customers.create Succeeded ", customer: customer});
-            }
-        }
-    );
+app.post('/delete-card', async (req, res) => {
+  const { payment_method } = parse(z.object({ payment_method: id('pm') }), req.body);
+  res.json({ paymentMethod: await stripe.paymentMethods.detach(payment_method) });
 });
 
-//add another source to customer (add another credit card to customer)
-app.post('/add-card', function (req, res) {
-    if(req.query.source && req.query.customer_id){
-        stripe.customers.createSource(req.query.customer_id, {
-                source: req.query.source // obtained with Stripe.js
-            }, function(err, card) {
-                if(err){
-                    var msg = "stripe.customers.createSource Failed ";
-                    console.log(msg, err);
-                    res.send({message: msg, err: err});
-                }else{
-                    var msg = "stripe.customers.createSource Succeeded ";
-                    res.send({message: msg, card: card});
-                }
-            }
-        );
-    }else{
-        res.send({message:"Params Missing"});
-    }
+const chargeBody = z.object({
+  customer_id: id('cus'),
+  payment_method: id('pm'),
+  amount,
+  currency,
+  description: z.string().max(1000).optional(),
 });
 
-//delete card form customer
-app.post('/delete-card', function (req, res) {
-    if(req.query.card_id && req.query.customer_id){
-        stripe.customers.deleteCard(
-            req.query.customer_id,
-            req.query.card_id,
-            function(err, confirmation) {
-                if(err){
-                    var msg = "stripe.customers.deleteCard Failed ";
-                    console.log(msg, err);
-                    res.send({message: msg, err: err});
-                }else{
-                    var msg = "stripe.customers.deleteCard Succeeded ";
-                    res.send({message: msg, confirm: confirmation});
-                }
-            }
-        );
-    }else{
-        res.send({message:"Params Missing"});
-    }
+async function chargeSavedCard(body, captureMethod) {
+  return stripe.paymentIntents.create({
+    customer: body.customer_id,
+    payment_method: body.payment_method,
+    amount: body.amount,
+    currency: body.currency,
+    description: body.description,
+    capture_method: captureMethod,
+    off_session: true,
+    confirm: true,
+    statement_descriptor_suffix: 'NODE CHEAT',
+    metadata: { node_cheat_by: 'https://github.com/zishon89us' },
+  });
+}
+
+app.post('/charge-immediate', async (req, res) => {
+  res.json({ paymentIntent: await chargeSavedCard(parse(chargeBody, req.body), 'automatic') });
 });
 
-
-//charge one time using customer_id
-app.post('/charge-immediate', function (req, res) {
-    if(req.query.customer_id){
-        stripe.charges.create({
-            amount: req.query.amount,
-            currency: req.query.currency || "usd",
-            customer: req.query.customer_id, // obtained with Stripe.js
-            description: req.query.desc,
-            metadata: {'node_cheat_by': 'https://github.com/zishon89us'}
-        }, function(err, charge) {
-            if(err){
-                var msg = "stripe.charges.create Failed ";
-                console.log(msg, err);
-                res.send({message: msg, err: err});
-            }else{
-                var msg = "stripe.charges.create Succeeded ";
-                console.log(msg );
-                res.send({message: msg, charge: charge});
-            }
-        });
-    }else{
-        res.send({message:"Params Missing"});
-    }
+// Authorize now, capture later (within the card network's hold window, usually 7 days).
+app.post('/charge-hold', async (req, res) => {
+  res.json({ paymentIntent: await chargeSavedCard(parse(chargeBody, req.body), 'manual') });
 });
 
-//charge customer but don't capture
-app.post('/charge-hold', function (req, res) {
-    if(req.query.customer_id){
-        stripe.charges.create({
-            amount: req.query.amount,
-            currency: req.query.currency || "usd",
-            customer: req.query.customer_id, // obtained with Stripe.js
-            description: req.query.desc,
-            capture: false,
-            statement_descriptor : "Node Cheat",
-            metadata: {'node_cheat_by': 'https://github.com/zishon89us'}
-        }, function(err, charge) {
-            if(err){
-                var msg = "stripe.charges.create Failed ";
-                console.log(msg, err);
-                res.send({message: msg, err: err});
-            }else{
-                var msg = "stripe.charges.create Succeeded ";
-                console.log(msg );
-                res.send({message: msg, charge: charge});
-            }
-        });
-    }else{
-        res.send({message:"Params Missing"});
-    }
+app.post('/charge-capture', async (req, res) => {
+  const { payment_intent_id, amount_to_capture } = parse(
+    z.object({ payment_intent_id: id('pi'), amount_to_capture: amount.optional() }),
+    req.body,
+  );
+  res.json({
+    paymentIntent: await stripe.paymentIntents.capture(payment_intent_id, { amount_to_capture }),
+  });
 });
 
-//charge one time using token
-app.post('/charge-capture', function (req, res) {
-    if(req.query.charge_id){
-        stripe.charges.capture(req.query.charge_id, function(err, charge) {
-            if(err){
-                var msg = "stripe.charges.capture Failed ";
-                console.log(msg, err);
-                res.send({message: msg, err: err});
-            }else{
-                var msg = "stripe.charges.capture Succeeded ";
-                console.log(msg );
-                res.send({message: msg, charge: charge});
-            }
-        });
-    }else{
-        res.send({message:"Params Missing"});
-    }
+app.get('/charge', async (req, res) => {
+  const { payment_intent_id } = parse(z.object({ payment_intent_id: id('pi') }), req.query);
+  res.json({
+    paymentIntent: await stripe.paymentIntents.retrieve(payment_intent_id, {
+      expand: ['customer'],
+    }),
+  });
 });
 
-//get a charge info with ID and also bring customer associated with ti
-app.get('/charge', function (req, res) {
-    if(req.query.chargeId){
-        stripe.charges.retrieve(req.query.chargeId, {
-            expand: ["customer"]
-        });
-    }else{
-        res.send({message:"Params Missing"});
-    }
+app.get('/event', async (req, res) => {
+  const { event_id } = parse(z.object({ event_id: id('evt') }), req.query);
+  res.json({ event: await stripe.events.retrieve(event_id) });
 });
 
-
-//Events
-
-//get a charge info with ID and also bring customer associated with ti
-app.get('/event', function (req, res) {
-    if(req.query.event_id){
-        stripe.events.retrieve(req.query.event_id,
-            function(err, event) {
-                if(err){
-                    var msg = "stripe.events.retrieve Failed ";
-                    console.log(msg, err);
-                    res.send({message: msg, err: err});
-                }else{
-                    var msg = "stripe.events.retrieve Succeeded ";
-                    console.log(msg );
-                    res.send({message: msg, event: event});
-                }
-            }
-        );
-    }else{
-        res.send({message:"Params Missing"});
-    }
+app.use((err, req, res, _next) => {
+  if (err.status === 400) return res.status(400).json({ error: err.message });
+  if (err instanceof Stripe.errors.StripeError) {
+    return res.status(err.statusCode ?? 402).json({ error: err.message, code: err.code });
+  }
+  console.error(err);
+  res.status(500).json({ error: 'Internal server error' });
 });
 
-
-
-https.createServer(options, app).listen(3001, function () {
-    console.log('Server Started!');
-});
+// Stripe.js works on http://localhost; serve over HTTPS (or behind a TLS proxy) everywhere else.
+app.listen(3001, 'localhost', () => console.log('Open http://localhost:3001'));

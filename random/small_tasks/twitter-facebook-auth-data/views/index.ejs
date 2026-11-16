@@ -1,26 +1,23 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Node Social</title>
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-	<style>
-		body 		{ padding-top:80px; }
-	</style>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css">
 </head>
-<body>
-<div class="container">
-
-	<div class="jumbotron text-center">
-		<h1><span class="fa fa-lock"></span> Node Authentication</h1>
-
-		<p>Login or Register with:</p>
-
-		<a href="/auth/facebook" class="btn btn-primary"><span class="fa fa-facebook"></span> Facebook</a>
-		<a href="/auth/twitter" class="btn btn-info"><span class="fa fa-twitter"></span> Twitter</a>
+<body class="py-5">
+<main class="container text-center">
+	<div class="p-5 bg-body-tertiary rounded-3">
+		<h1>Node Authentication</h1>
+		<p>Login or register with:</p>
+		<% if (facebook) { %>
+			<a href="/auth/facebook" class="btn btn-primary">Facebook</a>
+		<% } %>
+		<% if (twitter) { %>
+			<a href="/auth/twitter" class="btn btn-dark">X (Twitter)</a>
+		<% } %>
 	</div>
-
-
-</div>
+</main>
 </body>
 </html>

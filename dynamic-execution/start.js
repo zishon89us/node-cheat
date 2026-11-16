@@ -1,9 +1,14 @@
+// Load every module in ./files at runtime and call its init()
+// Run: node dynamic-execution/start.js
 
-const fs = require('fs');
-const path = require('path');
-const dirPath = './files';
+import { readdir } from 'node:fs/promises';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
-const _files = fs.readdirSync(path.resolve(__dirname, dirPath));
-_files.forEach(f => {
-   require(path.resolve(__dirname, dirPath, f)).init();
-});
+const dir = join(import.meta.dirname, 'files');
+const files = (await readdir(dir)).filter((f) => f.endsWith('.js')).sort();
+
+for (const file of files) {
+  const mod = await import(pathToFileURL(join(dir, file)).href);
+  await mod.init();
+}

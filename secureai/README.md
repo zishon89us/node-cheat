@@ -1,418 +1,117 @@
-# 🔒 SecureAI
+# SecureAI
 
-**AI-Powered GitHub App for Automated Security Auditing**
+A GitHub App that scans pull requests for common security issues and reports them as a PR comment and a check run. Findings come from a set of regex rules; if you configure an Anthropic API key, Claude triages each finding and drops confident false positives.
 
-SecureAI is an intelligent security scanner that automatically detects vulnerabilities in your GitHub repositories using pattern matching and Claude AI for context-aware analysis. Install it as a GitHub App to get automated security scans on every pull request.
+[![TypeScript](https://img.shields.io/badge/TypeScript-6.0-blue)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-22.12%2B-green)](https://nodejs.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-blue)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green)](https://nodejs.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## What it does
 
----
+- **On every pull request** (opened, reopened, new commits) it scans only the files the PR adds or changes, then:
+  - posts one report comment and updates it in place on later pushes, instead of adding a new comment each time;
+  - creates a check run that fails on critical or high findings, is neutral on medium or low ones, and succeeds when nothing is found.
+- **On pushes to the default branch** it scans the repository (up to 2,000 files) and records a check run.
+- **Secrets are masked** in reports and in anything sent to Claude: token-like strings keep only their first four characters.
+- **Claude triage (optional):** each finding goes to Claude with about 30 lines of masked context and comes back as a `true_positive` or `false_positive` verdict with a confidence score. Findings judged false positive with at least 80% confidence are removed. If the API call fails or the model declines, the finding is kept. Only the first `AI_MAX_FINDINGS` findings (default 50) are triaged, to bound cost.
 
-## ✨ Features
+Files over 1 MB, binary files, lockfiles, and vendored or build directories (`node_modules/`, `dist/`, `build/`, `vendor/`, …) are skipped.
 
-### 🎯 Comprehensive Security Scanning
-- **Hardcoded Secrets Detection**: AWS keys, API tokens, private keys, database credentials
-- **Code Injection Vulnerabilities**: SQL injection, command injection, XSS attacks
-- **Weak Cryptography**: MD5, SHA1, weak session secrets
-- **Authentication Issues**: Missing auth, insecure connections, session management
-- **Information Disclosure**: Error stack traces, excessive logging
-- **OWASP Top 10 Coverage**: Aligned with industry-standard security risks
+## Rules
 
-### 🤖 AI-Powered Analysis
-- **False Positive Reduction**: Claude AI analyzes findings in context
-- **Intelligent Fix Suggestions**: AI-generated code fixes for vulnerabilities
-- **Confidence Scoring**: Each finding rated by AI confidence level
-- **Context-Aware Detection**: Understands test code vs production code
+| Rule | Severity | CWE |
+|------|----------|-----|
+| AWS access key ID / secret access key | Critical | CWE-798 |
+| Hardcoded API key, token, secret or password | Critical | CWE-798 |
+| Private key in the repository | Critical | CWE-321 |
+| Non-literal `innerHTML`/`outerHTML` with no visible sanitizer | High | CWE-79 |
+| `eval()` / `new Function()` | High | CWE-95 |
+| SQL built by concatenation or `${}` interpolation of request input | High | CWE-89 |
+| Shell command built from request input | High | CWE-78 |
+| File path built from request input | High | CWE-22 |
+| Short literal session secret | High | CWE-331 |
+| MD5 / SHA-1 via `createHash` | Medium | CWE-327 |
+| Stack trace sent in an HTTP response | Medium | CWE-209 |
+| Remote MongoDB URL without credentials | Medium | CWE-306 |
+| `http.createServer` with no TLS nearby | Low | CWE-319 |
 
-### 🔧 GitHub Integration
-- **Automated PR Scans**: Every pull request automatically scanned
-- **Check Run Status**: Pass/fail status on commits
-- **Inline Comments**: Security findings commented directly on PRs
-- **Beautiful Reports**: Markdown-formatted security reports
+These are line-oriented pattern rules, not data-flow analysis. They miss input that reaches a sink through variables or function parameters. [`examples/vulnerable-code.js`](./examples/vulnerable-code.js) shows what they catch (10 findings) and what they miss. The patterns are bounded so hostile input can't trigger catastrophic regex backtracking, and a test checks this.
 
-### 📊 Security Reports
-- Severity-based categorization (Critical, High, Medium, Low)
-- CWE references for each vulnerability type
-- Code snippets showing exact vulnerability location
-- Actionable recommendations for fixing issues
-- Export as Markdown, JSON, or HTML
+## Quick start
 
----
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 18+
-- GitHub account (for GitHub App setup)
-- Anthropic API key (optional, for AI features)
-
-### Installation
+Requires Node.js 22.12 or later.
 
 ```bash
-# Clone the repository
-git clone https://github.com/zishon89us/node-cheat.git
-cd node-cheat/secureai
-
-# Install dependencies
-npm install
-
-# Copy environment template
-cp .env.example .env
-
-# Edit .env with your credentials
-# (See Configuration section below)
-
-# Build TypeScript
-npm run build
-
-# Start the server
-npm start
+cd secureai
+npm ci
+cp .env.example .env   # then fill it in, see SETUP.md
+npm run dev            # or: npm run build && npm start
 ```
 
----
+`GET /health` returns `{"status":"healthy"}`. GitHub sends webhooks to `POST /webhooks/github`.
 
-## ⚙️ Configuration
+### Configuration
 
-### Environment Variables
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| `GITHUB_APP_ID` | yes | Your GitHub App's ID |
+| `GITHUB_WEBHOOK_SECRET` | yes | Used to verify webhook signatures |
+| `GITHUB_PRIVATE_KEY_PATH` or `GITHUB_PRIVATE_KEY` | yes (one of them) | App private key, as a file path or as the PEM itself (raw, `\n`-escaped, or base64) |
+| `ANTHROPIC_API_KEY` | no | Turns on Claude triage |
+| `ANTHROPIC_MODEL` | no | Defaults to `claude-sonnet-5-5` |
+| `AI_MAX_FINDINGS` | no | Maximum findings to triage per scan (default 50) |
+| `GITHUB_TOKEN` + `SCAN_API_KEY` | no | Together they turn on the manual `/scan` endpoint |
+| `PORT` | no | Defaults to 3000 |
 
-Create a `.env` file with the following variables:
+The server checks its configuration at startup and exits with a list of problems if anything is missing.
 
-```env
-# GitHub App Configuration (for production)
-GITHUB_APP_ID=123456
-GITHUB_WEBHOOK_SECRET=your_webhook_secret_here
-GITHUB_PRIVATE_KEY_PATH=./private-key.pem
+### Manual scan endpoint
 
-# Anthropic Claude API (optional but recommended)
-ANTHROPIC_API_KEY=sk-ant-api03-...
-
-# Server Configuration
-PORT=3000
-NODE_ENV=production
-
-# For testing without GitHub App
-GITHUB_TOKEN=ghp_your_personal_access_token
-```
-
-### GitHub App Setup
-
-1. **Create a GitHub App**
-   - Go to Settings → Developer settings → GitHub Apps → New GitHub App
-   - **Name**: SecureAI (or your preferred name)
-   - **Homepage URL**: Your deployment URL
-   - **Webhook URL**: `https://your-domain.com/webhooks/github`
-   - **Webhook Secret**: Generate a secure random string
-
-2. **Permissions** (Repository permissions):
-   - Contents: Read
-   - Pull requests: Read & Write
-   - Checks: Read & Write
-
-3. **Subscribe to events**:
-   - Pull request
-   - Push
-   - Check run
-
-4. **Generate Private Key**
-   - After creating the app, generate a private key
-   - Download and save as `private-key.pem` in project root
-
-5. **Install App**
-   - Install the app on your repositories
-   - Note the Installation ID (found in URL)
-
-### Get Anthropic API Key
-
-1. Sign up at [console.anthropic.com](https://console.anthropic.com)
-2. Create an API key
-3. Add to `.env` as `ANTHROPIC_API_KEY`
-
----
-
-## 📖 Usage
-
-### As GitHub App (Recommended)
-
-Once installed on your repository, SecureAI automatically:
-- ✅ Scans every pull request
-- ✅ Comments with security findings
-- ✅ Creates check run status
-- ✅ Scans pushes to main/master branches
-
-**No manual action required!**
-
-### Manual Scan via API
-
-Test scanning without installing the app:
+When `GITHUB_TOKEN` and `SCAN_API_KEY` are both set, you can scan a repository's default branch without installing the app:
 
 ```bash
 curl -X POST http://localhost:3000/scan \
+  -H "Authorization: Bearer $SCAN_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{
-    "repositoryUrl": "https://github.com/username/repo",
-    "token": "ghp_your_github_token"
-  }'
+  -d '{"repositoryUrl": "https://github.com/owner/repo"}'
 ```
 
-**Response:**
-```json
-{
-  "success": true,
-  "scanResult": {
-    "totalFindings": 12,
-    "criticalCount": 3,
-    "highCount": 5,
-    "mediumCount": 4,
-    "lowCount": 0,
-    "findings": [...]
-  },
-  "markdownReport": "# 🔒 SecureAI Security Scan Report..."
-}
-```
+The response contains `scanResult` (JSON) and `markdownReport`. The endpoint accepts only `github.com` URLs or `owner/repo`, and it always uses the server's own token. It requires a bearer key because every call spends the server's GitHub rate limit, and Anthropic credits too if triage is on.
 
-### CLI Usage (Coming Soon)
+## Deployment
+
+The app is a long-running Express server. It acknowledges webhooks immediately and scans in the background, because GitHub times out deliveries after 10 seconds. That makes it a poor fit for serverless functions. Run it in a container instead:
+
+- **Docker:** `docker build -t secureai . && docker run -p 3000:3000 --env-file .env secureai`
+- **Railway:** `railway.json` builds from the Dockerfile and uses `/health` as the health check.
+
+In container deployments, pass the key as `GITHUB_PRIVATE_KEY` rather than mounting a file. See [SETUP.md](./SETUP.md) for creating the GitHub App.
+
+## Development
 
 ```bash
-npx secureai scan https://github.com/username/repo
-```
-
----
-
-## 🏗️ Architecture
-
-```
-secureai/
-├── src/
-│   ├── scanner/
-│   │   ├── engine.ts          # Core scanning engine
-│   │   └── rules.ts           # Security rule definitions
-│   ├── github/
-│   │   └── client.ts          # GitHub API integration
-│   ├── ai/
-│   │   └── claude.ts          # Claude AI integration
-│   ├── webhook/
-│   │   └── handler.ts         # GitHub webhook handler
-│   ├── reports/
-│   │   └── generator.ts       # Report generation
-│   ├── types/
-│   │   └── index.ts           # TypeScript types
-│   └── index.ts               # Main application server
-├── package.json
-├── tsconfig.json
-└── .env.example
-```
-
-### Technology Stack
-
-- **Runtime**: Node.js 18+ with TypeScript
-- **Framework**: Express.js
-- **GitHub Integration**: @octokit/rest, @octokit/webhooks
-- **AI**: Anthropic Claude API
-- **Security**: Pattern matching + AI analysis
-- **Deployment**: Vercel, Railway, or any Node.js host
-
----
-
-## 🔍 How It Works
-
-### 1. Pattern-Based Detection
-SecureAI uses regex patterns to detect common vulnerability signatures:
-- Hardcoded API keys and secrets
-- Unsafe function calls (eval, innerHTML)
-- SQL string concatenation
-- Command injection patterns
-- Weak cryptographic algorithms
-
-### 2. AI-Powered Verification
-Claude AI analyzes each finding to:
-- Verify if it's a real vulnerability (not a false positive)
-- Understand the code context
-- Determine if sanitization exists
-- Generate specific fix suggestions
-
-### 3. Intelligent Reporting
-Findings are:
-- Sorted by severity (Critical → Low)
-- Deduplicated and grouped
-- Enhanced with CWE references
-- Formatted with actionable recommendations
-
----
-
-## 🎨 Example Output
-
-### Pull Request Comment
-
-```markdown
-# 🔒 SecureAI Security Scan Report
-
-## Summary
-Found **8** security issues: 🔴 **2 Critical** | 🟠 **3 High** | 🟡 3 Medium
-
-⚠️ **Action Required:** Critical vulnerabilities detected. Address immediately before merging.
-
-## 🔴 Critical Severity (2)
-
-### 1. Hardcoded AWS Access Keys
-**File:** `src/config.js:14` | **Category:** Hardcoded Secrets | **CWE:** [CWE-798](...)
-
-**Description:** AWS access key found: AKIAJXXX...
-
-**Code:**
-```javascript
-  12 | const config = {
-  13 |   aws: {
-> 14 |     accessKeyId: "AKIAJXXXXXXXXXXXXX",
-  15 |     secretKey: "xxxxxxxZrkJbTxxxxxxxxx"
-  16 |   }
-```
-
-**💡 Recommendation:** Use environment variables or AWS IAM roles...
-```
-
----
-
-## 🧪 Testing
-
-Run the test suite:
-
-```bash
+npm run type-check
+npm run lint
 npm test
+npm run build
 ```
 
-Test specific components:
+The tests cover the rules (including adversarial input), secret masking, report escaping, URL parsing, check-run conclusions, configuration loading, webhook signature handling over real HTTP, and the triage filter against a stubbed Claude client. No test makes network calls.
 
-```bash
-# Test scanner engine
-npm test -- scanner.test.ts
+## Layout
 
-# Test GitHub integration
-npm test -- github.test.ts
+```
+src/
+  server.ts            entry point: loads config, starts listening
+  app.ts               Express app: webhook middleware, /health, /scan
+  config.ts            environment validation (zod)
+  webhook/handler.ts   pull_request and push handlers, runScan()
+  github/client.ts     Octokit wrapper: PR files, repo tree, comment upsert, check runs
+  scanner/             rules, engine, file filters
+  ai/claude.ts         Claude triage with structured output
+  reports/generator.ts Markdown / JSON / HTML reports
 ```
 
----
+## License
 
-## 🚀 Deployment
-
-### Deploy to Vercel
-
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel
-
-# Set environment variables in Vercel dashboard
-# Update GitHub App webhook URL to Vercel URL
-```
-
-### Deploy to Railway
-
-```bash
-# Install Railway CLI
-npm i -g @railway/cli
-
-# Login and deploy
-railway login
-railway init
-railway up
-
-# Set environment variables in Railway dashboard
-```
-
-### Deploy to Any Node.js Host
-
-1. Build the project: `npm run build`
-2. Set environment variables
-3. Start: `npm start`
-4. Point GitHub webhook to: `https://your-domain.com/webhooks/github`
-
----
-
-## 📊 Supported Vulnerability Types
-
-| Category | Severity | Examples |
-|----------|----------|----------|
-| Hardcoded Secrets | Critical | AWS keys, API tokens, private keys |
-| SQL Injection | High | String concatenation in queries |
-| Command Injection | High | User input in shell commands |
-| XSS | High | innerHTML without sanitization |
-| Weak Cryptography | Medium | MD5, SHA1 usage |
-| Session Management | High | Weak session secrets |
-| Path Traversal | High | User input in file paths |
-| Information Disclosure | Medium | Error stack traces to client |
-| Missing Input Validation | Medium | Unvalidated request parameters |
-| Insecure Transport | Medium | HTTP without HTTPS |
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Commit your changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
-
-### Adding New Security Rules
-
-Edit `src/scanner/rules.ts`:
-
-```typescript
-{
-  id: 'my-new-rule',
-  name: 'Descriptive Name',
-  severity: 'high',
-  category: 'Category Name',
-  description: 'What this detects',
-  pattern: /regex-pattern/gi,
-  getMessage: (match) => `Found issue: ${match[1]}`,
-  getRecommendation: () => 'How to fix it',
-  cwe: 'CWE-XXX',
-}
-```
-
----
-
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- Built with [Claude AI](https://www.anthropic.com/) by Anthropic
-- GitHub API via [Octokit](https://github.com/octokit)
-- Security rules inspired by [OWASP Top 10](https://owasp.org/www-project-top-ten/)
-- CWE references from [MITRE](https://cwe.mitre.org/)
-
----
-
-## 📧 Contact
-
-**Zeeshan Hassan Memon**
-- GitHub: [@zishon89us](https://github.com/zishon89us)
-- Email: [Your Email]
-
----
-
-## 🗺️ Roadmap
-
-- [ ] CLI tool for local scanning
-- [ ] VS Code extension
-- [ ] Custom rule configuration
-- [ ] Auto-fix pull requests
-- [ ] Dependency vulnerability scanning
-- [ ] SARIF report format
-- [ ] Integration with security dashboards
-- [ ] Multi-language support (Python, Java, Go)
-
----
-
-**⭐ If you find SecureAI useful, please star this repo!**
+MIT. See [LICENSE](./LICENSE).

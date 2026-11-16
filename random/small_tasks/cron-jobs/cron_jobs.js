@@ -1,74 +1,39 @@
-/**
- * Created by zeeshan on 10/23/2016.
- */
-
-var cron = require('node-cron'),
-    chalk = require('chalk'),
-    log = function (msg, color) {
-        color = color || 'blue';
-        console.log(chalk[color](msg), chalk.green(new Date()));
-    };
-
-    log('Starting Now');
 //------------------------------------------------------
-//run script every minute
-//Web Link=>
-//Run : node crone_jobs
+// Schedule recurring jobs with node-cron
+// Web Link=> https://nodecron.com
+// Run: node cron_jobs.js
 //------------------------------------------------------
 
-//https://www.thesitewizard.com/general/set-cron-job.shtml
-//http://stackoverflow.com/questions/22509869/how-to-set-a-cron-job-to-run-every-3-hours
-//http://stackoverflow.com/questions/3474280/how-to-set-up-a-cron-job-to-run-an-executable-every-hour
+import cron from 'node-cron';
+import chalk from 'chalk';
 
-/*cron.schedule('*!/10 * * * * *', function(){
- console.log('running a task every minute 10th sec');
- });*/
+const log = (msg, color = 'blue') =>
+  console.log(chalk[color](msg), chalk.green(new Date().toISOString()));
 
-/*cron.schedule('1-5 * * * * *', function(){
- console.log('running a task every minute 1-5');
- });*/
+log('Starting now');
 
-/*cron.schedule('* * * * * *', function(){
- console.log('running a task every sec');
- });
+// minute hour day-of-month month day-of-week (optional leading seconds field)
 
- cron.schedule('* * * * *', function(){
- console.log('running a task every min');
- });*/
+// Every hour, on the hour: 5:00, 6:00, 7:00 ...
+cron.schedule('0 * * * *', () => log('Every hour', 'red'));
 
-/*cron.schedule('0 * * * *', function () {
-    log('running a task every hour ');
-});*/
+// At minute 30 of every hour: 5:30, 6:30, 7:30 ...
+cron.schedule('30 * * * *', () => log('At minute 30', 'green'));
 
-//Run every hour
-cron.schedule('0 * * * *', function () {
-    log('Running a task every hour ', 'red');
-});
+// Every half hour: 5:00, 5:30, 6:00 ...
+cron.schedule('*/30 * * * *', () => log('Every 30 minutes', 'blue'));
 
-//Run at 30th minute every hour i.e. 5:30 then 6:30 then 7:30 and so on
-cron.schedule('30 * * * *', function () {
-    log('Running a task every 30 ', 'green');
-});
+// Every 15 minutes: 5:00, 5:15, 5:30 ...
+cron.schedule('*/15 * * * *', () => log('Every 15 minutes', 'yellow'));
 
-//Run after each half hour i.e. 5:30 then 6:00 then 6:30 and so on
-cron.schedule('*!/30 * * * *', function () {
-    log('running a task every *!/30 ', 'blue');
-});
+// Every 2 minutes: 5:00, 5:02, 5:04 ...
+cron.schedule('*/2 * * * *', () => log('Every 2 minutes', 'magenta'));
 
-//Run quarterly or every 15 min i.e. 5:15 then 5:30 then 5:45 and so on
-cron.schedule('*/15 * * * *', function () {
-    log('Running a task every 15 min ', 'yellow');
-});
+// Every 10 seconds (6-field expression)
+const everyTenSeconds = cron.schedule('*/10 * * * * *', () => log('Every 10 seconds', 'cyan'));
 
-//Run after every 2 i.e. 5:00 then 5:02 then 5:04 and so on
-cron.schedule('*!/2 * * * *', function () {
-    log('Running a task every *!/2 ', 'yellow');
-});
-
-//Run after every 10 seconds i.e. 5:00:10 then 5:00:20 then 5:00:30 and so on
-cron.schedule('*/10 * * * * *', function(){
- console.log('Running a task every 10 sec', 'green');
- });
-
-//task.start();
-//task.stop();
+// Tasks can be paused and resumed
+setTimeout(() => {
+  everyTenSeconds.stop();
+  log('Stopped the 10-second task', 'gray');
+}, 60_000);

@@ -1,24 +1,28 @@
-/**
- * Created by Zeeshan on 7/29/2017.
- */
+// Running Redis locally (any OS):
+//   docker run --rm -p 6379:6379 redis:8
+// On Windows without Docker, use WSL2 and `sudo apt install redis-server`.
+// (The old MicrosoftArchive Windows port is unmaintained.)
+//
+// Producer/consumer queue: the producer LPUSHes jobs, a worker BLMOVEs them
+// into a "processing" list so a crash doesn't lose work.
+// Run: REDIS_URL=redis://localhost:6379 node redis/redis_windows.js
 
-//------------------------------------------------------
-//Run Redis on windows
-//Web Link=> 1) Download: https://github.com/MicrosoftArchive/redis/releases
-//           2) Download: http://geekindulgence.com/install-redis-as-a-windows-service-using-chocolatey/
-//           3) Quick Tutorial: https://redis.io/topics/data-types-intro
-//           4) Queue Tutorial: https://danielkokott.wordpress.com/2015/02/14/redis-reliable-queue-pattern/
-//Run :
-//------------------------------------------------------
+import { createClient } from 'redis';
 
-/*
-	Communication between processes, using a consumer-producer pattern where the producer pushes items
-	into a list, and a consumer (usually a worker) consumes those items and executed actions. Redis
-	has special list commands to make this use case both more reliable and efficient.
-*/
+const url = process.env.REDIS_URL ?? 'redis://localhost:6379';
+const producer = await createClient({ url }).connect();
+const worker = await producer.duplicate().connect();
 
-//To set password
-//CONFIG SET requirepass "mypass"
+await producer.lPush('jobs', JSON.stringify({ id: 1, task: 'send-email' }));
 
-//To auth
-//AUTH mypass
+const raw = await worker.blMove('jobs', 'jobs:processing', 'RIGHT', 'LEFT', 5);
+if (raw) {
+  console.log('Processing', JSON.parse(raw));
+  await worker.lRem('jobs:processing', 1, raw);
+}
+
+producer.destroy();
+worker.destroy();
+
+// Password: set `requirepass` in redis.conf (or ACL users) and put it in REDIS_URL,
+// e.g. redis://default:<password>@host:6379 — never hard-code it.

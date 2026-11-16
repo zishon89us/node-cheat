@@ -1,64 +1,42 @@
-/**
- * Created by zeeshan on 3/2/2018.
- */
+//------------------------------------------------------
+// Promise issue - resolve only after async work completes
+// Run : node promise_issue/promise_issue.js
+// Test: curl -X POST localhost:3000/readList -H 'content-type: application/json' -d '{"path":"temp_dir"}'
+//------------------------------------------------------
 
+import express from 'express';
+import { readdir } from 'node:fs/promises';
+import { join, resolve, sep } from 'node:path';
 
-var express = require('express');
-var fs = require('fs');
-var app = express();
+const app = express();
+app.use(express.json());
 
-app.post('/readList', function(req, res) {
-	//Assuming sample data coming in req.body
-	//Remove this when you run at you side
-	req.body = {
-		path: 'temp_dir'
-	};
+const ROOT = resolve(import.meta.dirname);
 
-	var cleared = false;
-	var listedFiles = [];
-	//Promising readList :)
-	function readList(){
-		return new Promise(function (resolve, reject) {
-			// Suppose req.body.path is 'temp_dir' and it has 2 files
-			fs.readdir(req.body.path, (err, files) => {
-				console.log(files);
-			/*files.forEach(file = > {
-			 console.log(file);
-			 var fileDetail = {
-			 name: '',
-			 local: true,
-			 filetype: 'fas fa-folder-open',
-			 filepath: '',
-			 isFile: false
-			 }
-			 if (!cleared) {
-			 listedFiles = [];
-			 cleared = true;
-			 }
-			 // really? you can think of it later!!
-			 fileDetail.name = file;
-			 fileDetail.filepath = req.body.path + file
+async function readList(relativeDir) {
+  const dir = resolve(ROOT, relativeDir);
+  if (dir !== ROOT && !dir.startsWith(ROOT + sep))
+    throw new RangeError('Path outside allowed root');
 
-			 // I changed below to avoid surprises for you in data!
-			 const stats = fs.statSync(req.body.path + file);
-			 fileDetail.isFile = stats.isFile();
-			 if (stats.isFile())
-			 fileDetail.filetype = 'far fa-file-alt';
-			 else
-			 fileDetail.filetype = 'fas fa-folder-open'
-			 listedFiles.push(fileDetail);
-			 });*/
-			resolve(listedFiles);
-		});
-		});
-	}
+  const entries = await readdir(dir, { withFileTypes: true });
+  return entries.map((entry) => ({
+    name: entry.name,
+    filepath: join(relativeDir, entry.name),
+    isFile: entry.isFile(),
+    filetype: entry.isFile() ? 'far fa-file-alt' : 'fas fa-folder-open',
+  }));
+}
 
-	readList().then((data) => {
-		console.log('vorta');
-		res.send(JSON.stringify(data));
-	});
-})
+app.post('/readList', async (req, res) => {
+  const { path = 'temp_dir' } = req.body ?? {};
+  if (typeof path !== 'string') return res.status(400).json({ error: 'path must be a string' });
+  try {
+    res.json(await readList(path));
+  } catch (err) {
+    const status = err instanceof RangeError ? 400 : err.code === 'ENOENT' ? 404 : 500;
+    res.status(status).json({ error: 'Could not list directory' });
+  }
+});
 
-
-app.listen(process.env.PORT || 3000);
-console.log('Listening on port 3000');
+const port = Number(process.env.PORT) || 3000;
+app.listen(port, () => console.log(`Listening on http://localhost:${port}`));

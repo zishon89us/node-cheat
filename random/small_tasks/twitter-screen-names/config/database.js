@@ -1,6 +1,2 @@
-// config/database.js
-module.exports = {
-
-	'url' : 'mongodb://localhost:27017/node--twitter-social' // looks like mongodb://<user>:<pass>@mongo.onmodulus.net:27017/Mikha4ot
-
-};
+// e.g. mongodb://<user>:<pass>@host:27017/node-twitter-social?authSource=admin
+export const mongoUrl = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/node-twitter-social';

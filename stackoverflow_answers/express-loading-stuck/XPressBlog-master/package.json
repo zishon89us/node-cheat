@@ -1,23 +1,24 @@
 {
   "name": "nodeblog",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "private": true,
   "description": "express and ejs blog",
+  "type": "module",
   "main": "index.js",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "start": "node index",
-    "dev": "nodemon"
+    "start": "node --env-file-if-exists=.env index.js",
+    "dev": "node --watch --env-file-if-exists=.env index.js"
   },
   "author": "Razvan Zamfir",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^8.2.0",
-    "ejs": "^3.0.1",
-    "express": "^4.17.1",
-    "express-ejs-layouts": "^2.5.0",
-    "mongoose": "^5.8.10",
-    "morgan": "^1.9.1"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.2"
+    "ejs": "^7.0.2",
+    "express": "^5.3.0",
+    "express-ejs-layouts": "^2.5.1",
+    "mongoose": "^9.12.1",
+    "morgan": "^1.12.1"
   }
 }

@@ -1,21 +1,18 @@
-/**
- * Created by Zeeshan on 4/2/2016.
- */
-
 //------------------------------------------------------
-//Find exchange rates i.e. USD to GBP etc...
-//Web Link=> https://openexchangerates.org
+// Find exchange rates i.e. USD to GBP etc...
+// Web Link=> https://openexchangerates.org
+// Run: OPENEXCHANGERATES_APP_ID=... node exchange_api.js
 //------------------------------------------------------
 
-var request = require('request');
+const appId = process.env.OPENEXCHANGERATES_APP_ID;
+if (!appId) throw new Error('Set OPENEXCHANGERATES_APP_ID');
 
-var url = 'https://openexchangerates.org/api/latest.json?app_id=1c5fc79208b94e49ae91ca52b2fea1d7';
+const url = new URL('https://openexchangerates.org/api/latest.json');
+url.searchParams.set('app_id', appId);
 
-request(url, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-        var json = JSON.parse(body);
-        console.log(json); //print all list of exchange rates
-    } else {
-        res.send({message: "Exchange Rate not Found."});
-    }
-});
+const response = await fetch(url);
+if (!response.ok) throw new Error(`Exchange rate request failed: ${response.status}`);
+
+const { base, rates } = await response.json();
+console.log(`1 ${base} = ${rates.GBP} GBP`);
+console.log(rates);

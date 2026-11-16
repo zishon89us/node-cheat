@@ -1,31 +1,12 @@
-//------------------------------------------------------
-//fs module to read file in sync and async way
-//Web Link=>
-//------------------------------------------------------
+// Read a file: promise API (preferred) and sync API (startup/config only)
+// Run: node files/read_file.js
 
-const fs = require('fs');
-const { promisify } = require('util');
-const filePath = './sample_files/file1.txt';
+import { readFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
-//--------------Async/Await-Style-----------------------
+const filePath = join(import.meta.dirname, 'sample_files', 'file1.txt');
 
-const readFile = promisify(fs.readFile);
-async function main() {
-    const data = await readFile(filePath, 'utf8');
-    console.log(data);
-}
+console.log(await readFile(filePath, 'utf8'));
 
-main();
-
-//--------------Callback-Style--------------------------
-
-/*fs.readFile(filePath, 'utf8', (err, data) => {
- if (err) throw err;
- console.log(data);
- });*/
-
-
-//--------------Sync way--------------------------------
-
-/*const data = fs.readFileSync(filePath, 'utf8');
-console.log(data);*/
+console.log(readFileSync(filePath, 'utf8'));

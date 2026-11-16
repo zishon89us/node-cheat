@@ -1,51 +1,29 @@
-/**
- * Created by Zeeshan on 3/28/2016.
- */
+// Download files with Express 5, restricted to one directory
+// Run: node files/express_server_download_file/app.js
+// Try: /download/file1.txt   (../ paths are rejected)
 
-//------------------------------------------------------
-//Simple Express Server to download file
-//Web Link=>
-//------------------------------------------------------
+import { join, resolve, sep } from 'node:path';
+import express from 'express';
 
-//USING HTML
+const app = express();
+const filesRoot = resolve(import.meta.dirname, '..', 'sample_files');
 
-var express = require('express'),
-    app = express();
-
-var path = require('path'),
-    mime = require('mime'),
-    fs = require('fs');
-
-// viewed at http://localhost:5000
-app.get('/', showClientRequest, function (req, res) {
-    res.sendFile(path.join(__dirname + '/index.html'));
+app.get('/', (req, res) => {
+  res.sendFile(join(import.meta.dirname, 'index.html'));
 });
 
-//downloads file
-app.get('/download', function (req, res) {
-
-    var file = '.././sample_files/file1.txt';
-
-    var filename = path.basename(file);
-    var mimetype = mime.lookup(file);
-
-    res.setHeader('Content-disposition', 'attachment; filename=' + filename);
-    res.setHeader('Content-type', mimetype);
-
-    var filestream = fs.createReadStream(file);
-    filestream.pipe(res);
+app.get('/download/:name', (req, res, next) => {
+  const target = resolve(filesRoot, req.params.name);
+  if (!target.startsWith(filesRoot + sep)) {
+    res.status(400).json({ error: 'Invalid file name' });
+    return;
+  }
+  res.download(target, (err) => {
+    if (!err) return;
+    if (res.headersSent) return next(err);
+    res.status(err.code === 'ENOENT' ? 404 : 500).json({ error: 'File not available' });
+  });
 });
 
-function showClientRequest(req, res, next) {
-    var request = {
-        REQUEST: {
-            HEADERS: req.headers,
-            BODY: req.body
-        }
-    }
-    console.log(request)
-    return next();
-}
-
-app.listen(3000);
-
+const port = Number(process.env.PORT ?? 3000);
+app.listen(port, () => console.log(`Listening on http://localhost:${port}`));

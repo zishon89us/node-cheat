@@ -1,16 +1,19 @@
-/**
- * Created by zeeshan on April 12, 2018.
- */
-
 //------------------------------------------------------
-//require from unknown child folder
-//Web Link=> https://stackoverflow.com/a/49796481/3539857
-//Run : node app.js followed by npm i glob
+// Load modules from unknown child folders (ESM version of "require from nested folders")
+// Web Link=> https://stackoverflow.com/a/49796481/3539857
+// Run : node require_nested/app.js
 //------------------------------------------------------
 
-const glob = require( 'glob' );
-const path = require( 'path' );
+import { glob } from 'node:fs/promises';
+import { join } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
-glob.sync( './plugins/**/core/*.js' ).forEach( ( file ) => {
-	require( path.resolve( file ) );
-});
+const pattern = join(import.meta.dirname, 'plugins', '*', 'core', '*.js');
+
+for await (const file of glob(pattern)) {
+  const plugin = await import(pathToFileURL(file).href);
+  console.log(`loaded ${plugin.name}`);
+}
+
+// import.meta.resolve turns a specifier into a URL without loading it
+console.log(import.meta.resolve('./plugins/myplugin1/index.js'));

@@ -1,15 +1,14 @@
 //------------------------------------------------------
-//Node.js essentials
-//Web Link=> 
-//Run : node readline
+// Node.js essentials: readline to collect user input
+// Run: node readline.js
 //------------------------------------------------------
 
+import readline from 'node:readline/promises';
+import { stdin as input, stdout as output } from 'node:process';
 
-// readline to collection user input
-const readline = require('readline');
-const rl = readline.createInterface({
-	input: process.stdin,
-	output: process.stdout
-});
+const rl = readline.createInterface({ input, output });
 
-rl.question('what is your name?', answer => console.log('alright, thanks!'));
+const name = await rl.question('What is your name? ');
+console.log(`Alright, thanks ${name.trim() || 'stranger'}!`);
+
+rl.close();

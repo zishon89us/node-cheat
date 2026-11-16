@@ -1,15 +1,17 @@
-/**
- * Created by Zeeshan on 3/7/2016.
- */
+const parseId = (raw) => {
+  const id = Number.parseInt(raw, 10);
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    throw Object.assign(new Error('Invalid comment id'), { status: 400, expose: true });
+  }
+  return id;
+};
 
-//method to be called when comment is liked
-exports.likeComment = function (req, res) {
-    console.log('Step 3 @ comment.js');
-    res.send('Hey! You just hit likeComment');
-    //code here
+export function likeComment(req, res) {
+  const id = parseId(req.params.id);
+  res.json({ id, liked: true });
 }
 
-//method to be called when commend is unliked
-exports.unlikeComment = function (req, res) {
-    //code here
+export function unlikeComment(req, res) {
+  const id = parseId(req.params.id);
+  res.json({ id, liked: false });
 }

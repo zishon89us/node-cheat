@@ -1,74 +1,41 @@
-/**
- * Created by Zeeshan on 3/11/2016.
- */
+//------------------------------------------------------
+// X (Twitter) API authentication modes with twitter-api-v2
+// 1. App-only (OAuth 2.0 bearer token) for public, read-only data
+// 2. User context (OAuth 1.0a) to act on behalf of an account
+// Run: TWITTER_CONSUMER_KEY=... TWITTER_CONSUMER_SECRET=... node twitter_auth.js
+//------------------------------------------------------
 
-var R = require("request");
-var stream = require('twitter');
-var https = require('https');
+import { TwitterApi } from 'twitter-api-v2';
 
-
-var key = '5IMFH1EMpVGSIxly6IUeA';
-var secret = 'FOBLpDt8fWrvDJoJCH63cS5uRDh962wCg9Ajh1gEI';
-var cat = key + ":" + secret;
-var credentials = new Buffer(cat).toString('base64');
-
-var url = 'https://api.twitter.com/oauth2/token';
-
-var client;
-
-R({
-    url: url,
-    method: 'POST',
-    headers: {
-        "Authorization": "Basic " + credentials,
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-    },
-    body: "grant_type=client_credentials"
-
-}, function (err, resp, body) {
-
-    var an = JSON.parse(body);
-
-    client = new stream({
-        consumer_key: '5IMFH1EMpVGSIxly6IUeA',
-        consumer_secret: 'FOBLpDt8fWrvDJoJCH63cS5uRDh962wCg9Ajh1gEI',
-        access_token_key: an['access_token']
-    });
-    runIt();
-
-});
-
-function runIt() {
-    var params = {q: 'shan89'};
-    client.get('users/search.json', params, function(error, tweets, response){
-        if (!error) {
-            for(var i in tweets)
-                console.log(tweets[i].screen_name);
-        }
-    });
+const {
+  TWITTER_CONSUMER_KEY,
+  TWITTER_CONSUMER_SECRET,
+  TWITTER_ACCESS_TOKEN,
+  TWITTER_ACCESS_TOKEN_SECRET,
+} = process.env;
+if (!TWITTER_CONSUMER_KEY || !TWITTER_CONSUMER_SECRET) {
+  throw new Error('Set TWITTER_CONSUMER_KEY and TWITTER_CONSUMER_SECRET');
 }
 
-describe('OAuth1.0',function(){
-    var OAuth = require('oauth');
+// 1. App-only: exchanges key/secret for a bearer token (POST /oauth2/token)
+const appClient = await new TwitterApi({
+  appKey: TWITTER_CONSUMER_KEY,
+  appSecret: TWITTER_CONSUMER_SECRET,
+}).appLogin();
 
-    it('tests trends Twitter API v1.1',function(done){
-        var oauth = new OAuth.OAuth(
-            'https://api.twitter.com/oauth/request_token',
-            'https://api.twitter.com/oauth/access_token',
-            '5IMFH1EMpVGSIxly6IUeA',
-            'FOBLpDt8fWrvDJoJCH63cS5uRDh962wCg9Ajh1gEI',
-            '1.0A',
-            null,
-            'HMAC-SHA1'
-        );
-        oauth.get(
-            'https://api.twitter.com/1.1/trends/place.json?id=23424977',
-            'your user token for this app', //test user token
-            'your user secret for this app', //test user secret
-            function (e, data, res){
-                if (e) console.error(e);
-                console.log(require('util').inspect(data));
-                done();
-            });
-    });
+const { data: user } = await appClient.v2.userByUsername('shan89', {
+  'user.fields': ['description', 'public_metrics'],
 });
+console.log('App-only lookup:', user);
+
+// 2. User context: requires an access token/secret for a specific account
+if (TWITTER_ACCESS_TOKEN && TWITTER_ACCESS_TOKEN_SECRET) {
+  const userClient = new TwitterApi({
+    appKey: TWITTER_CONSUMER_KEY,
+    appSecret: TWITTER_CONSUMER_SECRET,
+    accessToken: TWITTER_ACCESS_TOKEN,
+    accessSecret: TWITTER_ACCESS_TOKEN_SECRET,
+  });
+  const { data: me } = await userClient.v2.me();
+  console.log('Authenticated as:', me.username);
+}

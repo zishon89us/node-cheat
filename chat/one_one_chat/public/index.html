@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Socket.IO one-to-one chat</title>
+    <link rel="stylesheet" href="/stylesheets/chat.css" />
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="/javascripts/chat.js" defer></script>
+  </head>
+  <body>
+    <h1>Chat room</h1>
+
+    <form id="join-form" class="card">
+      <label for="name-box">Nickname</label>
+      <input id="name-box" maxlength="20" autocomplete="off" required />
+      <button type="submit">Join</button>
+      <p id="join-error" class="error" role="alert"></p>
+    </form>
+
+    <main id="chat-area" hidden>
+      <section class="card">
+        <h2>Online</h2>
+        <ul id="online-users"></ul>
+      </section>
+
+      <section class="card">
+        <h2>Messages</h2>
+        <ul id="messages" aria-live="polite"></ul>
+        <form id="message-form" class="row">
+          <input
+            id="message-input"
+            maxlength="500"
+            autocomplete="off"
+            placeholder="Message everyone…"
+          />
+          <button type="submit">Send</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Private message</h2>
+        <form id="private-form" class="row">
+          <select id="private-to" aria-label="Recipient"></select>
+          <input
+            id="private-input"
+            maxlength="500"
+            autocomplete="off"
+            placeholder="Private message…"
+          />
+          <button type="submit">Send</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

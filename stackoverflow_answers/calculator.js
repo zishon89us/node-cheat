@@ -1,24 +1,36 @@
-/**
- * Created by zeeshan on 3/2/2018.
- */
+//------------------------------------------------------
+// Simple CLI calculator
+// Run : node calculator.js add 2 3
+//------------------------------------------------------
 
-function calc (op1, op2, operation) {
-	if (operation === 'sum' || operation === 'add'){
-		return op1 + op2;
-	}
-	else if (operation === 'sub'){
-		return op1 - op2;
-	}
-	else if (operation === 'mul'){
-		return op1 * op2;
-	}
-	else if (operation === 'div'){
-		return op1 / op2;
-	}
-	// expand here more operations if needed
-	return 'Not sure what to do!';
+const operations = {
+  add: (a, b) => a + b,
+  sum: (a, b) => a + b,
+  sub: (a, b) => a - b,
+  mul: (a, b) => a * b,
+  div: (a, b) => {
+    if (b === 0) throw new RangeError('Division by zero');
+    return a / b;
+  },
+};
+
+export function calc(op1, op2, operation) {
+  const fn = operations[operation];
+  if (!fn)
+    throw new TypeError(
+      `Unknown operation "${operation}". Use: ${Object.keys(operations).join(', ')}`,
+    );
+  if (!Number.isFinite(op1) || !Number.isFinite(op2))
+    throw new TypeError('Operands must be numbers');
+  return fn(op1, op2);
 }
 
-var result = calc(Number(process.argv[3]), Number(process.argv[4]), process.argv[2]);
-
-console.log(result);
+if (import.meta.main ?? process.argv[1] === import.meta.filename) {
+  const [operation, a, b] = process.argv.slice(2);
+  try {
+    console.log(calc(Number(a), Number(b), operation));
+  } catch (err) {
+    console.error(err.message);
+    process.exitCode = 1;
+  }
+}

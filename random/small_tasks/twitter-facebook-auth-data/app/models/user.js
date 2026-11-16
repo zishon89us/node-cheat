@@ -1,38 +1,27 @@
-// load the things we need
-var mongoose = require('mongoose');
-var bcrypt = require('bcrypt-nodejs');
+import mongoose from 'mongoose';
 
-// define the schema for our user model
-var userSchema = mongoose.Schema({
-    age: Number,
-    age_range: String,
-    createDate: {type: Date, default: Date.now()},
+const userSchema = new mongoose.Schema(
+  {
+    birthday: String,
+    ageRange: Number,
     firstName: String,
     lastName: String,
     gender: String,
     locale: String,
     email: String,
-    s_id: String,
-    token: String,
     location: {
-        city: String,
-        state: String
+      city: String,
+      state: String,
     },
     social: {
-        id: {type: String, default: null}, //FB ID or Twitter ID
-        socialType: {type: String, default: null} //facebook or twitter
-    }
-});
+      id: { type: String, index: true }, // Facebook or Twitter user id
+      provider: String, // 'facebook' | 'twitter'
+      token: { type: String, select: false }, // never sent to views unless explicitly selected
+    },
+  },
+  { timestamps: true },
+);
 
-// generating a hash
-userSchema.methods.generateHash = function (password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-};
+userSchema.index({ 'social.provider': 1, 'social.id': 1 }, { unique: true });
 
-// checking if password is valid
-userSchema.methods.validPassword = function (password) {
-    return bcrypt.compareSync(password, this.local.password);
-};
-
-// create the model for users and expose it to our app
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);

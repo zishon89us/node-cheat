@@ -1,44 +1,29 @@
+// Upload base64 (or data: URL) content to S3 with AWS SDK v3.
+// Run: AWS_REGION=us-east-1 S3_BUCKET=my-bucket node upload_base_64.js
 
-// Load the AWS SDK for Node.js
-var AWS = require('aws-sdk');
-var fs  = require('fs');
-/*file have a path of file present on server*/
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 
-//------------------------------------------------------
-//Configure the SDK
-//Web Link=> http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html#Credentials_from_Disk
-//------------------------------------------------------
+const s3 = new S3Client({ region: process.env.AWS_REGION ?? 'us-east-1' });
 
-AWS.config.loadFromPath('../config.json');
-//------------------------------------------------------
-//Uploading file from base 64 data
-//------------------------------------------------------
+export async function uploadBase64({ bucket, key, data, contentType }) {
+  const match = /^data:([^;]+);base64,(.*)$/s.exec(data);
+  const body = Buffer.from(match ? match[2] : data, 'base64');
 
-/* :::Arguments
-   base64Data, (File base 64 data)
-   filename, (File name to save on bucket)
-   contentType (Content type of file)
-   bucket  (Bucket name on which file needs to upload)
-   */
-/*contentType = contentType || 'image/png';
-filename = filename;
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: body,
+      ContentType: contentType ?? match?.[1] ?? 'application/octet-stream',
+    }),
+  );
+  return { bucket, key, size: body.length };
+}
 
-var buf = new Buffer(base64Data,'base64');//Creating a buffer for base64 data
-
-var s3bucket = new AWS.S3({params: {Bucket: bucket}});
-s3bucket.createBucket(function(){
-    var imageData = {
-        Key: filename,
-        Body: buf,
-        ContentEncoding: 'base64',
-        ContentType: 'image/jpeg'
-    };
-    s3bucket.upload(imageData, function(err, data) {
-        if (err) {
-            console.log('ERROR MSG: ', err);
-        } else {
-            console.log('Successfully uploaded data');
-        }
-
-    });
-});*/
+if (import.meta.main) {
+  const bucket = process.env.S3_BUCKET;
+  if (!bucket) throw new Error('Set S3_BUCKET to run this example');
+  const onePixelPng =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+  console.log(await uploadBase64({ bucket, key: 'pixel.png', data: onePixelPng }));
+}

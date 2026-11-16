@@ -1,17 +1,16 @@
 //------------------------------------------------------
-//Node.js essentials
-//Web Link=> 
-//Run : node global
+// Node.js essentials: globals and the current file/folder in ES modules
+// Run: node global.js
 //------------------------------------------------------
 
+import path from 'node:path';
 
-// access global object's values anywhere
+// globalThis works in Node, browsers and workers alike
 console.log('I am console.log');
-global.console.log('I am global.console.log');
+globalThis.console.log('I am globalThis.console.log');
 
-// how to get current file name
-const path = require('path');
-
-console.log(__dirname);
-console.log(__filename);
-console.log(`This is file name only ${path.basename(__filename)}`);
+// __dirname / __filename do not exist in ES modules; use import.meta instead
+console.log(import.meta.dirname);
+console.log(import.meta.filename);
+console.log(import.meta.url);
+console.log(`This is the file name only: ${path.basename(import.meta.filename)}`);
