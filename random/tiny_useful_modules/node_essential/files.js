@@ -1,56 +1,49 @@
 //------------------------------------------------------
-//Node.js essentials
-//Web Link=> 
-//Run : node files
+// Node.js essentials: read, write, append, copy, rename, move and delete files
+// Works on a temporary copy so the sample files in the repo stay untouched
+// Run: node files.js
 //------------------------------------------------------
 
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
+
+const sampleDir = path.join(import.meta.dirname, 'sample_files');
+const workDir = await fs.mkdtemp(path.join(os.tmpdir(), 'node-cheat-'));
+await fs.cp(sampleDir, workDir, { recursive: true });
 
 // read folder and files
-const fs = require('fs');
-const path = require('path');
-const files = fs.readdirSync('./sample_files');
-
+const files = await fs.readdir(workDir);
 console.log(files);
-files.map(file => {
-	fs.readFile(path.join(__dirname, 'sample_files', file), 'utf-8', (err, text) => {
-		if (err) {
-			console.log('Error ', err);
-		}
-		console.log(text);
-	})
-});
+for (const file of files) {
+  console.log(file, '=>', await fs.readFile(path.join(workDir, file), 'utf-8'));
+}
 
-fs.writeFileSync(path.join(__dirname, 'sample_files', files[0]), 'Just a new line 1');
+// overwrite and append
+await fs.writeFile(path.join(workDir, files[0]), 'Just a new line 1');
+await fs.appendFile(path.join(workDir, files[1]), '\nJust a new line appended');
 
-fs.appendFile(path.join(__dirname, 'sample_files', files[1]), `\nJust a new line appended`, (err, data) => {
-	console.log(data);
-});
+// create, read, rename, copy
+const newFile = path.join(workDir, 'file3.txt');
+const renamed = path.join(workDir, '_file3.txt');
+await fs.writeFile(newFile, 'This is a new file.');
+console.log('New file content:', await fs.readFile(newFile, 'utf-8'));
+await fs.rename(newFile, renamed);
+await fs.copyFile(renamed, newFile);
 
-const newFile = 'file3.txt';
-const newFilePath = path.join(__dirname, 'sample_files', newFile);
-const newFilePathCopy = path.join(__dirname, 'sample_files', '_' + newFile);
+// create a directory if it does not exist, then move a file into it
+const copyDir = path.join(workDir, 'sample_files_copy');
+await fs.mkdir(copyDir, { recursive: true });
+await fs.rename(newFile, path.join(copyDir, '__file3.txt'));
 
-// create a new file on the fly
-fs.writeFileSync(newFilePath, 'This is new file.');
+// delete a file
+await fs.unlink(renamed);
 
-// read it
-const newFileContent = fs.readFileSync(newFilePath, 'utf-8');
-console.log('New File Content: ', newFilePath);
+// rename a directory
+const renamedDir = path.join(workDir, 'archive');
+await fs.rename(copyDir, renamedDir);
+console.log('archive contains', await fs.readdir(renamedDir));
 
-// rename it
-fs.renameSync(newFilePath, newFilePathCopy)
-
-// copy it
-fs.copyFileSync(newFilePathCopy, newFilePath)
-
-// move it
-fs.renameSync(newFilePath, path.join(__dirname, 'sample_files_copy', '__' + newFile))
-
-// delete it
-fs.unlinkSync(newFilePathCopy);
-
-// create dir if not exists
-// rename dir
-// delete directory that has items
-
-
+// delete a directory that has items
+await fs.rm(workDir, { recursive: true, force: true });
+console.log('Cleaned up', workDir);

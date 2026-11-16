@@ -1,24 +1,21 @@
-/**
- * Created by Zeeshan on 3/7/2016.
- */
-
 //------------------------------------------------------
-//read google_spreadsheet and parse it
-//Web Link=> https://docs.google.com/spreadsheets/d/1OmqePbgblBhWjTmsW3xmIZjx0ZIZRuzOuxxtvBluTlM/edit#gid=0
+// Read a public Google Sheet and print its rows
+// Web Link=> https://theoephraim.github.io/node-google-spreadsheet
+// Run: GOOGLE_API_KEY=... node google_spreadsheets.js [sheetId]
 //------------------------------------------------------
 
-var GoogleSpreadsheet = require("google-spreadsheet"),
-    _ = require('underscore');
+import { GoogleSpreadsheet } from 'google-spreadsheet';
 
-var sheetId = "1OmqePbgblBhWjTmsW3xmIZjx0ZIZRuzOuxxtvBluTlM",
-    sheet = new GoogleSpreadsheet(sheetId);
+if (!process.env.GOOGLE_API_KEY) throw new Error('Set GOOGLE_API_KEY (Sheets API enabled)');
 
-sheet.getRows(1, {}, function (err, rows) {
-    if (err) throw err;
+// API-key access works only for sheets shared as "anyone with the link"; use a service account for private ones
+const sheetId = process.argv[2] ?? '1OmqePbgblBhWjTmsW3xmIZjx0ZIZRuzOuxxtvBluTlM';
+const doc = new GoogleSpreadsheet(sheetId, { apiKey: process.env.GOOGLE_API_KEY });
 
-    _.each(rows, function (row) {
-        console.log(row.city, row.country);
-    });
+await doc.loadInfo();
+console.log(`Sheet: ${doc.title}`);
 
-});
-
+const rows = await doc.sheetsByIndex[0].getRows();
+for (const row of rows) {
+  console.log(row.get('city'), row.get('country'));
+}

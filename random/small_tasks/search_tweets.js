@@ -1,26 +1,26 @@
-/**
- * Created by Zeeshan on 3/19/2016.
- */
+//------------------------------------------------------
+// Post a tweet and search recent tweets with the X (Twitter) API v2
+// Web Link=> https://github.com/PLhery/node-twitter-api-v2
+// Run: TWITTER_CONSUMER_KEY=... TWITTER_CONSUMER_SECRET=... TWITTER_ACCESS_TOKEN=... TWITTER_ACCESS_TOKEN_SECRET=... node search_tweets.js
+//------------------------------------------------------
 
+import { TwitterApi } from 'twitter-api-v2';
 
-var T = new Twit({
-    consumer_key:         process.env.TWITTER_CONSUMER_KEY || 'YOUR_CONSUMER_KEY',
-    consumer_secret:      process.env.TWITTER_CONSUMER_SECRET || 'YOUR_CONSUMER_SECRET',
-    access_token:         process.env.TWITTER_ACCESS_TOKEN || 'YOUR_ACCESS_TOKEN',
-    access_token_secret:  process.env.TWITTER_ACCESS_TOKEN_SECRET || 'YOUR_ACCESS_TOKEN_SECRET',
-    timeout_ms:           60*1000  // optional HTTP request timeout to apply to all requests.
-})
+const required = ['TWITTER_CONSUMER_KEY', 'TWITTER_CONSUMER_SECRET', 'TWITTER_ACCESS_TOKEN', 'TWITTER_ACCESS_TOKEN_SECRET'];
+const missing = required.filter((name) => !process.env[name]);
+if (missing.length) throw new Error(`Missing env vars: ${missing.join(', ')}`);
 
-//
-//  tweet 'hello world!'
-//
-T.post('statuses/update', { status: 'hello world!' }, function(err, data, response) {
-    console.log(data)
-})
+// OAuth 1.0a user context: acts as the account that owns the access token
+const client = new TwitterApi({
+  appKey: process.env.TWITTER_CONSUMER_KEY,
+  appSecret: process.env.TWITTER_CONSUMER_SECRET,
+  accessToken: process.env.TWITTER_ACCESS_TOKEN,
+  accessSecret: process.env.TWITTER_ACCESS_TOKEN_SECRET,
+});
 
-//
-//  search twitter for all tweets containing the word 'banana' since July 11, 2011
-//
-T.get('search/tweets', { q: 'banana since:2011-07-11', count: 100 }, function(err, data, response) {
-    console.log(data)
-})
+const { data: tweet } = await client.v2.tweet('hello world!');
+console.log('Posted:', tweet.id);
+
+// Recent search covers the last 7 days; full-archive search needs a higher API tier
+const results = await client.v2.search('banana -is:retweet', { max_results: 100 });
+for (const t of results.tweets) console.log(t.id, t.text);

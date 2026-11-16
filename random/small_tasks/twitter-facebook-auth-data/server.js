@@ -1,46 +1,57 @@
 //------------------------------------------------------
-//Read README.md
-//Web Link=>
+// Facebook/Twitter login with Passport, sessions stored in MongoDB
+// Read README.md
 //------------------------------------------------------
 
+import express from 'express';
+import logger from 'morgan';
+import session from 'express-session';
+import MongoStore from 'connect-mongo';
+import mongoose from 'mongoose';
+import passport from 'passport';
+import path from 'node:path';
 
-const express = require('express');
-const logger = require('morgan');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
+import { mongoUrl } from './config/database.js';
+import configurePassport from './config/passport.js';
+import routes from './app/routes.js';
+
+const { SESSION_SECRET, NODE_ENV } = process.env;
+if (!SESSION_SECRET || SESSION_SECRET.length < 32) {
+  throw new Error('Set SESSION_SECRET to a random string of at least 32 chars, e.g. $(openssl rand -hex 32)');
+}
+
+const port = Number(process.env.PORT ?? 3000);
+const isProduction = NODE_ENV === 'production';
+
+await mongoose.connect(mongoUrl);
+configurePassport(passport);
+
 const app = express();
-const port = process.env.PORT || 3000;
-const mongoose = require('mongoose');
-const passport = require('passport');
-const flash = require('connect-flash');
+app.disable('x-powered-by');
+app.set('view engine', 'ejs');
+app.set('views', path.join(import.meta.dirname, 'views'));
+if (isProduction) app.set('trust proxy', 1);
 
-const configDB = require('./config/database.js');
+app.use(logger(isProduction ? 'combined' : 'dev'));
+app.use(express.urlencoded({ extended: false }));
 
-// configuration ===============================================================
-mongoose.connect(configDB.url); // connect to our database
-
-require('./config/passport')(passport); // pass passport for configuration
-
-// set up our express application
-app.use(logger('dev')); // log every request to the console
-app.use(cookieParser()); // read cookies (needed for auth)
-app.use(bodyParser.urlencoded({ extended: false })); // get information from html forms
-
-app.set('view engine', 'ejs'); // set up ejs for templating
-
-// required for passport
-app.use(session({
-    secret: 'ilikenodecheat', resave: false,
-    saveUninitialized: true,
-})); // session secret
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ client: mongoose.connection.getClient() }),
+    cookie: { httpOnly: true, sameSite: 'lax', secure: isProduction, maxAge: 7 * 24 * 60 * 60 * 1000 },
+  }),
+);
 app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
+app.use(passport.session());
 
-// routes ======================================================================
-require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
+routes(app, passport);
 
-// launch ======================================================================
-app.listen(port);
-console.log('The magic happens on port ' + port);
+app.use((err, req, res, _next) => {
+  console.error(err);
+  res.status(500).send('Something went wrong');
+});
+
+app.listen(port, () => console.log(`Listening on http://localhost:${port}`));

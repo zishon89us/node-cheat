@@ -1,23 +1,17 @@
-/**
- * Created by Zeeshan on 8/20/2017.
- */
-
 //------------------------------------------------------
-//Simple Express Server to download files
-//Web Link=>
+// Serve a folder of downloadable files with express.static
+// Run: node express_static_download.js
 //------------------------------------------------------
 
-var express = require('express'),
-      path = require('path');
+import express from 'express';
+import path from 'node:path';
 
-app = express();
+const app = express();
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(import.meta.dirname, 'public'), { dotfiles: 'deny' }));
 
-app.get('/', function (req, res) {
-    res.send('Open: http://localhost:3000/file2.txt');
+app.get('/', (req, res) => {
+  res.send('Open: http://localhost:3000/file2.txt');
 });
 
-app.listen(3000, function(){
-    console.log('Listening on 3000');
-});
+app.listen(3000, () => console.log('Listening on http://localhost:3000'));

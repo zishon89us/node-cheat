@@ -1,19 +1,13 @@
-
 //------------------------------------------------------
 // How to remove all npm modules listed in package.json?
 // Web Link=> https://stackoverflow.com/questions/19106284/how-do-you-uninstall-all-dependencies-listed-in-package-json-npm
 //------------------------------------------------------
 
-// Option 1: bash
-// > for package in `ls node_modules`; do npm uninstall $package; done;
+// Option 1 (simplest): delete installed modules; `npm ci` restores them from the lockfile
+// > rm -rf node_modules
 
-// Option 2: shell
-// > npm uninstall `ls -1 node_modules | tr '/\n' ' '`
+// Option 2: uninstall each top-level dependency and drop it from package.json
+// > npm uninstall $(node -p "Object.keys(require('./package.json').dependencies ?? {}).join(' ')")
 
-
-// Note: Both work, tested on linux.
-
-// E.g.
-// Step 1: > npm init
-// Step 2: > npm i uuid axios --save
-// Step 3: use Option 1 or Option 2
+// Option 3: same, using npm's JSON output
+// > npm ls --depth=0 --json | node -e "process.stdin.on('data', d => console.log(Object.keys(JSON.parse(d).dependencies ?? {}).join(' ')))" | xargs npm uninstall

@@ -1,18 +1,18 @@
 //------------------------------------------------------
-//Node.js essentials
-//Web Link=> 
-//Run : node process
+// Node.js essentials: process info and command-line arguments
+// Run: node process.js --a hello --b world --verbose
 //------------------------------------------------------
 
+import { parseArgs } from 'node:util';
 
-// process object holds current process information
-console.log(`PID: ${process.pid} Node -V: ${process.versions.node}`);
+console.log(`PID: ${process.pid} Node: ${process.versions.node} Platform: ${process.platform}`);
 
-const getArgvFlag = flag => {
-	const flagValueIndex = process.argv.indexOf(flag) + 1;
-	return process.argv[flagValueIndex];
-}
+const { values } = parseArgs({
+  options: {
+    a: { type: 'string' },
+    b: { type: 'string', default: 'default-b' },
+    verbose: { type: 'boolean', short: 'v', default: false },
+  },
+});
 
-const a = getArgvFlag('--a');
-const b = getArgvFlag('--b');
-console.log(`This is value of flag A: ${a} & flag B: ${b}`);
+console.log(`This is value of flag A: ${values.a} & flag B: ${values.b} (verbose: ${values.verbose})`);

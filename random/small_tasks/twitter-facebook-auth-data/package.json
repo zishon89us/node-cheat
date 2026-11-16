@@ -1,25 +1,29 @@
 {
   "name": "node-social",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
   "main": "server.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch --env-file-if-exists=.env server.js"
+  },
   "author": {
     "name": "Zeeshan Hassan Memon",
     "email": "zishon89us@hotmail.com"
   },
   "dependencies": {
-    "bcrypt-nodejs": "latest",
-    "body-parser": "^1.19.0",
-    "connect-flash": "~0.1.1",
-    "cookie-parser": "^1.4.4",
-    "ejs": "2.5.7",
-    "express": "^4.17.1",
-    "express-session": "^1.16.2",
-    "mongoose": "^5.6.9",
-    "morgan": "^1.9.1",
-    "passport": "~0.1.17",
-    "passport-facebook": "~1.0.2",
-    "passport-google-oauth": "~0.1.5",
-    "passport-local": "~0.1.6",
-    "passport-twitter": "~1.0.2",
-    "request": "^2.69.0"
+    "connect-mongo": "^6.0.0",
+    "ejs": "^7.0.2",
+    "express": "^5.3.0",
+    "express-session": "^1.19.0",
+    "mongoose": "^9.12.1",
+    "morgan": "^1.12.1",
+    "passport": "^0.7.0",
+    "passport-facebook": "^3.0.0",
+    "passport-twitter": "^1.0.4"
   }
 }

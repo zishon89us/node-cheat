@@ -1,37 +1,26 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Twitter Handles</title>
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-	<style>
-		body 		{ padding-top:80px; }
-	</style>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css">
 </head>
-<body>
-<div class="container">
-	<div class="jumbotron">
-		<h2>
-			Twitter Handles
-		</h2>
-		<p>
-			Finds twitter usernames from first and last names.
-		</p>
-		<p>
-			<a href="/auth/twitter" class="btn btn-info"><span class="fa fa-twitter"></span>Twitter Login</a>
-		</p>
+<body class="py-5">
+<main class="container">
+	<div class="p-5 mb-4 bg-body-tertiary rounded-3">
+		<h1>Twitter Handles</h1>
+		<p>Finds X (Twitter) usernames from first and last names.</p>
+		<a href="/auth/twitter" class="btn btn-dark">Login with X</a>
 	</div>
 	<dl>
-		<dt>
-			How it works?
-		</dt>
+		<dt>How does it work?</dt>
 		<dd>
-			You are required to Login with your Twitter account, after login
-			you will land on profile page where you can provide link to public google sheet.
+			Log in with your X account. On the profile page, enter the id of a Google Sheet that is shared
+			as "anyone with the link" and has <code>first</code> and <code>last</code> columns.
 		</dd>
 	</dl>
-	<a href="https://github.com/zishon89us/node-cheat" class="btn" type="button">Github Repo</a>
-</div>
+	<a href="https://github.com/zishon89us/node-cheat" class="btn btn-link">GitHub repo</a>
+</main>
 </body>
 </html>
-

@@ -1,24 +1,14 @@
-// load the things we need
-var mongoose = require('mongoose');
-var bcrypt = require('bcrypt-nodejs');
+import mongoose from 'mongoose';
 
-// define the schema for our user model
-var userSchema = mongoose.Schema({
+const userSchema = new mongoose.Schema(
+  {
     name: String,
-    s_id: String,
-    token: String,
-    tokenSecret: String
-});
+    twitterId: { type: String, unique: true },
+    // OAuth 1.0a user credentials; excluded from queries unless selected explicitly
+    token: { type: String, select: false },
+    tokenSecret: { type: String, select: false },
+  },
+  { timestamps: true },
+);
 
-// generating a hash
-userSchema.methods.generateHash = function (password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-};
-
-// checking if password is valid
-userSchema.methods.validPassword = function (password) {
-    return bcrypt.compareSync(password, this.local.password);
-};
-
-// create the model for users and expose it to our app
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);

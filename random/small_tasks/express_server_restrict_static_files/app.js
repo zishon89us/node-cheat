@@ -1,33 +1,28 @@
-/**
- * Created by Zeeshan on 5/5/2017.
- */
-
 //------------------------------------------------------
-//Simple Express Server to restrict static files
-//Web Link=>
+// Middleware order around express.static: what runs before and after a static hit
+// Run: node app.js, then open http://localhost:5000/hello.txt and http://localhost:5000
 //------------------------------------------------------
 
-var express = require('express'),
-    path = require('path');
-    app = express();
+import express from 'express';
+import path from 'node:path';
 
-app.use(function(req, res, next) {
-    console.log('I am called before static middleware.');
-    return next();
-});
-app.use(express.static( path.join(__dirname, 'public')));
-app.use(function(req, res, next) {
-    console.log('I am called after static middleware.');
-    return next();
+const app = express();
+
+app.use((req, res, next) => {
+  console.log('Called before static middleware.');
+  next();
 });
 
-app.get('/', showClientRequest, function(req, res) {
-    res.send('Hi! I am direct message from server :)');
+// A matching static file ends the request here; dotfiles (.env etc.) are refused
+app.use(express.static(path.join(import.meta.dirname, 'public'), { dotfiles: 'deny' }));
+
+app.use((req, res, next) => {
+  console.log('Called after static middleware (no static file matched).');
+  next();
 });
 
-function showClientRequest(req, res, next) {
-    console.log('You can do something here too...');
-    return next();
-}
+app.get('/', (req, res) => {
+  res.send('Hi! I am a direct message from the server :)');
+});
 
-app.listen(5000);
+app.listen(5000, () => console.log('Listening on http://localhost:5000'));

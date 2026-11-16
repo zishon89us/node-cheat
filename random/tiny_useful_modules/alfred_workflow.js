@@ -1,43 +1,30 @@
-/**
- * Created by Zeeshan on 3/6/2016.
- */
-var alfredo = require('alfredo');
-var Item = alfredo.Item;
-var GoogleSpreadsheet = require("google-spreadsheet");
-var _ = require('underscore');
-var fuzzy = require("fuzzy");
+//------------------------------------------------------
+// Alfred Script Filter: fuzzy-search rows of a Google Sheet and return Alfred JSON
+// Web Link=> https://www.alfredapp.com/help/workflows/inputs/script-filter/json/
+// Run: GOOGLE_API_KEY=... node alfred_workflow.js <sheetId> <keyword>
+//------------------------------------------------------
 
-var sheetId = process.argv[2];
-var keyword = process.argv[3];
+import { GoogleSpreadsheet } from 'google-spreadsheet';
+import fuzzy from 'fuzzy';
 
-// spreadsheet key is the long id in the sheets URL
-var sheet = new GoogleSpreadsheet(sheetId);
+const [sheetId, keyword = ''] = process.argv.slice(2);
+if (!sheetId) throw new Error('Usage: node alfred_workflow.js <sheetId> <keyword>');
+if (!process.env.GOOGLE_API_KEY) throw new Error('Set GOOGLE_API_KEY (the sheet must be shared publicly)');
 
-sheet.getRows(1, {}, function (err, rows) {
-    if (err) throw err;
+const doc = new GoogleSpreadsheet(sheetId, { apiKey: process.env.GOOGLE_API_KEY });
+await doc.loadInfo();
+const rows = await doc.sheetsByIndex[0].getRows();
 
-    var items = [];
+// Columns used by the original sheet: shorthand, links, notes, keyword
+const matches = fuzzy.filter(keyword, rows, { extract: (row) => row.get('shorthand') ?? '' });
 
-    var options = {
-        extract: function (el) {
-            return el.shorthand; //i worked with the give sheet, this key can be changed as per actual code
-        }
-    };
+const items = matches.map(({ original: row }) => ({
+  title: row.get('notes'),
+  subtitle: row.get('links'),
+  arg: row.get('links'),
+  autocomplete: row.get('keyword'),
+  valid: true,
+}));
 
-    var filtered = fuzzy.filter(keyword, rows, options);
-
-      _.each(filtered, function (row) {
-            var item = new Item({
-             arg: row.original.links,
-             title: row.original.notes,
-             subtitle: row.original.links,
-             valid: true,
-             autocomplete: row.original.keyword
-             });
-
-            items.push(item);
-        });
-
-    alfredo.feedback(items);
-});
-
+// Alfred reads this JSON from stdout
+process.stdout.write(JSON.stringify({ items }));

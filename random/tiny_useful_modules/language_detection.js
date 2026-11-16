@@ -1,17 +1,15 @@
 //------------------------------------------------------
-//Find out language of text
-//Web Link=> https://github.com/wooorm/franc
+// Detect the language of a text (ISO 639-3 codes)
+// Web Link=> https://github.com/wooorm/franc
+// Run: node language_detection.js
 //------------------------------------------------------
 
-var franc = require('franc');
+import { franc, francAll } from 'franc';
 
-var a = franc('This text is simply written in english to find its language.'),
-    b = franc('Ce texte est tout simplement écrit en français pour trouver sa langue.'),
-    c = franc('یہ متن صرف اس زبان تلاش کرنے اردو میں لکھا ہوا ہے'),
-    d = franc('このテキストは、単純にその言語を見つけるために、日本語で書かれています');
+console.log(franc('This text is simply written in English to find its language.')); // eng
+console.log(franc('Ce texte est tout simplement écrit en français pour trouver sa langue.')); // fra
+console.log(franc('یہ متن صرف اس زبان تلاش کرنے کے لیے اردو میں لکھا ہوا ہے')); // urd
+console.log(franc('short')); // und: too short to tell
 
-console.log(a, b, c, d); //afr ben nno und
-
-var all = franc.all('O Brasil caiu 26 posições');
-
-//console.log(all);
+// Ranked candidates, optionally restricted to the languages you care about
+console.log(francAll('O Brasil caiu 26 posições', { only: ['por', 'spa', 'glg'] }).slice(0, 3));
