@@ -9,19 +9,6 @@ updates:
         patterns: ['*']
         update-types: [minor, patch]
 
-  - package-ecosystem: npm
-    directory: /secureai
-    schedule:
-      interval: weekly
-    ignore:
-      # typescript-eslint pins a TypeScript peer range; bump both together by hand.
-      - dependency-name: typescript
-        update-types: [version-update:semver-major, version-update:semver-minor]
-    groups:
-      all:
-        patterns: ['*']
-        update-types: [minor, patch]
-
   - package-ecosystem: github-actions
     directory: /
     schedule:

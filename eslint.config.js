@@ -5,7 +5,7 @@ import prettier from 'eslint-config-prettier';
 
 export default [
   {
-    ignores: ['**/node_modules/**', 'secureai/**', '**/*.min.js', 'coverage/**'],
+    ignores: ['**/node_modules/**', '**/*.min.js', 'coverage/**'],
   },
   js.configs.recommended,
   security.configs.recommended,

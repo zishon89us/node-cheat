@@ -1,6 +1,5 @@
 node_modules
 coverage
-secureai
 package-lock.json
 **/*.min.js
 **/*.min.css

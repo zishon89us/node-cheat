@@ -1,10 +1,10 @@
 # node-cheat
 
+> **The sequel for the AI era: [ai-cheat](https://github.com/zishon89us/ai-cheat)** — tested fixes for the problems developers (and their AI assistants) get stuck on, each one answering a real question.
+
 Small, runnable Node.js examples for everyday tasks: cloud storage, payments, email/SMS, real-time chat, files, databases and more. They were first written in 2016–2018 and **rewritten in 2026** for current Node.js and current library versions.
 
 [![CI](https://github.com/zishon89us/node-cheat/actions/workflows/ci.yml/badge.svg)](https://github.com/zishon89us/node-cheat/actions/workflows/ci.yml)
-
-Also in this repo: **[SecureAI](./secureai)**, a GitHub App that scans pull requests for security issues and uses Claude to triage findings.
 
 ## What "modern" means here
 
@@ -112,7 +112,7 @@ npm run format:check  # Prettier
 npm test              # every example parses as ESM, uses no require(), and declares its imports
 ```
 
-CI runs all of these on Node 22 and 24, plus `npm audit`, CodeQL and SecureAI's own checks. Dependabot keeps dependencies current.
+CI runs all of these on Node 22 and 24, plus `npm audit` and CodeQL. Dependabot keeps dependencies current.
 
 ## Security
 
