@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process';
 import { builtinModules } from 'node:module';
 
 const root = join(import.meta.dirname, '..');
-const skipDirs = new Set(['node_modules', '.git', 'secureai', 'coverage', 'public', 'views']);
+const skipDirs = new Set(['node_modules', '.git', 'coverage', 'public', 'views']);
 
 function walk(dir, out = []) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
